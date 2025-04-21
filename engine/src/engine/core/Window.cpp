@@ -4,9 +4,9 @@
 
 namespace Engine {
 
-	std::unique_ptr<Window> Window::Create()
+	std::unique_ptr<Window> Window::Create(WindowProps props)
 	{
-		return std::make_unique<SDLWindow>();
+		return std::make_unique<SDLWindow>(props);
 		//return std::unique_ptr<Window>();
 	}
 }

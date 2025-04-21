@@ -12,7 +12,7 @@ namespace Engine {
 	class Application
 	{
 	public:
-        Application();
+        Application(WindowProps props);
 		virtual ~Application();
 
 		virtual void Run();

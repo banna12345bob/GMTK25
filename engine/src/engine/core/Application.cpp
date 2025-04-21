@@ -4,9 +4,9 @@
 
 namespace Engine {
 
-	Application::Application()
+	Application::Application(WindowProps props)
 	{
-		m_Window = Window::Create();
+		m_Window = Window::Create(props);
 	}
 
 	Application::~Application()
