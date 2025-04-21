@@ -13,6 +13,8 @@ namespace Engine {
 		virtual void HandleEvents() override;
 
 	private:
+		SDL_Event e;
+
 		std::unique_ptr<Window>* m_Window;
 	};
 }

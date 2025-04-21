@@ -11,6 +11,8 @@ namespace Engine {
 	{
 	public:
 		SDLWindow(WindowProps props);
+		~SDLWindow();
+
 		int GetWidth() override  { return m_data.width; }
 		int GetHeight() override { return m_data.height; }
 

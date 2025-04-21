@@ -81,4 +81,10 @@ namespace Engine {
 		}
 	}
 
+	SDLWindow::~SDLWindow()
+	{
+		SDL_DestroyWindow(m_window);
+		SDL_Quit();
+	}
+
 }

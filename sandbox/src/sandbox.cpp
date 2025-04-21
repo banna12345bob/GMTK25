@@ -21,5 +21,5 @@ public:
 
 Engine::Application* Engine::CreateApplication()
 {
-	return new sandbox(Engine::WindowProps("Engine", 520, 520, "assets/textures/Oak_Log.png"));
+	return new sandbox(Engine::WindowProps("Sandbox", 520, 520, "assets/textures/Oak_Log.png"));
 }

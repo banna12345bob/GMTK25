@@ -9,8 +9,6 @@ namespace Engine {
 
 	void SDLEventHandler::HandleEvents()
 	{
-		SDL_Event e;
-
 		if (SDL_PollEvent(&e)) {
 			switch (e.type) {
 			case SDL_EVENT_QUIT:
