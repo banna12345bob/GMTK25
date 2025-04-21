@@ -4,12 +4,12 @@
 
 namespace Engine {
 
-	SDLWindow::SDLWindow()
+	SDLWindow::SDLWindow(WindowProps props)
 	{
-		m_data.title = "Engine";
-		m_data.width = 520;
-		m_data.height = 520;
-		m_data.fullscreen = true;
+		m_data.title = props.title;
+		m_data.width = props.width;
+		m_data.height = props.height;
+		m_data.fullscreen = props.fullscreen;
 		uint32_t WindowFlags = SDL_WINDOW_OPENGL;
 
 		//Initialize SDL

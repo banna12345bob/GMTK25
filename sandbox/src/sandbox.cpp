@@ -4,7 +4,8 @@ class sandbox : public Engine::Application
 {
 public:
 
-	sandbox()
+	sandbox(Engine::WindowProps props)
+		: Engine::Application(props)
 	{
 
 	}
@@ -19,5 +20,5 @@ public:
 
 Engine::Application* Engine::CreateApplication()
 {
-	return new sandbox();
+	return new sandbox(Engine::WindowProps("Engine", 520, 520));
 }
