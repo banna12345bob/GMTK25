@@ -12,9 +12,8 @@ public:
 	{
 	}
 
-	virtual void Run() {
-		while (running)
-			EG_INFO("Running");
+	virtual void RunApp() {
+		EG_INFO("Running");
 	}
 };
 

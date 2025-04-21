@@ -14,6 +14,11 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
 IncludeDir["spdlog"] = "%{wks.location}/engine/vendor/spdlog/include"
+IncludeDir["SDL3"] = "%{wks.location}/engine/vendor/SDL3-3.2.10/include"
+IncludeDir["ImGui"] = "%{wks.location}/engine/vendor/imgui"
+
+group "Dependencies"
+	include "engine/vendor/imgui"
 
 group ""
 	include "engine"

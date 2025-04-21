@@ -16,7 +16,20 @@ project "engine"
 	includedirs
 	{
 		"src",
-		"%{IncludeDir.spdlog}"
+		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.SDL3}",
+		"%{IncludeDir.ImGui}"
+	}
+
+	links 
+	{
+		"SDL3",
+		"ImGui"
+	}
+
+	libdirs
+	{
+		"%{IncludeDir.SDL3}/../lib/x64/"
 	}
 
 	filter "system:windows"
@@ -31,17 +44,17 @@ project "engine"
         xcodebuildsettings { ["ALWAYS_SEARCH_USER_PATHS"] = "YES" }
 
 	filter "configurations:Debug*"
-		defines "SS_DEBUG"
+		defines "EG_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release*"
-		defines "SS_RELEASE"
+		defines "EG_RELEASE"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Dist*"
-		defines "SS_DIST"
+		defines "EG_DIST"
 		runtime "Release"
 		symbols "off"
 		optimize "on"
