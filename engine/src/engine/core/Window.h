@@ -32,6 +32,11 @@ namespace Engine {
 		virtual int GetWidth() = 0;
 		virtual int GetHeight() = 0;
 
+		virtual void SetWidth(int width) = 0;
+		virtual void SetHeight(int height) = 0;
+
+		virtual void ReloadWindow() = 0;
+
 		virtual bool GetRunning() { return m_Running; }
 		virtual void SetRunning(bool running) { m_Running = running; }
 

@@ -13,8 +13,13 @@ namespace Engine {
 		SDLWindow(WindowProps props);
 		~SDLWindow();
 
-		int GetWidth() override  { return m_data.width; }
-		int GetHeight() override { return m_data.height; }
+		virtual int GetWidth() override  { return m_data.width; }
+		virtual int GetHeight() override { return m_data.height; }
+
+		virtual void SetWidth(int width) override;
+		virtual void SetHeight(int height) override;
+
+		virtual void ReloadWindow() override;
 
 	private:
 		SDL_Window* m_window;

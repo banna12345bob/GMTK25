@@ -14,6 +14,9 @@ namespace Engine {
 		m_data.fullscreen = props.fullscreen;
 		m_data.pathToIcon = props.pathToIcon;
 		uint32_t WindowFlags = SDL_WINDOW_OPENGL;
+		WindowFlags |= SDL_WINDOW_RESIZABLE;
+
+		EG_CORE_ASSERT(m_data.width > 0 && m_data.height > 0, "Invalid Window size");
 
 		//Initialize SDL
 		if (!SDL_Init(SDL_INIT_VIDEO))
@@ -85,6 +88,33 @@ namespace Engine {
 	{
 		SDL_DestroyWindow(m_window);
 		SDL_Quit();
+	}
+
+	void SDLWindow::SetWidth(int width)
+	{
+		if (width <= 0) {
+			EG_CORE_WARN("Invalid window width: {0}", width);
+			return;
+		}
+
+		m_data.width = width;
+		SDL_SetWindowSize(m_window, m_data.width, m_data.height);
+	}
+
+	void SDLWindow::SetHeight(int height)
+	{
+		if (height <= 0) {
+			EG_CORE_WARN("Invalid window height: {0}", height);
+			return;
+		}
+
+		m_data.height = height;
+		SDL_SetWindowSize(m_window, m_data.width, m_data.height);
+	}
+
+	void SDLWindow::ReloadWindow()
+	{
+		SDL_GetWindowSize(m_window, &m_data.width, &m_data.height);
 	}
 
 }
