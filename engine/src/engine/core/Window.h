@@ -2,6 +2,8 @@
 #include <memory>
 #include <string>
 
+#include "engine/core/core.h"
+
 namespace Engine {
 
 	struct WindowProps
@@ -29,7 +31,12 @@ namespace Engine {
 		virtual int GetWidth() = 0;
 		virtual int GetHeight() = 0;
 
+		virtual bool GetRunning() { return m_Running; }
+		virtual void SetRunning(bool running) { m_Running = running; }
+
 		static std::unique_ptr<Window> Create(WindowProps props);
+	private:
+		bool m_Running = true;
 	};
 }
 

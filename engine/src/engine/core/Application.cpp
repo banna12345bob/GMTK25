@@ -7,6 +7,7 @@ namespace Engine {
 	Application::Application(WindowProps props)
 	{
 		m_Window = Window::Create(props);
+		m_EventHandler = EventHandler::Create(&m_Window);
 	}
 
 	Application::~Application()
@@ -16,17 +17,8 @@ namespace Engine {
 
 	void Application::Run()
 	{
-		while (running) {
-			// Eventually wanna abstract this to its own input handler class that is independent of SDL
-			SDL_Event e;
-
-			if (SDL_PollEvent(&e)) {
-				switch (e.type) {
-				case SDL_EVENT_QUIT:
-					this->running = false;
-					break;
-				}
-			}
+		while (m_Window->GetRunning()) {
+			m_EventHandler->HandleEvents();
 
 			this->RunApp();
 		}

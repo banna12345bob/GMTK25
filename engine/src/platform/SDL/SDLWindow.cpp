@@ -1,7 +1,5 @@
 #include "SDLWindow.h"
 
-#include "engine/core/core.h"
-
 namespace Engine {
 
 	SDLWindow::SDLWindow(WindowProps props)
