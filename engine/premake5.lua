@@ -10,7 +10,9 @@ project "engine"
 	files
 	{
 		"src/**.h",
-		"src/**.cpp"
+		"src/**.cpp",
+		"%{IncludeDir.stb_image}/**.h",
+		"%{IncludeDir.stb_image}/**.cpp",
 	}
 
 	includedirs
@@ -18,7 +20,8 @@ project "engine"
 		"src",
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.SDL3}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.stb_image}",
 	}
 
 	links 

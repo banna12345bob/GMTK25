@@ -1,5 +1,9 @@
 #include "SDLWindow.h"
 
+#include <stb_image.h>
+
+#include <filesystem>
+
 namespace Engine {
 
 	SDLWindow::SDLWindow(WindowProps props)
@@ -8,6 +12,7 @@ namespace Engine {
 		m_data.width = props.width;
 		m_data.height = props.height;
 		m_data.fullscreen = props.fullscreen;
+		m_data.pathToIcon = props.pathToIcon;
 		uint32_t WindowFlags = SDL_WINDOW_OPENGL;
 
 		//Initialize SDL
@@ -34,6 +39,46 @@ namespace Engine {
 
 		if (m_data.fullscreen)
 			SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN);
+
+		if (!std::filesystem::exists(m_data.pathToIcon)) {
+			m_data.pathToIcon = "";
+		}
+		if (m_data.pathToIcon == "")
+		{
+			return;
+		}
+
+		// Probably could colapse into it's own createSurfaceFromFile function but I can't be bothered
+		int width, height, bytesPerPixel;
+		void* data = (void*)stbi_load(m_data.pathToIcon, &width, &height, &bytesPerPixel, 4);
+
+		int pitch;
+		pitch = width * bytesPerPixel;
+		pitch = (pitch + 3) & ~3;
+
+		uint32_t Rmask, Gmask, Bmask, Amask;
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN
+		Rmask = 0x000000FF;
+		Gmask = 0x0000FF00;
+		Bmask = 0x00FF0000;
+		Amask = (bytesPerPixel == 4) ? 0xFF000000 : 0;
+#else
+		int s = (bytesPerPixel == 4) ? 0 : 8;
+		Rmask = 0xFF000000 >> s;
+		Gmask = 0x00FF0000 >> s;
+		Bmask = 0x0000FF00 >> s;
+		Amask = 0x000000FF >> s;
+#endif
+
+		SDL_Surface* icon = SDL_CreateSurfaceFrom(width, height, SDL_GetPixelFormatForMasks(bytesPerPixel * 8, Rmask, Gmask, Bmask, Amask), data, pitch);
+		if (icon->pixels)
+		{
+			SDL_SetWindowIcon(m_window, icon);
+		}
+		else
+		{
+			EG_CORE_ASSERT(false, "Failed to load image");
+		}
 	}
 
 }

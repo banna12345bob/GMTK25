@@ -21,6 +21,8 @@ namespace Engine {
 			std::string title;
 			int width, height;
 			bool fullscreen;
+
+			const char* pathToIcon;
 		};
 
 		WindowData m_data;

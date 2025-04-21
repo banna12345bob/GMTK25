@@ -11,14 +11,16 @@ namespace Engine {
 		std::string title;
 		unsigned int width;
 		unsigned int height;
+		const char* pathToIcon;
 		bool fullscreen;
 
 		//Default constructor
 		WindowProps(const std::string& title,
 			unsigned int width,
 			unsigned int height,
+			const char* pathToIcon = "",
 			bool fullscreen = false)
-			: title(title), width(width), height(height), fullscreen(fullscreen)
+			: title(title), width(width), height(height), pathToIcon(pathToIcon), fullscreen(fullscreen)
 		{
 		}
 	};
