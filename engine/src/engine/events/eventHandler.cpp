@@ -4,9 +4,9 @@
 
 namespace Engine {
 
-	std::unique_ptr<EventHandler> EventHandler::Create(std::unique_ptr<Window>* window)
+	Scope<EventHandler> EventHandler::Create(Scope<Window>* window)
 	{
-		return std::make_unique<SDLEventHandler>(window);
+		return CreateScope<SDLEventHandler>(window);
 	}
 
 }

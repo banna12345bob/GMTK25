@@ -2,7 +2,7 @@
 
 namespace Engine {
 
-	SDLEventHandler::SDLEventHandler(std::unique_ptr<Window>* window)
+	SDLEventHandler::SDLEventHandler(Scope<Window>* window)
 	{
 		m_Window = window;
 	}

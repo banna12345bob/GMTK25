@@ -9,7 +9,7 @@ namespace Engine {
 	class SDLEventHandler : public EventHandler
 	{
 	public:
-		SDLEventHandler(std::unique_ptr<Window>* window);
+		SDLEventHandler(Scope<Window>* window);
 		virtual void HandleEvents() override;
 
 	private:

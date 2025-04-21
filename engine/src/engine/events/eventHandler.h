@@ -1,5 +1,4 @@
 #pragma once
-#include <memory>
 #include <string>
 
 #include "engine/core/Window.h"
@@ -13,7 +12,7 @@ namespace Engine {
 
 		virtual void HandleEvents() = 0;
 
-		static std::unique_ptr<EventHandler> Create(std::unique_ptr<Window>* window);
+		static Scope<EventHandler> Create(Scope<Window>* window);
 	};
 }
 

@@ -1,5 +1,4 @@
 #pragma once
-#include <memory>
 #include <string>
 
 #include "engine/core/core.h"
@@ -36,7 +35,7 @@ namespace Engine {
 		virtual bool GetRunning() { return m_Running; }
 		virtual void SetRunning(bool running) { m_Running = running; }
 
-		static std::unique_ptr<Window> Create(WindowProps props);
+		static Scope<Window> Create(WindowProps props);
 	private:
 		bool m_Running = true;
 	};

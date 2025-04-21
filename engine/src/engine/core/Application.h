@@ -20,8 +20,8 @@ namespace Engine {
 
 		virtual void UpdateApp() = 0;
 	private:
-		std::unique_ptr<Window> m_Window;
-		std::unique_ptr<EventHandler> m_EventHandler;
+		Scope<Window> m_Window;
+		Scope<EventHandler> m_EventHandler;
 	};
 
 	//	To be defined in client
