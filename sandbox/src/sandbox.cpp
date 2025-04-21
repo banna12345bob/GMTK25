@@ -13,7 +13,7 @@ public:
 	{
 	}
 
-	virtual void RunApp() {
+	virtual void UpdateApp() {
 		// Run every frame
 		//EG_INFO("Running");
 	}

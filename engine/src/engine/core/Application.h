@@ -18,7 +18,7 @@ namespace Engine {
 
 		virtual void Run();
 
-		virtual void RunApp() = 0;
+		virtual void UpdateApp() = 0;
 	private:
 		std::unique_ptr<Window> m_Window;
 		std::unique_ptr<EventHandler> m_EventHandler;

@@ -20,7 +20,7 @@ namespace Engine {
 		while (m_Window->GetRunning()) {
 			m_EventHandler->HandleEvents();
 
-			this->RunApp();
+			this->UpdateApp();
 		}
 	}
 }
