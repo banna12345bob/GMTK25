@@ -14,7 +14,8 @@ public:
 	}
 
 	virtual void RunApp() {
-		EG_INFO("Running");
+		// Run every frame
+		//EG_INFO("Running");
 	}
 };
 

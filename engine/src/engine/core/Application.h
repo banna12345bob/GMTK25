@@ -6,6 +6,7 @@
 //#include <map>
 
 #include "engine/core/Window.h"
+#include "engine/events/eventHandler.h"
 
 namespace Engine {
 
@@ -18,11 +19,9 @@ namespace Engine {
 		virtual void Run();
 
 		virtual void RunApp() = 0;
-
-		bool running = true;
-
 	private:
 		std::unique_ptr<Window> m_Window;
+		std::unique_ptr<EventHandler> m_EventHandler;
 	};
 
 	//	To be defined in client
