@@ -4,11 +4,15 @@ namespace Engine {
 
 	SDL_AudioPlayer::SDL_AudioPlayer()
 	{
-		SDL_Init(SDL_INIT_AUDIO);
+		if (!SDL_Init(SDL_INIT_AUDIO)) {
+			EG_CORE_FATAL("SDL could not initialize audio! SDL_Error: {0}", SDL_GetError());
+			EG_CORE_ASSERT(false, "SDL ERROR");
+		}
 
 		m_deviceId = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
 		if (m_deviceId == 0) {
-			SDL_Log("Couldn't open audio device: %s", SDL_GetError());
+			EG_CORE_FATAL("Couldn't open audio device! SDL_Error: {0}", SDL_GetError());
+			EG_CORE_ASSERT(false, "SDL ERROR");
 		}
 
 		SDL_GetAudioDeviceFormat(m_deviceId, &m_deviceSpec, NULL);
@@ -26,7 +30,7 @@ namespace Engine {
 				SDL_MixAudio(output.data(), it->data + it->currentOffset, it->format, bytesToPut, it->volume);
 
 				if (!SDL_PutAudioStreamData(it->stream, output.data(), bytesToPut)) {
-					SDL_Log("Failed to put audio data onto the buffer: %s", SDL_GetError());
+					EG_CORE_ERROR("Failed to put audio data onto the buffer. Error: {0}", SDL_GetError());
 					m_sounds.erase(it);
 					it--;
 					continue;
@@ -49,7 +53,6 @@ namespace Engine {
 		}
 	}
 
-	// stringPath should not include 'assests/audio/ or '.wav'.
 	// Volume is a float between 0 and 1.
 	bool SDL_AudioPlayer::PlaySound(std::string stringPath, bool loop, float_t volume)
 	{
@@ -63,10 +66,8 @@ namespace Engine {
 
 		// Load file
 		const char* filePath = stringPath.c_str();
-		char* fullPath;
-		SDL_asprintf(&fullPath, "%s%s.wav", "assets/audio/", filePath);
-		if (!SDL_LoadWAV(fullPath, &srcspec, &sound.data, &sound.dataLen)) {
-			SDL_Log("Couldn't load .wav file: %s", SDL_GetError());
+		if (!SDL_LoadWAV(filePath, &srcspec, &sound.data, &sound.dataLen)) {
+			EG_CORE_WARN("Couldn't load .wav file '{0}'. Error: {1}", filePath, SDL_GetError());
 			return false;
 		}
 
@@ -75,11 +76,11 @@ namespace Engine {
 		// Create and bind audio stream
 		sound.stream = SDL_CreateAudioStream(&srcspec, &m_deviceSpec);
 		if (!sound.stream) {
-			SDL_Log("Couldn't create audio stream: %s", SDL_GetError());
+			EG_CORE_ERROR("Couldn't create audio stream. Error: {0}", SDL_GetError());
 			return false;
 		}
 		else if (!SDL_BindAudioStream(m_deviceId, sound.stream)) {
-			SDL_Log("Failed to bind '%s' to device: %s", filePath, SDL_GetError());
+			EG_CORE_ERROR("Failed to bind '{0}' to device. Error: {1}", filePath, SDL_GetError());
 			return false;
 		}
 
@@ -90,7 +91,6 @@ namespace Engine {
 
 		m_sounds.push_back(sound);
 
-		SDL_free(fullPath);
 		return true;
 	}
 }
