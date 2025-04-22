@@ -13,7 +13,7 @@ namespace Engine {
 	{
 	public:
 		SDL_AudioPlayer();
-		virtual bool PlaySound(std::string filePath) override;
+		virtual bool PlaySound(std::string filePath, bool loop) override;
 		virtual void UpdateAudio() override;
 
 	private:
@@ -23,6 +23,9 @@ namespace Engine {
 		struct Sound {
 			uint8_t* data;
 			uint32_t dataLen;
+			uint32_t currentOffset;		// Bytes
+			uint32_t bufferSize;		// Bytes
+			bool loop;					// Putting this after stream breaks the code, probably alignment issues
 			SDL_AudioStream* stream;
 		};
 

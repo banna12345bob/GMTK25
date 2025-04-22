@@ -10,7 +10,7 @@ namespace Engine {
 		m_EventHandler = EventHandler::Create(&m_Window);
 		m_AudioPlayer = AudioPlayer::Create();
 
-		m_AudioPlayer->PlaySound("music/music1_short");
+		m_AudioPlayer->PlaySound("music/music1_short", false);
 	}
 
 	Application::~Application()

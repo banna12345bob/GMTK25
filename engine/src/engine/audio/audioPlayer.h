@@ -12,7 +12,7 @@ namespace Engine {
 		
 		static Scope<AudioPlayer> Create();
 
-		virtual bool PlaySound(std::string filePath) = 0;
+		virtual bool PlaySound(std::string filePath, bool loop) = 0;
 		virtual void UpdateAudio() = 0;
 	};
 }

@@ -16,21 +16,43 @@ namespace Engine {
 
 	void SDL_AudioPlayer::UpdateAudio()
 	{
-		for (int i = 0; i < SDL_arraysize(m_sounds); i++)
+		for (auto it = m_sounds.begin(); it != m_sounds.end(); )
 		{
-			// FIXME: Whole file is being put onto the buffer, probably not great for music files
-			if (SDL_GetAudioStreamQueued(m_sounds[i].stream) < m_sounds[i].dataLen) {
-				SDL_PutAudioStreamData(m_sounds[i].stream, m_sounds[i].data, m_sounds[i].dataLen);
+			if (SDL_GetAudioStreamQueued(it->stream) < it->bufferSize) {
+				uint32_t bytesToPut = std::min(it->bufferSize, it->dataLen - it->currentOffset);
+
+				if (!SDL_PutAudioStreamData(it->stream, it->data + it->currentOffset, bytesToPut)) {
+					SDL_Log("Failed to put audio data onto the buffer: %s", SDL_GetError());
+					m_sounds.erase(it);
+					it--;
+					continue;
+				}
+
+				it->currentOffset += bytesToPut;
+
+				if (it->currentOffset >= it->dataLen) {
+					if (it->loop) {
+						it->currentOffset = 0;
+					}
+					else {
+						it = m_sounds.erase(it);
+						continue;
+					}
+				}
 			}
+
+			it++;
 		}
 	}
 
-	bool SDL_AudioPlayer::PlaySound(std::string stringPath)
+	bool SDL_AudioPlayer::PlaySound(std::string stringPath, bool loop)
 	{
 		bool retval = false;
 		Sound sound = Sound();
+		sound.currentOffset = 0;
+		sound.loop = loop;
 
-		SDL_AudioSpec srcspec = { SDL_AUDIO_S16, 2, 44100 };
+		SDL_AudioSpec srcspec;
 
 		// Load file
 		const char* filePath = stringPath.c_str();
@@ -45,17 +67,21 @@ namespace Engine {
 		sound.stream = SDL_CreateAudioStream(&srcspec, &m_deviceSpec);
 		if (!sound.stream) {
 			SDL_Log("Couldn't create audio stream: %s", SDL_GetError());
+			return false;
 		}
 		else if (!SDL_BindAudioStream(m_deviceId, sound.stream)) {
 			SDL_Log("Failed to bind '%s' to device: %s", filePath, SDL_GetError());
-		}
-		else {
-			//SDL_Log("Audio stream load: SUCCESS!!");
-			m_sounds.push_back(sound);
-			retval = true;
+			return false;
 		}
 
+		// Set buffer size in bytes. Will be equal to 1/2 a second.
+		uint32_t bufferSizeInSamples = srcspec.freq / 2;
+		uint32_t sampleSize = SDL_AUDIO_BYTESIZE(srcspec.format);
+		sound.bufferSize = bufferSizeInSamples * sampleSize;
+
+		m_sounds.push_back(sound);
+
 		SDL_free(fullPath);
-		return retval;
+		return true;
 	}
 }
