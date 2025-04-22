@@ -8,6 +8,9 @@ namespace Engine {
 	{
 		m_Window = Window::Create(props);
 		m_EventHandler = EventHandler::Create(&m_Window);
+		m_AudioPlayer = AudioPlayer::Create();
+
+		m_AudioPlayer->PlaySound("music/music1_short");
 	}
 
 	Application::~Application()
@@ -19,6 +22,7 @@ namespace Engine {
 	{
 		while (m_Window->GetRunning()) {
 			m_EventHandler->HandleEvents();
+			m_AudioPlayer->UpdateAudio();
 
 			this->UpdateApp();
 		}

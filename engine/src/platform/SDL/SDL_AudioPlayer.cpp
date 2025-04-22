@@ -14,7 +14,7 @@ namespace Engine {
 		SDL_GetAudioDeviceFormat(m_deviceId, &m_deviceSpec, NULL);
 	}
 
-	void SDL_AudioPlayer::UpdateSounds()
+	void SDL_AudioPlayer::UpdateAudio()
 	{
 		for (int i = 0; i < SDL_arraysize(m_sounds); i++)
 		{
@@ -25,7 +25,7 @@ namespace Engine {
 		}
 	}
 
-	bool SDL_AudioPlayer::AddSound(std::string stringPath)
+	bool SDL_AudioPlayer::PlaySound(std::string stringPath)
 	{
 		bool retval = false;
 		Sound sound = Sound();
@@ -35,7 +35,7 @@ namespace Engine {
 		// Load file
 		const char* filePath = stringPath.c_str();
 		char* fullPath;
-		SDL_asprintf(&fullPath, "%s%s.wav", "D:\\coding\\GMTK25\\", filePath);		// FIXME: Figure out how to get the path properly
+		SDL_asprintf(&fullPath, "%s%s.wav", "assets/audio/", filePath);
 		if (!SDL_LoadWAV(fullPath, &srcspec, &sound.data, &sound.dataLen)) {
 			SDL_Log("Couldn't load .wav file: %s", SDL_GetError());
 			return false;

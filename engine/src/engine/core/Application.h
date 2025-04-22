@@ -7,6 +7,7 @@
 
 #include "engine/core/Window.h"
 #include "engine/events/eventHandler.h"
+#include "engine/audio/audioPlayer.h"
 
 namespace Engine {
 
@@ -22,6 +23,7 @@ namespace Engine {
 	private:
 		Scope<Window> m_Window;
 		Scope<EventHandler> m_EventHandler;
+		Scope<AudioPlayer> m_AudioPlayer;
 	};
 
 	//	To be defined in client

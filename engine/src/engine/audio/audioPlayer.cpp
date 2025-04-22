@@ -6,6 +6,6 @@ namespace Engine {
 
 	Scope<AudioPlayer> AudioPlayer::Create()
 	{
-		return Scope<SDL_AudioPlayer>();
+		return CreateScope<SDL_AudioPlayer>();
 	}
 }

@@ -13,8 +13,8 @@ namespace Engine {
 	{
 	public:
 		SDL_AudioPlayer();
-		virtual bool AddSound(std::string filePath) override;
-		virtual void UpdateSounds() override;
+		virtual bool PlaySound(std::string filePath) override;
+		virtual void UpdateAudio() override;
 
 	private:
 		SDL_AudioDeviceID m_deviceId;
