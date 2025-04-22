@@ -7,10 +7,9 @@ namespace Engine {
 	Application::Application(WindowProps props)
 	{
 		m_Window = Window::Create(props);
-		m_EventHandler = EventHandler::Create(&m_Window);
+		m_EventCallbackManager = new eventCallbackManager();
+		m_EventHandler = EventHandler::Create(&m_Window, m_EventCallbackManager);
 		m_AudioPlayer = AudioPlayer::Create();
-
-		m_AudioPlayer->PlaySound("assets/audio/music/music1_short.wav", false, 0.4f);
 	}
 
 	Application::~Application()

@@ -2,9 +2,11 @@
 
 namespace Engine {
 
-	SDLEventHandler::SDLEventHandler(Scope<Window>* window)
+	SDLEventHandler::SDLEventHandler(Scope<Window>* window, eventCallbackManager* eventCallbackManager)
 	{
 		m_Window = window;
+		m_EventCallbackManager = eventCallbackManager;
+
 	}
 
 	void SDLEventHandler::HandleEvents()
@@ -29,16 +31,9 @@ namespace Engine {
 				EG_CORE_WARN("implement Window Restored events");
 				break;
 			case SDL_EVENT_KEY_DOWN:
-				EG_CORE_WARN("Properly implement keyboard events");
-				switch (e.key.scancode)
+				for (int i = 0; i < m_EventCallbackManager->getKeyboardCallbacks()->size(); i++)
 				{
-					// Just a little test of resizing the window using keybinds. Will remove once I actually implement keyboard events
-				case SDL_SCANCODE_PAGEUP:
-					m_Window->get()->SetWidth(m_Window->get()->GetWidth() + 100);
-					break;
-				case SDL_SCANCODE_PAGEDOWN:
-					m_Window->get()->SetWidth(m_Window->get()->GetWidth() - 100);
-					break;
+					m_EventCallbackManager->getKeyboardCallbacks()->at(i)(e.key.scancode);
 				}
 				break;
 			}

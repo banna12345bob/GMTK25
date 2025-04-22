@@ -3,6 +3,8 @@
 
 #include "engine/core/Window.h"
 
+#include "engine/events/eventCallbackManager.h"
+
 namespace Engine {
 
 	class EventHandler
@@ -12,7 +14,7 @@ namespace Engine {
 
 		virtual void HandleEvents() = 0;
 
-		static Scope<EventHandler> Create(Scope<Window>* window);
+		static Scope<EventHandler> Create(Scope<Window>* window, eventCallbackManager* eventCallbackManager);
 	};
 }
 

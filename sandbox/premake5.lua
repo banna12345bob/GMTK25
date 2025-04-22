@@ -18,6 +18,7 @@ project "sandbox"
 		"%{IncludeDir.spdlog}",
 		"%{wks.location}/engine/src",
 		"%{wks.location}/engine/vendor",
+		"%{IncludeDir.SDL3}",
 	}
 
 	links

@@ -9,6 +9,8 @@
 #include "engine/events/eventHandler.h"
 #include "engine/audio/audioPlayer.h"
 
+#include "engine/events/eventCallbackManager.h"
+
 namespace Engine {
 
 	class Application
@@ -20,10 +22,11 @@ namespace Engine {
 		virtual void Run();
 
 		virtual void UpdateApp() = 0;
-	private:
+
 		Scope<Window> m_Window;
 		Scope<EventHandler> m_EventHandler;
 		Scope<AudioPlayer> m_AudioPlayer;
+		eventCallbackManager* m_EventCallbackManager;
 	};
 
 	//	To be defined in client

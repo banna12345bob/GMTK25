@@ -4,9 +4,9 @@
 
 namespace Engine {
 
-	Scope<EventHandler> EventHandler::Create(Scope<Window>* window)
+	Scope<EventHandler> EventHandler::Create(Scope<Window>* window, eventCallbackManager* eventCallbackManager)
 	{
-		return CreateScope<SDLEventHandler>(window);
+		return CreateScope<SDLEventHandler>(window, eventCallbackManager);
 	}
 
 }
