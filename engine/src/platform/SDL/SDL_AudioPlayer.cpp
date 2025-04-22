@@ -21,7 +21,11 @@ namespace Engine {
 			if (SDL_GetAudioStreamQueued(it->stream) < it->bufferSize) {
 				uint32_t bytesToPut = std::min(it->bufferSize, it->dataLen - it->currentOffset);
 
-				if (!SDL_PutAudioStreamData(it->stream, it->data + it->currentOffset, bytesToPut)) {
+				// Apply volume control
+				std::vector<uint8_t> output(bytesToPut);
+				SDL_MixAudio(output.data(), it->data + it->currentOffset, it->format, bytesToPut, it->volume);
+
+				if (!SDL_PutAudioStreamData(it->stream, output.data(), bytesToPut)) {
 					SDL_Log("Failed to put audio data onto the buffer: %s", SDL_GetError());
 					m_sounds.erase(it);
 					it--;
@@ -45,12 +49,15 @@ namespace Engine {
 		}
 	}
 
-	bool SDL_AudioPlayer::PlaySound(std::string stringPath, bool loop)
+	// stringPath should not include 'assests/audio/ or '.wav'.
+	// Volume is a float between 0 and 1.
+	bool SDL_AudioPlayer::PlaySound(std::string stringPath, bool loop, float_t volume)
 	{
 		bool retval = false;
 		Sound sound = Sound();
 		sound.currentOffset = 0;
 		sound.loop = loop;
+		sound.volume = std::clamp(volume, 0.0f, 1.0f);
 
 		SDL_AudioSpec srcspec;
 
@@ -62,6 +69,8 @@ namespace Engine {
 			SDL_Log("Couldn't load .wav file: %s", SDL_GetError());
 			return false;
 		}
+
+		sound.format = srcspec.format;
 
 		// Create and bind audio stream
 		sound.stream = SDL_CreateAudioStream(&srcspec, &m_deviceSpec);
