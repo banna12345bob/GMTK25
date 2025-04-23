@@ -16,45 +16,16 @@ namespace Engine {
 		}
 
 		SDL_GetAudioDeviceFormat(m_deviceId, &m_deviceSpec, NULL);
+
+		m_nextId = 0;
 	}
 
-	void SDL_AudioPlayer::UpdateAudio()
-	{
-		for (auto it = m_sounds.begin(); it != m_sounds.end(); )
-		{
-			if (SDL_GetAudioStreamQueued(it->stream) < it->bufferSize) {
-				uint32_t bytesToPut = std::min(it->bufferSize, it->dataLen - it->currentOffset);
-
-				// Apply volume control
-				std::vector<uint8_t> output(bytesToPut);
-				SDL_MixAudio(output.data(), it->data + it->currentOffset, it->format, bytesToPut, it->volume);
-
-				if (!SDL_PutAudioStreamData(it->stream, output.data(), bytesToPut)) {
-					EG_CORE_ERROR("Failed to put audio data onto the buffer. Error: {0}", SDL_GetError());
-					m_sounds.erase(it);
-					it--;
-					continue;
-				}
-
-				it->currentOffset += bytesToPut;
-
-				if (it->currentOffset >= it->dataLen) {
-					if (it->loop) {
-						it->currentOffset = 0;
-					}
-					else {
-						it = m_sounds.erase(it);
-						continue;
-					}
-				}
-			}
-
-			it++;
-		}
-	}
-
-	// Volume is a float between 0 and 1.
-	bool SDL_AudioPlayer::PlaySound(std::string stringPath, bool loop, float_t volume)
+	/**
+	@param stringPath must include full path, including the file extension.
+	@param volume must be a float between 0 and 1.
+	@param id a pointer that will be set with the ID of the sound if successfully created. Can pass in NULL if not needed.
+	*/
+	bool SDL_AudioPlayer::PlaySound(std::string stringPath, bool loop, float_t volume, uint32_t* id)
 	{
 		bool retval = false;
 		Sound sound = Sound();
@@ -89,8 +60,68 @@ namespace Engine {
 		uint32_t sampleSize = SDL_AUDIO_BYTESIZE(srcspec.format);
 		sound.bufferSize = bufferSizeInSamples * sampleSize;
 
-		m_sounds.push_back(sound);
+		if (id != NULL) {
+			*id = m_nextId;
+		}
+
+		m_sounds.emplace(m_nextId++, sound);
 
 		return true;
+	}
+
+	void SDL_AudioPlayer::UpdateAudio()
+	{
+		for (auto it = m_sounds.begin(); it != m_sounds.end(); )
+		{
+			Sound* current = &it->second;
+
+			if (SDL_GetAudioStreamQueued(current->stream) < current->bufferSize)
+			{
+				uint32_t bytesToPut = std::min(current->bufferSize, current->dataLen - current->currentOffset);
+
+				// Apply volume control
+				std::vector<uint8_t> output(bytesToPut);
+				SDL_MixAudio(output.data(), current->data + current->currentOffset, current->format, bytesToPut, current->volume);
+
+				if (!SDL_PutAudioStreamData(current->stream, output.data(), bytesToPut)) {
+					EG_CORE_ERROR("Failed to put audio data onto the buffer. Error: {0}", SDL_GetError());
+					it = m_sounds.erase(it);
+					continue;
+				}
+
+				current->currentOffset += bytesToPut;
+
+				if (current->currentOffset >= current->dataLen) {
+					if (current->loop) {
+						current->currentOffset = 0;
+					}
+					else {
+						it = m_sounds.erase(it);
+						continue;
+					}
+				}
+			}
+
+			it++;
+		}
+	}
+
+	void SDL_AudioPlayer::SetLooping(uint32_t id, bool value)
+	{
+		if (m_sounds.count(id)) {
+			m_sounds[id].loop = value;
+		}
+	}
+
+	void SDL_AudioPlayer::SetVolume(uint32_t id, float_t value)
+	{
+		if (m_sounds.count(id)) {
+			m_sounds[id].volume = std::clamp(value, 0.0f, 1.0f);
+		}
+	}
+
+	void SDL_AudioPlayer::StopSound(uint32_t id)
+	{
+		m_sounds.erase(id);
 	}
 }

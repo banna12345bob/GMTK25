@@ -9,7 +9,7 @@ public:
 	sandbox(Engine::WindowProps props)
 		: Engine::Application(props)
 	{
-		m_AudioPlayer->PlaySound("assets/audio/music/music1_short.wav", false, 0.4f);
+		//m_AudioPlayer->PlaySound("assets/audio/music/music1_short.wav", false, 0.4f, NULL);
 		m_EventCallbackManager->registerKeyboardCallback(&keyboardEventCallback);
 	}
 	~sandbox()
