@@ -1,4 +1,4 @@
-#include <engine.h>
+﻿#include <engine.h>
 
 #include <SDL3/SDL_scancode.h>
 
@@ -10,7 +10,6 @@ public:
 		: Engine::Application(props)
 	{
 		//m_AudioPlayer->PlaySound("assets/audio/music/music1_short.wav", false, 0.4f, NULL);
-		m_EventCallbackManager->registerKeyboardCallback(&keyboardEventCallback);
 	}
 	~sandbox()
 	{
@@ -21,21 +20,35 @@ public:
 		//EG_INFO("Running");
 	}
 
-	static void keyboardEventCallback(SDL_Scancode key) {
+	void keyboardEventCallback(SDL_Scancode key) {
 		switch (key)
 		{
 		case SDL_SCANCODE_K:
-			EG_INFO("K key pressed");
+			m_Window->SetWidth(m_Window->GetWidth() + 10);
 			break;
 		case SDL_SCANCODE_L:
-			EG_INFO("L key pressed");
+			m_Window->SetWidth(m_Window->GetWidth() - 10);
 			break;
 		}
 	}
 
 };
 
+sandbox* app;
+
+// This sucks ass
+// If I include registerKeyboardCallback in the constructor of sandbox it complains that the event callback isn't static
+// When I make the callback static then it can't access memeber variables
+// So I have to make a global callback wrapper that can then get parsed into the register
+// ¯\_(ツ)_/¯ - Isaac
+
+void keyboardEventCallbackWrapper(SDL_Scancode key) {
+	app->keyboardEventCallback(key);
+}
+
 Engine::Application* Engine::CreateApplication()
 {
-	return new sandbox(Engine::WindowProps("Sandbox", 520, 520, "assets/textures/Oak_Log.png"));
+	app = new sandbox(Engine::WindowProps("Sandbox", 520, 520, "assets/textures/Oak_Log.png"));
+	app->m_EventCallbackManager->registerKeyboardCallback(&keyboardEventCallbackWrapper);
+	return app;
 }
