@@ -22,10 +22,11 @@ namespace Engine {
 
 	/**
 	@param stringPath must include full path, including the file extension.
+	@param loop bool if sound should loop or not
 	@param volume must be a float between 0 and 1.
-	@param id a pointer that will be set with the ID of the sound if successfully created. Can pass in NULL if not needed.
+	@param id a pointer that will be set with the ID of the sound if successfully created. (optional)
 	*/
-	bool SDL_AudioPlayer::PlaySound(std::string stringPath, bool loop, float_t volume, uint32_t* id)
+	bool SDL_AudioPlayer::PlaySound(std::string stringPath, bool loop, float_t volume, unsigned int* id)
 	{
 		bool retval = false;
 		Sound sound = Sound();
@@ -106,21 +107,21 @@ namespace Engine {
 		}
 	}
 
-	void SDL_AudioPlayer::SetLooping(uint32_t id, bool value)
+	void SDL_AudioPlayer::SetLooping(int id, bool value)
 	{
 		if (m_sounds.count(id)) {
 			m_sounds[id].loop = value;
 		}
 	}
 
-	void SDL_AudioPlayer::SetVolume(uint32_t id, float_t value)
+	void SDL_AudioPlayer::SetVolume(int id, float_t value)
 	{
 		if (m_sounds.count(id)) {
 			m_sounds[id].volume = std::clamp(value, 0.0f, 1.0f);
 		}
 	}
 
-	void SDL_AudioPlayer::StopSound(uint32_t id)
+	void SDL_AudioPlayer::StopSound(int id)
 	{
 		m_sounds.erase(id);
 	}

@@ -13,11 +13,11 @@ namespace Engine {
 	{
 	public:
 		SDL_AudioPlayer();
-		virtual bool PlaySound(std::string filePath, bool loop, float_t volume, uint32_t* id) override;
+		virtual bool PlaySound(std::string filePath, bool loop, float_t volume, unsigned int* id) override;
 		virtual void UpdateAudio() override;
-		virtual void SetLooping(uint32_t id, bool value) override;
-		virtual void SetVolume(uint32_t id, float_t value) override;
-		virtual void StopSound(uint32_t id) override;
+		virtual void SetLooping(int id, bool value) override;
+		virtual void SetVolume(int id, float_t value) override;
+		virtual void StopSound(int id) override;
 
 	private:
 		SDL_AudioDeviceID m_deviceId;
@@ -34,7 +34,7 @@ namespace Engine {
 			SDL_AudioStream* stream;
 		};
 
-		std::map<uint32_t, Sound> m_sounds;
-		uint32_t m_nextId;
+		std::map<int, Sound> m_sounds;
+		int m_nextId;
 	};
 }

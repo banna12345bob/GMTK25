@@ -9,16 +9,19 @@ public:
 	sandbox(Engine::WindowProps props)
 		: Engine::Application(props)
 	{
-		//m_AudioPlayer->PlaySound("assets/audio/music/music1_short.wav", false, 0.4f, NULL);
 	}
+
 	~sandbox()
 	{
 	}
 
 	virtual void UpdateApp() {
 		// Run every frame
-		//EG_INFO("Running");
 	}
+
+	// Eventually shoud create an Engine::key class to parse into this function
+	// key.isPressed() should return true for any frame the key is pressed
+	// key.wasPressed() should return true for only the frame that the key was pressed on
 
 	void keyboardEventCallback(SDL_Scancode key) {
 		switch (key)
@@ -29,9 +32,16 @@ public:
 		case SDL_SCANCODE_L:
 			m_Window->SetWidth(m_Window->GetWidth() - 10);
 			break;
+		case SDL_SCANCODE_P:
+			m_AudioPlayer->PlaySound("assets/audio/music/music1_short.wav", false, 0.4f, &musicID);
+			break;
+		case SDL_SCANCODE_O:
+			m_AudioPlayer->StopSound(musicID);
 		}
 	}
-
+	
+private:
+	unsigned int musicID;
 };
 
 sandbox* app;
@@ -42,7 +52,7 @@ sandbox* app;
 // So I have to make a global callback wrapper that can then get parsed into the register
 // ¯\_(ツ)_/¯ - Isaac
 
-void keyboardEventCallbackWrapper(SDL_Scancode key) {
+static void keyboardEventCallbackWrapper(SDL_Scancode key) {
 	app->keyboardEventCallback(key);
 }
 

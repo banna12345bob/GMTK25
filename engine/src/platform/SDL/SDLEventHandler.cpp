@@ -31,6 +31,10 @@ namespace Engine {
 				EG_CORE_WARN("implement Window Restored events");
 				break;
 			case SDL_EVENT_KEY_DOWN:
+				if (m_EventCallbackManager->getKeyboardCallbacks()->size() == 0) {
+					EG_CORE_WARN("No keyboard callbacks registered");
+					break;
+				}
 				for (int i = 0; i < m_EventCallbackManager->getKeyboardCallbacks()->size(); i++)
 				{
 					m_EventCallbackManager->getKeyboardCallbacks()->at(i)(e.key.scancode);
