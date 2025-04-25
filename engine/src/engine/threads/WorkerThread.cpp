@@ -2,9 +2,14 @@
 
 namespace Engine
 {
-	void WorkerThread::CreateThread()
+	WorkerThread::WorkerThread()
 	{
 		m_thread = std::thread(&WorkerThread::Process, this);
+	}
+
+	WorkerThread::~WorkerThread()
+	{
+		ExitThread();
 	}
 
 	void WorkerThread::Process()
@@ -43,12 +48,16 @@ namespace Engine
 	{
 		m_processingFlag = false;
 		if (m_thread.joinable()) {
+			std::function<void()> func = [this] {
+				std::lock_guard lk(m_mutex);
+				// DO NOTHING: just here to make sure the thread properly closes
+			};
+
+			// idk why but the worker thread only closes when one final function is added
+			AddToQueue(func);
+
 			m_thread.join();
 		}
 	}
 
-	WorkerThread::~WorkerThread()
-	{
-		ExitThread();
-	}
 }

@@ -11,9 +11,9 @@ namespace Engine
 	class WorkerThread
 	{
 	public:
+		WorkerThread();
 		~WorkerThread();
 
-		void CreateThread();
 		void ExitThread();
 
 		void AddToQueue(std::function<void()> callback);

@@ -8,7 +8,7 @@ namespace Engine {
 	class AudioPlayer
 	{
 	public:
-		~AudioPlayer() {}
+		virtual ~AudioPlayer() {}
 		
 		static Scope<AudioPlayer> Create();
 

@@ -22,7 +22,6 @@ namespace Engine {
 		m_nextId = 0;
 
 		m_updateThread = std::thread(&SDL_AudioPlayer::Run, this);
-		m_loadWorkerThread.CreateThread();
 	}
 
 	void SDL_AudioPlayer::Run()
@@ -170,6 +169,7 @@ namespace Engine {
 		m_runningFlag = false;
 		if (m_updateThread.joinable()) {
 			m_updateThread.join();
+			m_loadWorkerThread.ExitThread();
 		}
 	}
 }
