@@ -24,15 +24,7 @@ namespace Engine {
 	private:
 		SDL_Window* m_window;
 
-		struct WindowData {
-			std::string title;
-			int width, height;
-			bool fullscreen;
-
-			const char* pathToIcon;
-		};
-
-		WindowData m_data;
+		WindowProps m_data;
 	};
 
 }

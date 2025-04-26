@@ -7,12 +7,8 @@
 namespace Engine {
 
 	SDLWindow::SDLWindow(WindowProps props)
+		: m_data(props)
 	{
-		m_data.title = props.title;
-		m_data.width = props.width;
-		m_data.height = props.height;
-		m_data.fullscreen = props.fullscreen;
-		m_data.pathToIcon = props.pathToIcon;
 		uint32_t WindowFlags = SDL_WINDOW_OPENGL;
 		WindowFlags |= SDL_WINDOW_RESIZABLE;
 
