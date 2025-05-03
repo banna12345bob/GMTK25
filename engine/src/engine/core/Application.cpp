@@ -10,6 +10,7 @@ namespace Engine {
 		m_EventCallbackManager = new eventCallbackManager();
 		m_EventHandler = EventHandler::Create(&m_Window, m_EventCallbackManager);
 		m_AudioPlayer = AudioPlayer::Create();
+		m_SpriteRenderer = SpriteRenderer::Create();
 	}
 
 	Application::~Application()
@@ -22,6 +23,7 @@ namespace Engine {
 		while (m_Window->GetRunning()) {
 			m_EventHandler->HandleEvents();
 			m_AudioPlayer->UpdateAudio();
+			m_SpriteRenderer->Render();
 
 			this->UpdateApp();
 		}

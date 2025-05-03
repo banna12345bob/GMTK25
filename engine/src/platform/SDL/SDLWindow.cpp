@@ -117,4 +117,21 @@ namespace Engine {
 		SDL_GetWindowSize(m_window, &m_data.width, &m_data.height);
 	}
 
+	void SDLWindow::CreateGLContext() 
+	{
+		// Create the OpenGl context
+		SDL_GLContext sdl_gl_ctx = SDL_GL_CreateContext(m_window);
+		// Ensure the context was actually initialised
+		if (sdl_gl_ctx == NULL) {
+			EG_CORE_FATAL("SDL could not initialise the OpenGL context! {0}", SDL_GetError());
+			EG_CORE_ASSERT(false, "SDL ERROR");
+		}
+		// We don't actually need to use it anywhere else, so we don't store it
+	}
+
+	void SDLWindow::GL_SwapWindow()
+	{
+		// Updates the window
+		SDL_GL_SwapWindow(m_window);
+	}
 }

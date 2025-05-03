@@ -8,6 +8,7 @@
 #include "engine/core/Window.h"
 #include "engine/events/eventHandler.h"
 #include "engine/audio/audioPlayer.h"
+#include "engine/graphics/spriteRenderer.h"
 
 #include "engine/events/eventCallbackManager.h"
 
@@ -26,6 +27,7 @@ namespace Engine {
 		Scope<Window> m_Window;
 		Scope<EventHandler> m_EventHandler;
 		Scope<AudioPlayer> m_AudioPlayer;
+		Scope<SpriteRenderer> m_SpriteRenderer;
 		eventCallbackManager* m_EventCallbackManager;
 	};
 

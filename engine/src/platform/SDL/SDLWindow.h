@@ -21,6 +21,9 @@ namespace Engine {
 
 		virtual void ReloadWindow() override;
 
+		virtual void CreateGLContext() override;
+		virtual void GL_SwapWindow() override;
+
 	private:
 		SDL_Window* m_window;
 
