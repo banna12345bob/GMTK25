@@ -8,15 +8,15 @@ namespace Engine {
 	struct WindowProps
 	{
 		std::string title;
-		unsigned int width;
-		unsigned int height;
+		int width;
+		int height;
 		const char* pathToIcon;
 		bool fullscreen;
 
 		//Default constructor
 		WindowProps(const std::string& title,
-			unsigned int width,
-			unsigned int height,
+			int width,
+			int height,
 			const char* pathToIcon = "",
 			bool fullscreen = false)
 			: title(title), width(width), height(height), pathToIcon(pathToIcon), fullscreen(fullscreen)

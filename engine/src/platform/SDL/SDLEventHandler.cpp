@@ -21,7 +21,7 @@ namespace Engine {
 			case SDL_EVENT_WINDOW_RESIZED:
 				// TODO: Change OpenGL viewport size
 				m_Window->get()->ReloadWindow();
-				EG_INFO("W: {0}, H: {1}", m_Window->get()->GetWidth(), m_Window->get()->GetHeight());
+				EG_CORE_INFO("W: {0}, H: {1}", m_Window->get()->GetWidth(), m_Window->get()->GetHeight());
 				break;
 			case SDL_EVENT_WINDOW_MINIMIZED:
 				// TODO: Add a config option that caps the FPS if window minimized

@@ -11,7 +11,7 @@ namespace Engine {
 	{
 	public:
 		SDLWindow(WindowProps props);
-		~SDLWindow();
+		virtual ~SDLWindow();
 
 		virtual int GetWidth() override  { return m_data.width; }
 		virtual int GetHeight() override { return m_data.height; }
@@ -27,15 +27,7 @@ namespace Engine {
 	private:
 		SDL_Window* m_window;
 
-		struct WindowData {
-			std::string title;
-			int width, height;
-			bool fullscreen;
-
-			const char* pathToIcon;
-		};
-
-		WindowData m_data;
+		WindowProps m_data;
 	};
 
 }
