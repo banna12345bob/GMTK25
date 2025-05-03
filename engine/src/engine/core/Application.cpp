@@ -7,6 +7,7 @@ namespace Engine {
 	Application::Application(WindowProps props)
 	{
 		m_Window = Window::Create(props);
+		m_Window->CreateGLContext();
 		m_EventCallbackManager = new eventCallbackManager();
 		m_EventHandler = EventHandler::Create(&m_Window, m_EventCallbackManager);
 		m_AudioPlayer = AudioPlayer::Create();
@@ -24,6 +25,7 @@ namespace Engine {
 			m_EventHandler->HandleEvents();
 			m_AudioPlayer->UpdateAudio();
 			m_SpriteRenderer->Render();
+			m_Window->GL_SwapWindow();
 
 			this->UpdateApp();
 		}

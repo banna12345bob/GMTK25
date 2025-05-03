@@ -6,6 +6,8 @@
 
 #include <SDL3/SDL_opengles2.h>
 
+#include<glad/glad.h>
+
 namespace Engine {
 
 	SDLWindow::SDLWindow(WindowProps props)
@@ -130,6 +132,7 @@ namespace Engine {
 	void SDLWindow::GL_SwapWindow()
 	{
 		// Updates the window
+		glViewport(0, 0, this->GetWidth(), this->GetHeight());
 		SDL_GL_SwapWindow(m_window);
 	}
 }
