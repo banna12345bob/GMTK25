@@ -3,7 +3,6 @@
 #include "engine/core/Window.h"
 
 #include <SDL3/SDL.h>
-#include <SDL3/SDL_opengl.h>
 
 namespace Engine {
 

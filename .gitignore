@@ -25,3 +25,6 @@ output/builds
 
 
 imgui.ini
+
+**/bin
+**/bin-int

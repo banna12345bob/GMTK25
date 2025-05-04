@@ -22,11 +22,13 @@ project "engine"
 		"%{IncludeDir.SDL3}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.glad}",
 	}
 
 	links 
 	{
 		"SDL3",
+		"glad",
 		"ImGui"
 	}
 

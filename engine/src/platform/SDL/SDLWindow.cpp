@@ -4,6 +4,8 @@
 
 #include <filesystem>
 
+#include <SDL3/SDL_opengles2.h>
+
 namespace Engine {
 
 	SDLWindow::SDLWindow(WindowProps props)
