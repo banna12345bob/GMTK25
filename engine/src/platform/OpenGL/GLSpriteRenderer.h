@@ -1,12 +1,11 @@
-#include "engine/graphics/spriteRenderer.h"
 #include <glad/glad.h>
 
 namespace Engine {
-	class GLSpriteRenderer : public SpriteRenderer {
+	class GLSpriteRenderer {
 	public:
 		GLSpriteRenderer();
 
-		virtual void Render() override;
+		void Render();
 	private:
 		GLuint vao;
 		GLuint shaderProgram;

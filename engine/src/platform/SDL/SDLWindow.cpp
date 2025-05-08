@@ -1,12 +1,14 @@
 #include "SDLWindow.h"
 
+#include "engine/graphics/GraphicsAPI.h"
+
 #include <stb_image.h>
 
 #include <filesystem>
 
 #include <SDL3/SDL_opengles2.h>
 
-#include<glad/glad.h>
+#include <glad/glad.h>
 
 namespace Engine {
 
@@ -81,6 +83,12 @@ namespace Engine {
 		else
 		{
 			EG_CORE_ASSERT(false, "Failed to load image");
+		}
+
+		switch (GraphicsAPI::GetAPI())
+		{
+		case GraphicsAPI::API::None: EG_CORE_ASSERT(false, "Cannot have GraphicsAPI::None");
+		case GraphicsAPI::API::OpenGL: CreateGLContext();
 		}
 	}
 

@@ -18,6 +18,7 @@ IncludeDir["SDL3"] = "%{wks.location}/engine/vendor/SDL3-3.2.10/include"
 IncludeDir["ImGui"] = "%{wks.location}/engine/vendor/imgui"
 IncludeDir["stb_image"] = "%{wks.location}/engine/vendor/stb_image"
 IncludeDir["glad"] = "%{wks.location}/engine/vendor/Glad/include"
+IncludeDir["glm"] = "%{wks.location}/engine/vendor/glm"
 
 group "Dependencies"
 	include "engine/vendor/imgui"

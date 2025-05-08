@@ -1,5 +1,7 @@
 #include "GLSpriteRenderer.h"
 
+#include "engine/core/core.h"
+
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
 
@@ -16,8 +18,10 @@ namespace Engine {
 		const GLchar* vertexSource =
 			"#version 330 core\n"
 			"layout (location = 0) in vec3 aPos;"
+			"out vec3 v_pos;"
 			"void main() {"
-			"	gl_Position = vec4(aPos.xyz, 1.0);"
+			"	v_pos = aPos;"	
+			"	gl_Position = vec4(aPos, 1.0);"
 			"}";
 
 		// Create vertex shader object
@@ -40,9 +44,10 @@ namespace Engine {
 		// Source code for the fragment shader
 		const GLchar* fragmentSource =
 			"#version 330 core\n"
+			"in vec3 v_pos;"
 			"out vec4 FragColor;"
 			"void main() {"
-			"	FragColor = vec4(1.0, 0.5, 0.2, 1.0);"
+			"	FragColor = vec4(v_pos + 0.5, 1.0);"
 			"}";
 
 		// Create fragment shader object

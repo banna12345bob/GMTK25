@@ -9,7 +9,7 @@ public:
 	sandbox(Engine::WindowProps props)
 		: Engine::Application(props)
 	{
-		m_AudioPlayer->PlaySound("assets/audio/music/John Coltrane - Naima.wav", true, 0.1f);
+		//m_AudioPlayer->PlaySound("assets/audio/music/John Coltrane - Naima.wav", true, 0.1f);
 	}
 
 	~sandbox()

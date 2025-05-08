@@ -40,7 +40,6 @@ namespace Engine {
 		virtual bool GetRunning() { return m_Running; }
 		virtual void SetRunning(bool running) { m_Running = running; }
 		
-		virtual void CreateGLContext() {}
 		virtual void GL_SwapWindow() {}
 
 		static Scope<Window> Create(WindowProps props);

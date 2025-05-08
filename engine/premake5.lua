@@ -23,6 +23,7 @@ project "engine"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.glad}",
+		"%{IncludeDir.glm}",
 	}
 
 	links 
