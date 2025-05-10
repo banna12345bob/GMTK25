@@ -1,5 +1,5 @@
 #pragma once
-#include <map>
+#include <unordered_map>
 #include <SDL3/SDL_scancode.h>
 
 namespace Engine {
@@ -26,7 +26,7 @@ namespace Engine {
 			bool m_IsPressed = false;
 		};
 
-		inline static std::map<int, Keycode> m_Keycodes;
+		inline static std::unordered_map<int, Keycode> m_Keycodes;
 	};
 }
 
