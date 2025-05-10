@@ -2,17 +2,16 @@
 #include <vector>
 #include <SDL3/SDL.h>
 
-
 namespace Engine {
 	class eventCallbackManager
 	{
 	public:
 		eventCallbackManager();
-		void registerKeyboardCallback(void (*callback)(SDL_Scancode));
+		void registerKeyboardCallback(void (*callback)(void*));
 
-		std::vector<void (*)(SDL_Scancode)>* getKeyboardCallbacks() { return m_KeyboardCallbacks; }
+		std::vector<void (*)(void*)>* getKeyboardCallbacks() { return m_KeyboardCallbacks; }
 	private:
-		std::vector<void (*)(SDL_Scancode)>* m_KeyboardCallbacks;
+		std::vector<void (*)(void*)>* m_KeyboardCallbacks;
 	};
 }
 

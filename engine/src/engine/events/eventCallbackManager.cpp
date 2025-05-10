@@ -6,10 +6,10 @@ namespace Engine {
 
 	eventCallbackManager::eventCallbackManager()
 	{
-		m_KeyboardCallbacks = new std::vector<void (*)(SDL_Scancode)>();
+		m_KeyboardCallbacks = new std::vector<void (*)(void*)>();
 	}
 
-	void eventCallbackManager::registerKeyboardCallback(void (*callback)(SDL_Scancode))
+	void eventCallbackManager::registerKeyboardCallback(void (*callback)(void*))
 	{
 		m_KeyboardCallbacks->push_back(callback);
 	}
