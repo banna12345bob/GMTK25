@@ -18,7 +18,7 @@ jobs:
     runs-on: [Windows, self-hosted]
     strategy:
       matrix:
-        buildConfig: [Debug_x86_64]
+        buildConfig: [Debug_x86_64, Release_x86_64, Dist_x86_64]
 
     steps:
     - name: Pull repo
@@ -38,16 +38,16 @@ jobs:
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{matrix.buildConfig}} .
 
-    # - name: Upload builds
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: ${{matrix.buildConfig}}-windows-x86_64
-    #     path: |
-    #       compile/bin/${{matrix.buildConfig}}-windows-x86_64
-
     - name: Zip build
       run: Compress-Archive -Path compile/bin/${{matrix.buildConfig}}-windows-x86_64 -Destination ${{matrix.buildConfig}}-windows-x86_64.zip
 
+  publish-release:
+    runs-on: [Windows, self-hosted]
+
+    steps:
+    - name: Wait for build
+      uses: kachick/wait-other-jobs@v3.8.0
+      timeout-minutes: 15 # Recommended to be enabled with your appropriate value for fail-safe use
     - name: Create Draft Release
       id: create_release
       uses: actions/create-release@v1
