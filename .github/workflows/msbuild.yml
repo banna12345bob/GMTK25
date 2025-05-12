@@ -41,7 +41,7 @@ jobs:
     - name: Zip build
       run: Compress-Archive -Path compile/bin/${{matrix.buildConfig}}-windows-x86_64 -Destination ${{matrix.buildConfig}}-windows-x86_64.zip
 
-  publish-release:
+  create-draft-release:
     runs-on: [Windows, self-hosted]
     needs: [
       build
@@ -58,6 +58,16 @@ jobs:
         release_name: Snapshot build s${{github.run_number}}
         draft: true
         prerelease: true
+
+  upload-files:
+    runs-on: [Windows, self-hosted]
+    strategy:
+      matrix:
+        buildConfig: [Debug_x86_64, Release_x86_64, Dist_x86_64]
+    needs: [
+      create-draft-release
+    ]
+    steps:
     - uses: actions/upload-release-asset@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
