@@ -58,6 +58,9 @@ jobs:
         release_name: Snapshot build s${{github.run_number}}
         draft: true
         prerelease: true
+    - name: Save URL
+      id: save_url
+      run: echo "URL=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
 
   upload-files:
     runs-on: [Windows, self-hosted]
@@ -72,7 +75,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        upload_url: ${{ env.URL }}
         asset_path: | 
           ${{matrix.buildConfig}}-windows-x86_64.zip
         asset_name: |
@@ -82,5 +85,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        release_id: ${{ steps.create_release.outputs.id }}
+        release_id: ${{ env.URL }}
 
