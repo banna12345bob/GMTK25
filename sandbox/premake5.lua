@@ -33,6 +33,9 @@ project "sandbox"
 	filter "system:windows"
 		systemversion "latest"
 		buildoptions { "/utf-8" }
+		postbuildcommands {
+			"{COPYDIR} %{wks.location}/%{prj.name}/assets/ %{cfg.targetdir}/assets"
+		}
 
 	filter "system:linux"
 		systemversion "latest"
