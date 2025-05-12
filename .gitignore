@@ -28,3 +28,5 @@ imgui.ini
 
 **/bin
 **/bin-int
+
+*.zip

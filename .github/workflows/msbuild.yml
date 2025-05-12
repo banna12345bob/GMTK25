@@ -64,7 +64,7 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: | 
-          compile/bin/${{matrix.buildConfig}}-windows-x86_64.zip
+          ${{matrix.buildConfig}}-windows-x86_64.zip
         asset_name: |
           ${{matrix.buildConfig}}-windows-x86_64.zip
         asset_content_type: application/zip
