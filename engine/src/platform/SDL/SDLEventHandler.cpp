@@ -2,6 +2,8 @@
 
 #include "engine/events/Key.h"
 
+#include <backends/imgui_impl_sdl3.h>
+
 namespace Engine {
 
 	SDLEventHandler::SDLEventHandler(Scope<Window>* window, eventCallbackManager* eventCallbackManager)
@@ -16,6 +18,7 @@ namespace Engine {
 		SDL_Event e;
 	
 		if (SDL_PollEvent(&e)) {
+			ImGui_ImplSDL3_ProcessEvent(&e);
 			switch (e.type) {
 			case SDL_EVENT_QUIT:
 				m_Window->get()->SetRunning(false);

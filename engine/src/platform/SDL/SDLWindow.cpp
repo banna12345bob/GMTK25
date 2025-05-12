@@ -10,6 +10,9 @@
 
 #include <glad/glad.h>
 
+#include <backends/imgui_impl_sdl3.h>
+#include <backends/imgui_impl_opengl3.h>
+
 namespace Engine {
 
 	SDLWindow::SDLWindow(WindowProps props)
@@ -94,6 +97,9 @@ namespace Engine {
 
 	SDLWindow::~SDLWindow()
 	{
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplSDL3_Shutdown();
+		ImGui::DestroyContext();
 		SDL_DestroyWindow(m_window);
 		SDL_Quit();
 	}
@@ -134,13 +140,31 @@ namespace Engine {
 			EG_CORE_FATAL("SDL could not initialise the OpenGL context! {0}", SDL_GetError());
 			EG_CORE_ASSERT(false, "SDL ERROR");
 		}
-		// We don't actually need to use it anywhere else, so we don't store it
+		SDL_GL_MakeCurrent(m_window, sdl_gl_ctx);
+		ImGui_ImplSDL3_InitForOpenGL(m_window, sdl_gl_ctx);
+		ImGui_ImplOpenGL3_Init();
 	}
 
 	void SDLWindow::GL_SwapWindow()
 	{
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplSDL3_NewFrame();
+		ImGui::NewFrame();
+		bool show_demo_window = true;
+		ImGui::ShowDemoWindow(&show_demo_window);
+		ImGui::Render();
 		// Updates the window
 		glViewport(0, 0, this->GetWidth(), this->GetHeight());
 		SDL_GL_SwapWindow(m_window);
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
+			SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+			SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
+		}
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 }

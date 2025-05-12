@@ -11,7 +11,7 @@ namespace Engine {
 
 	void OpenGLGraphicsAPI::Render()
 	{
-		m_SpriteRenderer->Render();
 		m_Window->get()->GL_SwapWindow();
+		m_SpriteRenderer->Render();
 	}
 }

@@ -43,12 +43,6 @@ jobs:
 
     - name: Zip build
       run: Compress-Archive -Path compile/bin/${{matrix.buildConfig}}-windows-x86_64 -Destination ${{matrix.buildConfig}}-windows-x86_64.zip
-    # - name: Upload build
-      # uses: actions/upload-artifact@v4
-      # with:
-      #   name: ${{matrix.buildConfig}}-windows-x86_64
-      #   path: |
-      #     compile/bin/${{matrix.buildConfig}}-windows-x86_64
 
   create-release:
     runs-on: [Windows, self-hosted]
