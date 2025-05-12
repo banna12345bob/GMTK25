@@ -43,50 +43,30 @@ jobs:
 
     - name: Zip build
       run: Compress-Archive -Path compile/bin/${{matrix.buildConfig}}-windows-x86_64 -Destination ${{matrix.buildConfig}}-windows-x86_64.zip
+    - name: Upload build
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{matrix.buildConfig}}-windows-x86_64
+        path: |
+          compile/bin/${{matrix.buildConfig}}-windows-x86_64
 
-  create-draft-release:
+  create-release:
     runs-on: [Windows, self-hosted]
     needs: [
       build
     ]
     if: ${{ always() && !cancelled() && needs.build.result == 'success' }}
     steps:
-    - name: Create Draft Release
-      id: create_release
-      uses: actions/create-release@v1
+    - name: Download all workflow run artifacts
+      uses: actions/download-artifact@v4
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: s${{github.run_number}}
-        release_name: Snapshot build s${{github.run_number}}
-        draft: true
+        name: Snapshot build s${{github.run_number}}
+        files: |
+          *.zip
         prerelease: true
-    - name: Save URL
-      id: save_url
-      run: echo "URL=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
-
-  upload-files:
-    runs-on: [Windows, self-hosted]
-    strategy:
-      matrix:
-        buildConfig: [Debug_x86_64, Release_x86_64, Dist_x86_64]
-    needs: [
-      create-draft-release
-    ]
-    steps:
-    - uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ env.URL }}
-        asset_path: | 
-          ${{matrix.buildConfig}}-windows-x86_64.zip
-        asset_name: |
-          ${{matrix.buildConfig}}-windows-x86_64.zip
-        asset_content_type: application/zip
-    - uses: eregon/publish-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        release_id: ${{ env.URL }}
 
