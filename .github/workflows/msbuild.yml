@@ -43,11 +43,11 @@ jobs:
 
   publish-release:
     runs-on: [Windows, self-hosted]
-
+    needs: [
+      build
+    ]
+    if: ${{ always() && !cancelled() && needs.build.result == 'success' }}
     steps:
-    - name: Wait for build
-      uses: kachick/wait-other-jobs@v3.8.0
-      timeout-minutes: 15 # Recommended to be enabled with your appropriate value for fail-safe use
     - name: Create Draft Release
       id: create_release
       uses: actions/create-release@v1
