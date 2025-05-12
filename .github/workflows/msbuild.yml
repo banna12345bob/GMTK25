@@ -18,7 +18,7 @@ env:
   # Configuration type to build.
   # You can convert this to a build matrix if you need coverage of multiple configuration types.
   # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-  BUILD_CONFIGURATION: ["Debug_x86_64", "Release_x86_64", "Dist_x86_64"]
+  BUILD_CONFIGURATION: [Debug_x86_64, Release_x86_64, Dist_x86_64]
 
 permissions:
   contents: read
