@@ -67,6 +67,7 @@ jobs:
         asset_content_type: application/zip
 
   publish-release:
+    runs-on: [Windows, self-hosted]
     steps:
     - uses: eregon/publish-release@v1
       env:
