@@ -54,8 +54,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: s${{ env.GITHUB_RUN_NUMBER }}
-        release_name: Snapshot build s${{ env.GITHUB_RUN_NUMBER }}
+        tag_name: s${{github.run_number}}
+        release_name: Snapshot build s${{github.run_number}}
         draft: true
         prerelease: true
     - uses: actions/upload-release-asset@v1.0.1
