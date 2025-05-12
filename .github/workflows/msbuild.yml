@@ -14,12 +14,8 @@ on:
 permissions: write-all
 
 jobs:
-  build:
+  pull-repo:
     runs-on: [Windows, self-hosted]
-    strategy:
-      matrix:
-        buildConfig: [Debug_x86_64, Release_x86_64, Dist_x86_64]
-
     steps:
     - name: Pull repo
       uses: actions/checkout@v4
@@ -32,6 +28,15 @@ jobs:
     - name: Generate Solution Files
       run: .${{env.GITHUB_WORKSPACE}}\vendor\bin\premake\premake5_windows.exe vs2022
 
+  build:
+    runs-on: [Windows, self-hosted]
+    strategy:
+      matrix:
+        buildConfig: [Debug_x86_64, Release_x86_64, Dist_x86_64]
+    needs: [
+      pull-repo
+    ]
+    steps:
     - name: Build Solution
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
