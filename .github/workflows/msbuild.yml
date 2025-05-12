@@ -45,9 +45,8 @@ jobs:
     #     path: |
     #       compile/bin/${{matrix.buildConfig}}-windows-x86_64
 
-    - uses: montudor/action-zip@v1
-      with:
-        args: zip -qq -r ${{matrix.buildConfig}}-windows-x86_64.zip ${{matrix.buildConfig}}-windows-x86_64
+    - name: Zip build
+      run: Compress-Archive -Path compile/bin/${{matrix.buildConfig}}-windows-x86_64 -Destination ${{matrix.buildConfig}}-windows-x86_64.zip
 
     - name: Create Draft Release
       id: create_release
