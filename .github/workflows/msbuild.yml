@@ -26,9 +26,6 @@ permissions:
 jobs:
   build:
     runs-on: [Windows, self-hosted]
-    strategy:
-      matrix:
-        buildConfig: [Debug_x86_64, Release_x86_64, Dist_x86_64]
 
     steps:
     - uses: actions/checkout@v4
@@ -36,11 +33,15 @@ jobs:
         submodules: recursive
 
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v2
 
     - name: Generate Solution Files
       run: .${{env.GITHUB_WORKSPACE}}\vendor\bin\premake\premake5_windows.exe vs2022
 
+    strategy:
+      matrix:
+        buildConfig: [Debug_x86_64, Release_x86_64, Dist_x86_64]
+    steps:
     - name: Build Solution
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
