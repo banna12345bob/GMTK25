@@ -21,6 +21,8 @@ namespace Engine {
 		m_EventHandler = EventHandler::Create(&m_Window, m_EventCallbackManager);
 		m_AudioPlayer = AudioPlayer::Create();
 		m_GraphicsAPI = GraphicsAPI::Create(&m_Window);
+
+		m_showFPS = false; // Don't show FPS by default
 	}
 
 	Application::~Application()
@@ -36,7 +38,9 @@ namespace Engine {
 			a = SDL_GetTicks();
 			deltaTime = a - b;
 
-			EG_INFO("fps: {0}", 1000 / deltaTime);
+			if (m_showFPS) {
+				EG_INFO("fps: {0}", 1000 / deltaTime);
+			}
 
 			m_EventHandler->HandleEvents();
 			m_AudioPlayer->UpdateAudio();

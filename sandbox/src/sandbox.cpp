@@ -35,6 +35,9 @@ public:
 		{
 			m_Window->SetWidth(m_Window->GetWidth() - 10);
 		}
+		if (Engine::Key::wasKeyPressed(EG_SCANCODE_F)) {
+			m_showFPS = !m_showFPS;
+		}
 	}
 	
 private:

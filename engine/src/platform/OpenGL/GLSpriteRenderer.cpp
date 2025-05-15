@@ -5,6 +5,8 @@
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
 
+#include <iostream>
+
 namespace Engine {
 	GLSpriteRenderer::GLSpriteRenderer() {
 		// Initialize GLAD
@@ -13,6 +15,13 @@ namespace Engine {
 			EG_CORE_FATAL("GLAD couldn't load OpenGL");
 			EG_CORE_ASSERT(false, "GLAD ERROR");
 		}
+
+		const unsigned char* vendor = glGetString(GL_VENDOR);
+		const unsigned char* renderer = glGetString(GL_RENDERER);
+		// Don't know how to format this correctly
+		// EG_CORE_INFO("GLAD loaded OpenGL sucessfully! {0}", (void*)(vendor));
+		// Using cout for now
+		std::cout << "GLAD loaded OpenGL sucessfully! " << vendor << ", " << renderer;
 
 		// Source code for vertex shader
 		const GLchar* vertexSource =

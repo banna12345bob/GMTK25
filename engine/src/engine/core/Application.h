@@ -29,6 +29,8 @@ namespace Engine {
 		Scope<AudioPlayer> m_AudioPlayer;
 		Scope<GraphicsAPI> m_GraphicsAPI;
 		eventCallbackManager* m_EventCallbackManager;
+
+		bool m_showFPS;
 	};
 
 	//	To be defined in client
