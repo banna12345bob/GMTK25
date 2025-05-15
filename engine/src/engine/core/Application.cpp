@@ -30,12 +30,20 @@ namespace Engine {
 
 	void Application::Run()
 	{
+		int a, b, deltaTime;
+		b = 0;
 		while (m_Window->GetRunning()) {
+			a = SDL_GetTicks();
+			deltaTime = a - b;
+
+			EG_INFO("fps: {0}", 1000 / deltaTime);
+
 			m_EventHandler->HandleEvents();
 			m_AudioPlayer->UpdateAudio();
 			m_GraphicsAPI->Render();
 
 			this->UpdateApp();
+			b = a;
 		}
 	}
 }
