@@ -13,11 +13,14 @@
 #include <backends/imgui_impl_sdl3.h>
 #include <backends/imgui_impl_opengl3.h>
 
+#include "engine/debug/Instrumentor.h"
+
 namespace Engine {
 
 	SDLWindow::SDLWindow(WindowProps props)
 		: m_data(props)
 	{
+		EG_PROFILE_FUNCTION();
 		uint32_t WindowFlags = SDL_WINDOW_OPENGL;
 		WindowFlags |= SDL_WINDOW_RESIZABLE;
 
@@ -97,6 +100,7 @@ namespace Engine {
 
 	SDLWindow::~SDLWindow()
 	{
+		EG_PROFILE_FUNCTION();
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplSDL3_Shutdown();
 		ImGui::DestroyContext();
@@ -106,6 +110,7 @@ namespace Engine {
 
 	void SDLWindow::SetWidth(int width)
 	{
+		EG_PROFILE_FUNCTION();
 		if (width <= 0) {
 			EG_CORE_WARN("Invalid window width: {0}", width);
 			return;
@@ -117,6 +122,7 @@ namespace Engine {
 
 	void SDLWindow::SetHeight(int height)
 	{
+		EG_PROFILE_FUNCTION();
 		if (height <= 0) {
 			EG_CORE_WARN("Invalid window height: {0}", height);
 			return;
@@ -128,11 +134,13 @@ namespace Engine {
 
 	void SDLWindow::ReloadWindow()
 	{
+		EG_PROFILE_FUNCTION();
 		SDL_GetWindowSize(m_window, &m_data.width, &m_data.height);
 	}
 
 	void SDLWindow::CreateGLContext() 
 	{
+		EG_PROFILE_FUNCTION();
 		// Create the OpenGl context
 		SDL_GLContext sdl_gl_ctx = SDL_GL_CreateContext(m_window);
 		// Ensure the context was actually initialised
@@ -147,6 +155,7 @@ namespace Engine {
 
 	void SDLWindow::GL_SwapWindow()
 	{
+		EG_PROFILE_FUNCTION();
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplSDL3_NewFrame();
 		ImGui::NewFrame();

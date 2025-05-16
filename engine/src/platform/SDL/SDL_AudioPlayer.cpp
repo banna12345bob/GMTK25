@@ -2,10 +2,13 @@
 
 #include <future>
 
+#include "engine/debug/Instrumentor.h"
+
 namespace Engine {
 
 	SDL_AudioPlayer::SDL_AudioPlayer()
 	{
+		EG_PROFILE_FUNCTION();
 		if (!SDL_Init(SDL_INIT_AUDIO)) {
 			EG_CORE_FATAL("SDL could not initialize audio! SDL_Error: {0}", SDL_GetError());
 			EG_CORE_ASSERT(false, "SDL ERROR");
@@ -26,6 +29,7 @@ namespace Engine {
 
 	void SDL_AudioPlayer::Run()
 	{
+		EG_PROFILE_FUNCTION();
 		while (m_runningFlag) {
 
 			std::lock_guard lk(m_mutex);
@@ -41,6 +45,7 @@ namespace Engine {
 	*/
 	void SDL_AudioPlayer::PlaySound(std::string stringPath, bool loop, float_t volume, unsigned int* id)
 	{
+		EG_PROFILE_FUNCTION();
 		uint32_t givenId = m_nextId++;	// Increments after assigning.
 
 		if (id) {
@@ -52,6 +57,7 @@ namespace Engine {
 	}
 	void SDL_AudioPlayer::LoadAudio(std::string stringPath, bool loop, float_t volume, uint32_t id)
 	{
+		EG_PROFILE_FUNCTION();
 		bool retval = false;
 		Sound sound = Sound();
 		sound.currentOffset = 0;
@@ -91,6 +97,7 @@ namespace Engine {
 
 	void SDL_AudioPlayer::UpdateAudio()
 	{
+		EG_PROFILE_FUNCTION();
 		for (auto it = m_sounds.begin(); it != m_sounds.end(); )
 		{
 			Sound* current = &it->second;
@@ -130,6 +137,7 @@ namespace Engine {
 
 	void SDL_AudioPlayer::SetLooping(int id, bool value)
 	{
+		EG_PROFILE_FUNCTION();
 		std::function<void()> func = [this, id, value] {
 			std::lock_guard lk(m_mutex);
 			if (m_sounds.count(id)) {
@@ -142,6 +150,7 @@ namespace Engine {
 
 	void SDL_AudioPlayer::SetVolume(int id, float_t value)
 	{
+		EG_PROFILE_FUNCTION();
 		std::function<void()> func = [this, id, value] {
 			std::lock_guard lk(m_mutex);
 			if (m_sounds.count(id)) {
@@ -154,6 +163,7 @@ namespace Engine {
 
 	void SDL_AudioPlayer::StopSound(int id)
 	{
+		EG_PROFILE_FUNCTION();
 		std::function<void()> func = [this, id] {
 			std::lock_guard lk(m_mutex);
 			if (m_sounds.count(id)) {
@@ -166,6 +176,7 @@ namespace Engine {
 
 	SDL_AudioPlayer::~SDL_AudioPlayer()
 	{
+		EG_PROFILE_FUNCTION();
 		m_runningFlag = false;
 		if (m_updateThread.joinable()) {
 			m_updateThread.join();

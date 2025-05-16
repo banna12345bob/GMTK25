@@ -3,10 +3,13 @@
 #include <SDL3/SDL.h>
 #include <imgui.h>
 
+#include "engine/debug/Instrumentor.h"
+
 namespace Engine {
 
 	Application::Application(WindowProps props)
 	{
+		EG_PROFILE_FUNCTION();
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -27,11 +30,12 @@ namespace Engine {
 
 	Application::~Application()
 	{
-
+		EG_PROFILE_FUNCTION();
 	}
 
 	void Application::Run()
 	{
+		EG_PROFILE_FUNCTION();
 		int a, b, deltaTime;
 		b = 0;
 		while (m_Window->GetRunning()) {

@@ -4,10 +4,13 @@
 
 #include <backends/imgui_impl_sdl3.h>
 
+#include "engine/debug/Instrumentor.h"
+
 namespace Engine {
 
 	SDLEventHandler::SDLEventHandler(Scope<Window>* window, eventCallbackManager* eventCallbackManager)
 	{
+		EG_PROFILE_FUNCTION();
 		m_Window = window;
 		m_EventCallbackManager = eventCallbackManager;
 
@@ -15,6 +18,7 @@ namespace Engine {
 
 	void SDLEventHandler::HandleEvents()
 	{
+		EG_PROFILE_FUNCTION();
 		SDL_Event e;
 	
 		if (SDL_PollEvent(&e)) {

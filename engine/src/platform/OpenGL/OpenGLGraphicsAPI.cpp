@@ -1,5 +1,6 @@
 #include "OpenGLGraphicsAPI.h"
 
+#include "engine/debug/Instrumentor.h"
 
 namespace Engine {
 
@@ -11,6 +12,7 @@ namespace Engine {
 
 	void OpenGLGraphicsAPI::Render()
 	{
+		EG_PROFILE_FUNCTION();
 		m_Window->get()->GL_SwapWindow();
 		m_SpriteRenderer->Render();
 	}

@@ -30,3 +30,4 @@ imgui.ini
 **/bin-int
 
 *.zip
+EngineProfile-*.json

@@ -2,15 +2,19 @@
 
 #include "engine/core/Log.h"
 
+#include "engine/debug/Instrumentor.h"
+
 namespace Engine {
 
 	eventCallbackManager::eventCallbackManager()
 	{
+		EG_PROFILE_FUNCTION();
 		m_KeyboardCallbacks = new std::vector<void (*)(void*)>();
 	}
 
 	void eventCallbackManager::registerKeyboardCallback(void (*callback)(void*))
 	{
+		EG_PROFILE_FUNCTION();
 		m_KeyboardCallbacks->push_back(callback);
 	}
 }

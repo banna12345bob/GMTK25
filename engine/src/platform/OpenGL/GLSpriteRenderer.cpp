@@ -7,8 +7,11 @@
 
 #include <iostream>
 
+#include "engine/debug/Instrumentor.h"
+
 namespace Engine {
 	GLSpriteRenderer::GLSpriteRenderer() {
+		EG_PROFILE_FUNCTION();
 		// Initialize GLAD
 		// This loads all of the functions from the GPU's OpenGL drivers
 		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
@@ -18,10 +21,7 @@ namespace Engine {
 
 		const unsigned char* vendor = glGetString(GL_VENDOR);
 		const unsigned char* renderer = glGetString(GL_RENDERER);
-		// Don't know how to format this correctly
-		// EG_CORE_INFO("GLAD loaded OpenGL sucessfully! {0}", (void*)(vendor));
-		// Using cout for now
-		std::cout << "GLAD loaded OpenGL sucessfully! " << vendor << ", " << renderer;
+		EG_CORE_INFO("GLAD loaded OpenGL sucessfully! {0}, {1}", (char*)(vendor), (char*)(renderer));
 
 		// Source code for vertex shader
 		const GLchar* vertexSource =
@@ -144,6 +144,7 @@ namespace Engine {
 	}
 
 	void GLSpriteRenderer::Render() {
+		EG_PROFILE_FUNCTION();
 		// Clear screen to black
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
