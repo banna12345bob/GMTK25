@@ -39,11 +39,10 @@ namespace Engine {
 			deltaTime = a - b;
 
 			if (m_showFPS) {
-				EG_INFO("fps: {0}", 1000 / deltaTime);
+				EG_INFO("fps: {0}", 1000 / (deltaTime + 1));
 			}
 
 			m_EventHandler->HandleEvents();
-			m_AudioPlayer->UpdateAudio();
 			m_GraphicsAPI->Render();
 
 			this->UpdateApp();
