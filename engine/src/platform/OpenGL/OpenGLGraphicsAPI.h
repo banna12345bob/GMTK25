@@ -1,7 +1,6 @@
 #pragma once
 #include "engine/graphics/GraphicsAPI.h"
 
-#include "GLSpriteRenderer.h"
 
 namespace Engine {
 
@@ -10,11 +9,12 @@ namespace Engine {
 	public:
 		OpenGLGraphicsAPI(Scope<Window>* window);
 		virtual void Render() override;
-		virtual int SetVSync(bool value) override;
+
+		virtual void SetVSync(bool value) override;
+		virtual int GetVSync() override;
 
 	private:
 		Scope<Window>* m_Window;
-		GLSpriteRenderer* m_SpriteRenderer;
 	};
 }
 

@@ -2,22 +2,28 @@
 
 #include "engine/debug/Instrumentor.h"
 
+#include "GLSpriteRenderer.h"
+
 namespace Engine {
 
 	OpenGLGraphicsAPI::OpenGLGraphicsAPI(Scope<Window>* window)
 	{
 		m_Window = window;
-		m_SpriteRenderer = new GLSpriteRenderer();
+		GLSpriteRenderer();
 	}
 
 	void OpenGLGraphicsAPI::Render()
 	{
 		EG_PROFILE_FUNCTION();
 		m_Window->get()->GL_SwapWindow();
-		m_SpriteRenderer->Render();
 	}
 
-	int OpenGLGraphicsAPI::SetVSync(bool value) {
-		return m_SpriteRenderer->SetVSync(value);
+	void OpenGLGraphicsAPI::SetVSync(bool value) {
+		GLSpriteRenderer::SetVSync(value);
+	}
+
+	int OpenGLGraphicsAPI::GetVSync()
+	{
+		return GLSpriteRenderer::GetVSync();
 	}
 }

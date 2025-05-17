@@ -5,8 +5,6 @@
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
 
-#include <iostream>
-
 #include "engine/debug/Instrumentor.h"
 
 namespace Engine {
@@ -155,9 +153,8 @@ namespace Engine {
 
 	/**
 	* If turning VSync on, adaptive VSync will be tried first, then regualr VSync if that doesn't work.
-	* @returns 0 for off, 1 for VSync and -1 for adaptive VSync
 	*/
-	int GLSpriteRenderer::SetVSync(bool value) {
+	void GLSpriteRenderer::SetVSync(bool value) {
 		if (value) {
 			// Try adaptive VSync, if that doesn't work try the normal one
 			if (!SDL_GL_SetSwapInterval(-1)) {
@@ -176,7 +173,7 @@ namespace Engine {
 		int state;
 		if (!SDL_GL_GetSwapInterval(&state)) {
 			EG_CORE_ERROR("Could not get VSync state: {0}", SDL_GetError());
-			return -2;
+			return;
 		}
 
 		switch (state) {
@@ -190,7 +187,19 @@ namespace Engine {
 			EG_CORE_INFO("Adaptive VSync is on.");
 			break;
 		}
+	}
 
+	/**
+	* Returns current VSync mode
+	* @returns 0 for off, 1 for VSync and -1 for adaptive VSync. Returns -2 on error
+	*/
+	int GLSpriteRenderer::GetVSync()
+	{
+		int state;
+		if (!SDL_GL_GetSwapInterval(&state)) {
+			EG_CORE_ERROR("Could not get VSync state: {0}", SDL_GetError());
+			return -2;
+		}
 		return state;
 	}
 }

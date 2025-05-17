@@ -1,12 +1,11 @@
 #include "SDLWindow.h"
 
 #include "engine/graphics/GraphicsAPI.h"
+#include "platform/OpenGL/GLSpriteRenderer.h"
 
 #include <stb_image.h>
 
 #include <filesystem>
-
-#include <SDL3/SDL_opengles2.h>
 
 #include <glad/glad.h>
 
@@ -164,7 +163,14 @@ namespace Engine {
 		ImGui::Render();
 		// Updates the window
 		glViewport(0, 0, this->GetWidth(), this->GetHeight());
-		SDL_GL_SwapWindow(m_window);
+		switch (GraphicsAPI::GetAPI())
+		{
+		case GraphicsAPI::API::None: EG_CORE_ASSERT(false, "Cannot have GraphicsAPI::None");
+		case GraphicsAPI::API::OpenGL: GLSpriteRenderer::Render();
+		}
+
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
@@ -174,6 +180,6 @@ namespace Engine {
 			ImGui::RenderPlatformWindowsDefault();
 			SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
 		}
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		SDL_GL_SwapWindow(m_window);
 	}
 }

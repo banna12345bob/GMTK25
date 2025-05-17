@@ -5,10 +5,11 @@ namespace Engine {
 	public:
 		GLSpriteRenderer();
 
-		void Render();
-		int SetVSync(bool value);
+		static void Render();
+		static void SetVSync(bool value);
+		static int GetVSync();
 	private:
-		GLuint vao;
-		GLuint shaderProgram;
+		inline static GLuint vao;
+		inline static GLuint shaderProgram;
 	};
 }

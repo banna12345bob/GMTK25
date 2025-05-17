@@ -38,6 +38,9 @@ public:
 		if (Engine::Key::wasKeyPressed(EG_SCANCODE_F)) {
 			m_showFPS = !m_showFPS;
 		}
+		if (Engine::Key::wasKeyPressed(EG_SCANCODE_V)) {
+			m_GraphicsAPI->SetVSync((m_GraphicsAPI->GetVSync() == 0));
+		}
 	}
 	
 private:
