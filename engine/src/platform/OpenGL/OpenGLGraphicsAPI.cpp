@@ -16,4 +16,8 @@ namespace Engine {
 		m_Window->get()->GL_SwapWindow();
 		m_SpriteRenderer->Render();
 	}
+
+	int OpenGLGraphicsAPI::SetVSync(bool value) {
+		return m_SpriteRenderer->SetVSync(value);
+	}
 }

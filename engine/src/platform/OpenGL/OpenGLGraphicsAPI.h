@@ -10,6 +10,7 @@ namespace Engine {
 	public:
 		OpenGLGraphicsAPI(Scope<Window>* window);
 		virtual void Render() override;
+		virtual int SetVSync(bool value) override;
 
 	private:
 		Scope<Window>* m_Window;

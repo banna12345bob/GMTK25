@@ -26,6 +26,8 @@ namespace Engine {
 		m_GraphicsAPI = GraphicsAPI::Create(&m_Window);
 
 		m_showFPS = false; // Don't show FPS by default
+
+		m_GraphicsAPI->SetVSync(true);
 	}
 
 	Application::~Application()

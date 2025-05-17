@@ -13,6 +13,11 @@ namespace Engine {
 
 	public:
 		virtual void Render() {}
+		/**
+		* If turning VSync on, adaptive VSync will be tried first, then regualr VSync if that doesn't work.
+		* @returns 0 for off, 1 for VSync and -1 for adaptive VSync
+		*/
+		virtual int SetVSync(bool value) { return 0; };
 
 		static Scope<GraphicsAPI> Create(Scope<Window>* window);
 

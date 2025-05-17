@@ -140,7 +140,6 @@ namespace Engine {
 		// Set vertex attributes pointers
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
-
 	}
 
 	void GLSpriteRenderer::Render() {
@@ -152,5 +151,46 @@ namespace Engine {
 		glUseProgram(shaderProgram);
 		glBindVertexArray(vao);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
+	}
+
+	/**
+	* If turning VSync on, adaptive VSync will be tried first, then regualr VSync if that doesn't work.
+	* @returns 0 for off, 1 for VSync and -1 for adaptive VSync
+	*/
+	int GLSpriteRenderer::SetVSync(bool value) {
+		if (value) {
+			// Try adaptive VSync, if that doesn't work try the normal one
+			if (!SDL_GL_SetSwapInterval(-1)) {
+				EG_CORE_ERROR("Could not enable adaptive VSync: {0}", SDL_GetError());
+				if (!SDL_GL_SetSwapInterval(1)) {
+					EG_CORE_ERROR("Could not enable VSync: {0}", SDL_GetError());
+				}
+			}
+		}
+		else {
+			if (!SDL_GL_SetSwapInterval(0)) {
+				EG_CORE_ERROR("Could not disable VSync: {0}", SDL_GetError());
+			}
+		}
+
+		int state;
+		if (!SDL_GL_GetSwapInterval(&state)) {
+			EG_CORE_ERROR("Could not get VSync state: {0}", SDL_GetError());
+			return -2;
+		}
+
+		switch (state) {
+		case 0:
+			EG_CORE_INFO("VSync is off.");
+			break;
+		case 1:
+			EG_CORE_INFO("VSync is on.");
+			break;
+		case -1:
+			EG_CORE_INFO("Adaptive VSync is on.");
+			break;
+		}
+
+		return state;
 	}
 }

@@ -6,6 +6,7 @@ namespace Engine {
 		GLSpriteRenderer();
 
 		void Render();
+		int SetVSync(bool value);
 	private:
 		GLuint vao;
 		GLuint shaderProgram;
