@@ -50,6 +50,12 @@ namespace Engine {
 		if (m_data.fullscreen)
 			SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN);
 
+		switch (GraphicsAPI::GetAPI())
+		{
+		case GraphicsAPI::API::None: EG_CORE_ASSERT(false, "Cannot have GraphicsAPI::None");
+		case GraphicsAPI::API::OpenGL: CreateGLContext();
+		}
+
 		if (!std::filesystem::exists(m_data.pathToIcon)) {
 			m_data.pathToIcon = "";
 		}
@@ -88,12 +94,6 @@ namespace Engine {
 		else
 		{
 			EG_CORE_ASSERT(false, "Failed to load image");
-		}
-
-		switch (GraphicsAPI::GetAPI())
-		{
-		case GraphicsAPI::API::None: EG_CORE_ASSERT(false, "Cannot have GraphicsAPI::None");
-		case GraphicsAPI::API::OpenGL: CreateGLContext();
 		}
 	}
 
