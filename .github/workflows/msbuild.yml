@@ -22,9 +22,9 @@ jobs:
       with:
         submodules: recursive
     - name: Install vswhere and MSBuild via winget
-      run: 
-      - winget install Microsoft.VisualStudio.Locator
-      - winget install --id=Microsoft.VisualStudio.2022.BuildTools  -e
+      run: |
+        winget install Microsoft.VisualStudio.Locator
+        winget install --id=Microsoft.VisualStudio.2022.BuildTools  -e
     - name: Generate Solution Files
       run: .${{env.GITHUB_WORKSPACE}}\vendor\bin\premake\premake5_windows.exe vs2022
 
