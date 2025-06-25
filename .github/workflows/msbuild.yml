@@ -23,7 +23,7 @@ jobs:
         submodules: recursive
     - name: Install winget
       run: |
-        git clone https://github.com/asheroto/winget-install .
+        git clone https://github.com/asheroto/winget-install winget-install; cd winget-install
         (Install-Script winget-install -Force -Scope CurrentUser) -and (winget-install)
     - name: Install vswhere and MSBuild via winget
       run: |
