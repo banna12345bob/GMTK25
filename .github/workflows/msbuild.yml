@@ -16,6 +16,9 @@ permissions: write-all
 jobs:
   pull-repo:
     runs-on: [Windows, self-hosted]
+    defaults:
+      run:
+        shell: pwsh
     steps:
     - name: Pull repo
       uses: actions/checkout@v4
