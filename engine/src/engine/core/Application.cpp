@@ -26,9 +26,8 @@ namespace Engine {
 		m_AudioPlayer = AudioPlayer::Create();
 		m_GraphicsAPI = GraphicsAPI::Create(&m_Window);
 
-		m_showFPS = false; // Don't show FPS by default
 
-		m_GraphicsAPI->SetVSync(true);
+		m_GraphicsAPI->SetVSync(false);
 	}
 
 	Application::~Application()
@@ -45,9 +44,8 @@ namespace Engine {
 			a = SDL_GetTicks();
 			deltaTime = a - b;
 
-			if (m_showFPS) {
-				EG_INFO("fps: {0}", 1000 / (deltaTime + 1));
-			}
+			if (deltaTime != 0)
+				m_frameRate = 1000 / deltaTime;
 
 			m_EventHandler->HandleEvents();
 			m_GraphicsAPI->Render();

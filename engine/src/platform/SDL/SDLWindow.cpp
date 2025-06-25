@@ -158,8 +158,10 @@ namespace Engine {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplSDL3_NewFrame();
 		ImGui::NewFrame();
-		bool show_demo_window = true;
-		ImGui::ShowDemoWindow(&show_demo_window);
+		for (int i = 0; i < this->getImGuiLayersSize(); i++)
+		{
+			this->getImGuiLayer(i)->renderImGUILayer();
+		}
 		ImGui::Render();
 		// Updates the window
 		glViewport(0, 0, this->GetWidth(), this->GetHeight());

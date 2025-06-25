@@ -30,7 +30,7 @@ namespace Engine {
 		Scope<GraphicsAPI> m_GraphicsAPI;
 		eventCallbackManager* m_EventCallbackManager;
 
-		bool m_showFPS;
+		int m_frameRate;
 	};
 
 	//	To be defined in client

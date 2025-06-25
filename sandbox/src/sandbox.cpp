@@ -1,5 +1,7 @@
 ﻿#include <engine.h>
 
+#include "SandboxImGuiLayer.h"
+
 class sandbox : public Engine::Application
 {
 public:
@@ -7,6 +9,7 @@ public:
 	sandbox(Engine::WindowProps props)
 		: Engine::Application(props)
 	{
+		m_Window->registerImGuiLayer(new SandboxImGuiLayer(this));
 		//m_AudioPlayer->PlaySound("assets/audio/music/John Coltrane - Naima.wav", true, 0.1f);
 	}
 
@@ -34,9 +37,6 @@ public:
 		if (Engine::Key::isKeyPressed(EG_SCANCODE_L))
 		{
 			m_Window->SetWidth(m_Window->GetWidth() - 10);
-		}
-		if (Engine::Key::wasKeyPressed(EG_SCANCODE_F)) {
-			m_showFPS = !m_showFPS;
 		}
 		if (Engine::Key::wasKeyPressed(EG_SCANCODE_V)) {
 			m_GraphicsAPI->SetVSync((m_GraphicsAPI->GetVSync() == 0));

@@ -3,6 +3,8 @@
 
 #include "engine/core/core.h"
 
+#include "engine/graphics/imgui/ImGUILayer.h"
+
 namespace Engine {
 
 	struct WindowProps
@@ -43,8 +45,14 @@ namespace Engine {
 		virtual void GL_SwapWindow() {}
 
 		static Scope<Window> Create(WindowProps props);
+
+		void registerImGuiLayer(ImGuiLayer* ImGuiLayer) { m_ImGuiLayers.push_back(ImGuiLayer); }
+		ImGuiLayer* getImGuiLayer(int index) { return m_ImGuiLayers[index]; }
+		int getImGuiLayersSize() { return (int)m_ImGuiLayers.size(); }
 	private:
 		bool m_Running = true;
+
+		std::vector<ImGuiLayer*> m_ImGuiLayers;
 	};
 }
 
