@@ -22,6 +22,7 @@ jobs:
       with:
         submodules: recursive
     - name: Install vswhere and MSBuild via winget
+      shell: pwsh
       run: |
         winget install Microsoft.VisualStudio.Locator
         winget install --id=Microsoft.VisualStudio.2022.BuildTools  -e
