@@ -22,7 +22,6 @@ jobs:
       with:
         submodules: recursive
     - name: Install winget
-      shell: pwsh
       run: |
         git clone https://github.com/asheroto/winget-install .
         (Install-Script winget-install -Force) -and (winget-install)
