@@ -10,6 +10,8 @@ namespace Engine {
 		static int GetVSync();
 	private:
 		inline static GLuint vao;
+		inline static GLuint ebo;
 		inline static GLuint shaderProgram;
+		inline static GLuint texture;
 	};
 }

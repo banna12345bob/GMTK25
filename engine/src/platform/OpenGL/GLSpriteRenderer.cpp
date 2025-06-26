@@ -4,6 +4,7 @@
 
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
+#include <stb_image.h>
 
 #include "engine/debug/Instrumentor.h"
 
@@ -25,9 +26,10 @@ namespace Engine {
 		const GLchar* vertexSource =
 			"#version 330 core\n"
 			"layout (location = 0) in vec3 aPos;"
-			"out vec3 v_pos;"
+			"layout (location = 1) in vec2 aTexCoord;"
+			"out vec2 texCoord;"
 			"void main() {"
-			"	v_pos = aPos;"	
+			"   texCoord = aTexCoord;"
 			"	gl_Position = vec4(aPos, 1.0);"
 			"}";
 
@@ -51,10 +53,11 @@ namespace Engine {
 		// Source code for the fragment shader
 		const GLchar* fragmentSource =
 			"#version 330 core\n"
-			"in vec3 v_pos;"
+			"in vec2 texCoord;"
 			"out vec4 FragColor;"
+			"uniform sampler2D sampler;"
 			"void main() {"
-			"	FragColor = vec4(v_pos + 0.5, 1.0);"
+			"	FragColor = texture(sampler, texCoord);"
 			"}";
 
 		// Create fragment shader object
@@ -103,26 +106,23 @@ namespace Engine {
 		// - set true if we want data to be normalized, its not relevant to us so we set it to false
 		// - stride, which is the space between consecutive vertex attributes
 		// - offset, because we dont care, we do a weird void* cast
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 		// Enable vertex attribute with its location (zero)
 		// Needed because vertex attributes are disabled by default
-		glEnableVertexAttribArray(0);
+		//glEnableVertexAttribArray(0);
 
-		float vertices[] = { -0.5f, -0.5f, 0.0f, 
-							  0.5f, -0.5f, 0.0f,
-							  0.0f,  0.5f, 0.0f };
+		//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(6 * sizeof(float)));
+		//glEnableVertexAttribArray(1);
 
-		/*
-		// Generate vertex buffer
-		GLuint vbo;
-		glGenBuffers(1, &vbo);
-
-		// Bind buffer object
-		// From now on, any buffer calls we make on the GL_ARRAY_BUFFER target will be used to configure the current bound buffer (vbo)
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		// Copy vertex data into buffer
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-		*/
+		float vertices[] = { 0.9f,  0.9f, 0.0f, 0.0f, 0.0f,   // top right
+	                         0.9f, -0.9f, 0.0f, 0.0f, 3.0f,   // bottom right
+	                        -0.9f, -0.9f, 0.0f, 3.0f, 3.0f,   // bottom left
+	                        -0.9f,  0.9f, 0.0f, 3.0f, 0.0f,   // top left 
+		};
+		unsigned int indices[] = {
+			0, 1, 3,
+			1, 2, 3,
+		};
 
 		// Create a Vertex Array Object (VAO)
 		// Core OpenGL requires that we use a VAO so it knows what to do with our vertex inputs
@@ -136,8 +136,59 @@ namespace Engine {
 		glBindBuffer(GL_ARRAY_BUFFER, vao);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 		// Set vertex attributes pointers
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+
+		glGenBuffers(1, &ebo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+		glGenTextures(1, &texture);
+		// Bind the texture to OpenGL's 2d texture slot
+		glBindTexture(GL_TEXTURE_2D, texture);
+		// The following functions operate on our texture, since it is bound to OpenGL's 2d texture slot
+		// Set texture wrapping (this doesn't matter for our use case, so we'll just set it to repeat)
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+		// Set texture filtering
+		// Since this game will likely be pixel art, set to nearest neighbour
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		// Generate our texture
+		// Width, height, and # of colour channels of our image
+		int width, height, colourChannels;
+		// The desired amount of channels for our image
+		// For some reason, OpenGL does not like working with RGB images, so setting this to 4 will ensure RGB images are converted to RGBA
+		const int DESIRED_CHANNELS = 4;
+		unsigned char* textureData = stbi_load("./assets/textures/cat.jpg", &width, &height, &colourChannels, DESIRED_CHANNELS);
+
+		if (!textureData) {
+			const char* failure_reason = stbi_failure_reason();
+			EG_CORE_FATAL("Failed to load texture! {0}", failure_reason);
+			EG_CORE_ASSERT(false, "STB Image Error");
+		}
+
+		EG_CORE_INFO("{0}, {1}, {2}", width, height, colourChannels);
+
+		// Generate the texture buffer on the GPU
+		// Parameters:
+		// - texture target
+		// - mipmap level of the generated texture
+		// - what format the texture should be stored in
+		// - texture width
+		// - texture height
+		// - format of the source image
+		// - data type of the source image (ours is stored in `char`s)
+		// - actual image data
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		// glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, textureData);
+
+		// Free the original image data since it isn't needed anymore
+		stbi_image_free(textureData);
 	}
 
 	void GLSpriteRenderer::Render() {
@@ -147,8 +198,11 @@ namespace Engine {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(shaderProgram);
+		glBindTexture(GL_TEXTURE_2D, texture);
 		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
 	}
 
 	/**
