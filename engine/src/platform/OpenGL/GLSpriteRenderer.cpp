@@ -5,204 +5,100 @@
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
 #include <stb_image.h>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <string>
+#include <filesystem>
 
 #include "engine/debug/Instrumentor.h"
 
 namespace Engine {
 	GLSpriteRenderer::GLSpriteRenderer() {
-		EG_PROFILE_FUNCTION();
-		// Initialize GLAD
-		// This loads all of the functions from the GPU's OpenGL drivers
-		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
-			EG_CORE_FATAL("GLAD couldn't load OpenGL");
-			EG_CORE_ASSERT(false, "GLAD ERROR");
-		}
+		const char* vertexShader = R"(
+	    #version 330 core
+	    layout(location = 0) in vec4 vertex; // <vec2 position, vec2 texCoords>
 
-		const unsigned char* vendor = glGetString(GL_VENDOR);
-		const unsigned char* renderer = glGetString(GL_RENDERER);
-		EG_CORE_INFO("GLAD loaded OpenGL sucessfully! {0}, {1}", (char*)(vendor), (char*)(renderer));
+		out vec2 TexCoords;
 
-		// Source code for vertex shader
-		const GLchar* vertexSource =
-			"#version 330 core\n"
-			"layout (location = 0) in vec3 aPos;"
-			"layout (location = 1) in vec2 aTexCoord;"
-			"out vec2 texCoord;"
-			"void main() {"
-			"   texCoord = aTexCoord;"
-			"	gl_Position = vec4(aPos, 1.0);"
-			"}";
+		uniform mat4 model;
+		uniform mat4 projection
 
-		// Create vertex shader object
-		GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-		// Attach shader source code to shader object
-		glShaderSource(vertexShader, 1, &vertexSource, NULL);
+		void main()
+		{
+			TexCoords = vertex.zw;
+			gl_Position = projection * model * vec4(vertex.xy, 0.0, 1.0);
+		})";
 
-		// Compile vertex shader
-		glCompileShader(vertexShader);
-		// Ensure shader compilation succeeded
-		int success;
-		glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-		if (!success) {
-			char infoLog[512];
-			glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-			EG_CORE_FATAL("Vertex shader compilation failed! {0}", infoLog);
-			EG_CORE_ASSERT(false, "OpenGL Error");
-		}
+		const char* fragmentShader = R"(
+		#version 330 core
+		in vec2 TexCoords;
+		out vec4 color;
 
-		// Source code for the fragment shader
-		const GLchar* fragmentSource =
-			"#version 330 core\n"
-			"in vec2 texCoord;"
-			"out vec4 FragColor;"
-			"uniform sampler2D sampler;"
-			"void main() {"
-			"	FragColor = texture(sampler, texCoord);"
-			"}";
+		uniform sampler2D image;
+		uniform vec3 spriteColor;
 
-		// Create fragment shader object
-		GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-		// Attach shader source code to shader object
-		glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
+		void main()
+		{
+			color = vec4(spriteColor, 1.0) * texture(image, TexCoords);
+		})";
 
-		// Compile fragment shader
-		glCompileShader(fragmentShader);
-		// Ensure shader compilation succeeded
-		glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-		if (!success) {
-			char infoLog[512];
-			glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-			EG_CORE_FATAL("Fragment shader compilation failed! {0}", infoLog);
-			EG_CORE_ASSERT(false, "OpenGL Error");
-		}
+		shader = GLShader(vertexShader, fragmentShader);
 
-		// Link vertex and fragment shaders into a shader program
-		shaderProgram = glCreateProgram();
-		glAttachShader(shaderProgram, vertexShader);
-		glAttachShader(shaderProgram, fragmentShader);
-		glLinkProgram(shaderProgram);
-
-		// Ensure shader program linking succeeded
-		glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-		if (!success) {
-			char infoLog[512];
-			glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-			EG_CORE_FATAL("Shader program linking failed! {0}", infoLog);
-			EG_CORE_ASSERT(false, "OpenGL Error");
-		}
-
-		// Use this program for all subsequent render calls
-		glUseProgram(shaderProgram);
-
-		// We don't need the shaders anymore, delete them
-		glDeleteShader(vertexShader);
-		glDeleteShader(fragmentShader);
-
-		// Specify vertex data layout
-		// Parameters:
-		// - which vertex attribute to configure (we specified position attrib at (location = 0)
-		// - size of the vertex attribute (its a vec3, so its composed of 3 values)
-		// - type of data, which is GL_FLOAT
-		// - set true if we want data to be normalized, its not relevant to us so we set it to false
-		// - stride, which is the space between consecutive vertex attributes
-		// - offset, because we dont care, we do a weird void* cast
-		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-		// Enable vertex attribute with its location (zero)
-		// Needed because vertex attributes are disabled by default
-		//glEnableVertexAttribArray(0);
-
-		//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(6 * sizeof(float)));
-		//glEnableVertexAttribArray(1);
-
-		float vertices[] = { 0.9f,  0.9f, 0.0f, 0.0f, 0.0f,   // top right
-	                         0.9f, -0.9f, 0.0f, 0.0f, 3.0f,   // bottom right
-	                        -0.9f, -0.9f, 0.0f, 3.0f, 3.0f,   // bottom left
-	                        -0.9f,  0.9f, 0.0f, 3.0f, 0.0f,   // top left 
-		};
-		unsigned int indices[] = {
-			0, 1, 3,
-			1, 2, 3,
-		};
-
-		// Create a Vertex Array Object (VAO)
-		// Core OpenGL requires that we use a VAO so it knows what to do with our vertex inputs
-		// If we fail to bind a VAO, OpenGL will likely refuse to draw anything
-
-		// Generate the VAO
 		glGenVertexArrays(1, &vao);
-		// Bind VAO
-		glBindVertexArray(vao);
-		// Copy vertices array in a buffer for OpenGL to use
-		glBindBuffer(GL_ARRAY_BUFFER, vao);
+
+		// ** create and fill vbo ** //
+
+		unsigned int vbo;
+		glGenBuffers(1, &vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+		float vertices[] = {
+			// pos      // tex
+			0.0f, 1.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 0.0f,
+
+			0.0f, 1.0f, 0.0f, 1.0f,
+			1.0f, 1.0f, 1.0f, 1.0f,
+			1.0f, 0.0f, 1.0f, 0.0f
+		};
+
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-		// Set vertex attributes pointers
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		glBindVertexArray(vao);
+
+		// ** configure vertex attributes ** //
+
 		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
 
-		glGenBuffers(1, &ebo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+		// ** finally, bind vbo and vao ** //
 
-		glGenTextures(1, &texture);
-		// Bind the texture to OpenGL's 2d texture slot
-		glBindTexture(GL_TEXTURE_2D, texture);
-		// The following functions operate on our texture, since it is bound to OpenGL's 2d texture slot
-		// Set texture wrapping (this doesn't matter for our use case, so we'll just set it to repeat)
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-		// Set texture filtering
-		// Since this game will likely be pixel art, set to nearest neighbour
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-		// Generate our texture
-		// Width, height, and # of colour channels of our image
-		int width, height, colourChannels;
-		// The desired amount of channels for our image
-		// For some reason, OpenGL does not like working with RGB images, so setting this to 4 will ensure RGB images are converted to RGBA
-		const int DESIRED_CHANNELS = 4;
-		unsigned char* textureData = stbi_load("./assets/textures/cat.jpg", &width, &height, &colourChannels, DESIRED_CHANNELS);
-
-		if (!textureData) {
-			const char* failure_reason = stbi_failure_reason();
-			EG_CORE_FATAL("Failed to load texture! {0}", failure_reason);
-			EG_CORE_ASSERT(false, "STB Image Error");
-		}
-
-		EG_CORE_INFO("{0}, {1}, {2}", width, height, colourChannels);
-
-		// Generate the texture buffer on the GPU
-		// Parameters:
-		// - texture target
-		// - mipmap level of the generated texture
-		// - what format the texture should be stored in
-		// - texture width
-		// - texture height
-		// - format of the source image
-		// - data type of the source image (ours is stored in `char`s)
-		// - actual image data
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
-		glGenerateMipmap(GL_TEXTURE_2D);
-		// glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, textureData);
-
-		// Free the original image data since it isn't needed anymore
-		stbi_image_free(textureData);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
 	}
 
-	void GLSpriteRenderer::Render() {
-		EG_PROFILE_FUNCTION();
-		// Clear screen to black
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+	void GLSpriteRenderer::DrawSprite(GLTexture2D& texture, glm::vec2 position, glm::vec2 size, float rotate, glm::vec3 color) {
+		shader.Use();
 
-		glUseProgram(shaderProgram);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		// prepare transformations
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(position, 0.0f));
+
+		model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
+		model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
+
+		model = glm::scale(model, glm::vec3(size, 1.0f));
+
+		shader.SetMatrix4("model", model);
+		shader.SetVector3f("spriteColor", color);
+
+		glActiveTexture(GL_TEXTURE0);
+		texture.Bind();
+
 		glBindVertexArray(vao);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glBindVertexArray(0);
 	}
 
 	/**

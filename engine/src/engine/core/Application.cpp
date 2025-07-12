@@ -26,7 +26,6 @@ namespace Engine {
 		m_AudioPlayer = AudioPlayer::Create();
 		m_GraphicsAPI = GraphicsAPI::Create(&m_Window);
 
-
 		m_GraphicsAPI->SetVSync(false);
 	}
 

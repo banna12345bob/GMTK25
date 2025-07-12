@@ -52,8 +52,14 @@ namespace Engine {
 
 		switch (GraphicsAPI::GetAPI())
 		{
-		case GraphicsAPI::API::None: EG_CORE_ASSERT(false, "Cannot have GraphicsAPI::None");
-		case GraphicsAPI::API::OpenGL: CreateGLContext();
+		case GraphicsAPI::API::None: {
+			EG_CORE_ASSERT(false, "Cannot have GraphicsAPI::None");
+			break;
+		}
+		case GraphicsAPI::API::OpenGL: {
+			CreateGLContext();
+			break;
+		}
 		}
 
 		if (!std::filesystem::exists(m_data.pathToIcon)) {
@@ -141,6 +147,9 @@ namespace Engine {
 	{
 		EG_PROFILE_FUNCTION();
 		// Create the OpenGl context
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 		SDL_GLContext sdl_gl_ctx = SDL_GL_CreateContext(m_window);
 		// Ensure the context was actually initialised
 		if (sdl_gl_ctx == NULL) {
@@ -168,7 +177,7 @@ namespace Engine {
 		switch (GraphicsAPI::GetAPI())
 		{
 		case GraphicsAPI::API::None: EG_CORE_ASSERT(false, "Cannot have GraphicsAPI::None");
-		case GraphicsAPI::API::OpenGL: GLSpriteRenderer::Render();
+		case GraphicsAPI::API::OpenGL: ;
 		}
 
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

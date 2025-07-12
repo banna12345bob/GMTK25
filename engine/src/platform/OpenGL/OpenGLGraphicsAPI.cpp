@@ -10,6 +10,9 @@ namespace Engine {
 	{
 		m_Window = window;
 		GLSpriteRenderer();
+
+		GLTexture2D texture = GLTexture2D(std::filesystem::path("./assets/textures/cat.jpg"));
+	
 	}
 
 	void OpenGLGraphicsAPI::Render()
