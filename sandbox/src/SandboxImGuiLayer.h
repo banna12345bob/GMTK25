@@ -16,34 +16,44 @@ public:
 		// Begin with window. Requires window name
 		ImGui::Begin("Window info");
 
-		ImGui::SeparatorText("FPS");
-		ImGui::Text(std::to_string(m_Application->m_frameRate).c_str());
+		ImGui::Text(("FPS: " + std::to_string(m_Application->m_frameRate)).c_str());
 
 		ImGui::SeparatorText("Window Size");
 		ImGui::Text((std::string("Width: ") + std::to_string(m_Application->m_Window->GetWidth())).c_str());
 		ImGui::Text((std::string("Height: ") + std::to_string(m_Application->m_Window->GetHeight())).c_str());
 
 		ImGui::SeparatorText("Vsync");
+		std::string currentVsyncMode;
 		switch (m_Application->m_GraphicsAPI->GetVSync()) {
 			case -1:
-				ImGui::Text("Adaptave");
+				currentVsyncMode = "Adaptave";
 				break;
 			case 0:
-				ImGui::Text("Off");
+				currentVsyncMode = "Off";
 				break;
 			case 1:
-				ImGui::Text("On");
+				currentVsyncMode = "On";
 				break;
 			default:
-				ImGui::Text("Error");
+				currentVsyncMode = "Error";
 				break;
 		}
-
-		ImGui::SeparatorText("Demo window");
-		if (ImGui::Button("Show demo window?")) {
-			m_ShowImGuiDemoWindow = !m_ShowImGuiDemoWindow;
+		if (ImGui::Button(("Vsync Mode: " + currentVsyncMode).c_str())) {
+			m_Application->m_GraphicsAPI->SetVSync((m_Application->m_GraphicsAPI->GetVSync() == 0));
 		}
-		ImGui::Text(std::string("Set to: " + std::to_string(m_ShowImGuiDemoWindow)).c_str());
+
+		// Little header/tree demo
+		if (ImGui::CollapsingHeader("Demo window")) {
+			if (ImGui::TreeNode("Test"))
+			{
+				std::string demoWindowValue = m_ShowImGuiDemoWindow ? "True" : "False";
+				if (ImGui::Button(("Show demo window: " + demoWindowValue).c_str())) {
+					m_ShowImGuiDemoWindow = !m_ShowImGuiDemoWindow;
+				}
+
+				ImGui::TreePop();
+			}
+		}
 
 		// Remember to end the window
 		ImGui::End();
