@@ -14,13 +14,13 @@ namespace Engine {
 		GLSpriteRenderer();
 
 		// Renders all sprites.
-		static void DrawSprite(GLTexture2D& texture, glm::vec2 position, glm::vec2 size, float rotate, glm::vec3 color);
+		static void DrawSprite(GLTexture2D* texture, glm::vec2 position, glm::vec2 size, float rotate, glm::vec3 color);
 
 		static void SetVSync(bool value);
 		static int GetVSync();
 
 	private:
-		inline static GLShader shader;
+		inline static GLShader* shader;
 		inline static GLuint vao;
 	};
 }

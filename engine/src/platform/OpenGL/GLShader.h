@@ -10,7 +10,6 @@ namespace Engine {
     public:
         // state
         unsigned int id;
-        GLShader() {}
         // constructor
         GLShader(const char* vertexShader, const char* fragmentShader);
         // Sets shader as the active shader

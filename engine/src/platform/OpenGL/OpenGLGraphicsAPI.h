@@ -1,6 +1,7 @@
 #pragma once
 #include "engine/graphics/GraphicsAPI.h"
 
+#include "GLSpriteRenderer.h"
 
 namespace Engine {
 
@@ -15,6 +16,8 @@ namespace Engine {
 
 	private:
 		Scope<Window>* m_Window;
+
+		GLTexture2D* m_Texture;
 	};
 }
 

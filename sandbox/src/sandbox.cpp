@@ -10,7 +10,6 @@ public:
 		: Engine::Application(props)
 	{
 		m_Window->registerImGuiLayer(new SandboxImGuiLayer(this));
-		//m_AudioPlayer->PlaySound("assets/audio/music/John Coltrane - Naima.wav", true, 0.1f);
 	}
 
 	~sandbox()

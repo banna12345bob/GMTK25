@@ -1,8 +1,8 @@
 #include "GLShader.h"
 #include "engine/core/core.h"
 
-#include "glad/glad.h"
-#include "glm/gtc/type_ptr.hpp"
+#include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace Engine {
     GLShader::GLShader(const char* vertexSource, const char* fragmentSource) {

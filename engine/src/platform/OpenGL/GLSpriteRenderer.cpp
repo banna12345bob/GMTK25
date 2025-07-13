@@ -14,6 +14,11 @@
 
 namespace Engine {
 	GLSpriteRenderer::GLSpriteRenderer() {
+		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
+			EG_CORE_FATAL("GLAD couldn't load OpenGL");
+			EG_CORE_ASSERT(false, "GLAD ERROR");
+		}
+
 		const char* vertexShader = R"(
 	    #version 330 core
 	    layout(location = 0) in vec4 vertex; // <vec2 position, vec2 texCoords>
@@ -21,7 +26,7 @@ namespace Engine {
 		out vec2 TexCoords;
 
 		uniform mat4 model;
-		uniform mat4 projection
+		uniform mat4 projection;
 
 		void main()
 		{
@@ -42,7 +47,7 @@ namespace Engine {
 			color = vec4(spriteColor, 1.0) * texture(image, TexCoords);
 		})";
 
-		shader = GLShader(vertexShader, fragmentShader);
+		shader = new GLShader(vertexShader, fragmentShader);
 
 		glGenVertexArrays(1, &vao);
 
@@ -77,8 +82,8 @@ namespace Engine {
 		glBindVertexArray(0);
 	}
 
-	void GLSpriteRenderer::DrawSprite(GLTexture2D& texture, glm::vec2 position, glm::vec2 size, float rotate, glm::vec3 color) {
-		shader.Use();
+	void GLSpriteRenderer::DrawSprite(GLTexture2D* texture, glm::vec2 position, glm::vec2 size, float rotate, glm::vec3 color) {
+		shader->Use();
 
 		// prepare transformations
 		glm::mat4 model = glm::mat4(1.0f);
@@ -90,11 +95,11 @@ namespace Engine {
 
 		model = glm::scale(model, glm::vec3(size, 1.0f));
 
-		shader.SetMatrix4("model", model);
-		shader.SetVector3f("spriteColor", color);
+		shader->SetMatrix4("model", model);
+		shader->SetVector3f("spriteColor", color);
 
 		glActiveTexture(GL_TEXTURE0);
-		texture.Bind();
+		texture->Bind();
 
 		glBindVertexArray(vao);
 		glDrawArrays(GL_TRIANGLES, 0, 6);

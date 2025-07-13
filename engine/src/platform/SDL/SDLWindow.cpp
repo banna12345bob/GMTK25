@@ -109,6 +109,7 @@ namespace Engine {
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplSDL3_Shutdown();
 		ImGui::DestroyContext();
+		SDL_GL_DestroyContext(m_GLContext);
 		SDL_DestroyWindow(m_window);
 		SDL_Quit();
 	}
@@ -150,14 +151,14 @@ namespace Engine {
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-		SDL_GLContext sdl_gl_ctx = SDL_GL_CreateContext(m_window);
+		m_GLContext = SDL_GL_CreateContext(m_window);
 		// Ensure the context was actually initialised
-		if (sdl_gl_ctx == NULL) {
+		if (m_GLContext == NULL) {
 			EG_CORE_FATAL("SDL could not initialise the OpenGL context! {0}", SDL_GetError());
 			EG_CORE_ASSERT(false, "SDL ERROR");
 		}
-		SDL_GL_MakeCurrent(m_window, sdl_gl_ctx);
-		ImGui_ImplSDL3_InitForOpenGL(m_window, sdl_gl_ctx);
+		SDL_GL_MakeCurrent(m_window, m_GLContext);
+		ImGui_ImplSDL3_InitForOpenGL(m_window, m_GLContext);
 		ImGui_ImplOpenGL3_Init();
 	}
 

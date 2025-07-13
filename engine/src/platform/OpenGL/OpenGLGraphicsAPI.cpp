@@ -2,8 +2,6 @@
 
 #include "engine/debug/Instrumentor.h"
 
-#include "GLSpriteRenderer.h"
-
 namespace Engine {
 
 	OpenGLGraphicsAPI::OpenGLGraphicsAPI(Scope<Window>* window)
@@ -11,14 +9,15 @@ namespace Engine {
 		m_Window = window;
 		GLSpriteRenderer();
 
-		GLTexture2D texture = GLTexture2D(std::filesystem::path("./assets/textures/cat.jpg"));
-	
+		m_Texture = new GLTexture2D(std::filesystem::path("./assets/textures/cat.jpg"));
 	}
 
 	void OpenGLGraphicsAPI::Render()
 	{
 		EG_PROFILE_FUNCTION();
 		m_Window->get()->GL_SwapWindow();
+
+		GLSpriteRenderer::DrawSprite(m_Texture, glm::vec2(0, 0), glm::vec2(1, 1), 0, glm::vec3(255, 255, 255));
 	}
 
 	void OpenGLGraphicsAPI::SetVSync(bool value) {

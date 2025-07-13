@@ -28,6 +28,7 @@ namespace Engine {
 		SDL_Window* m_window;
 
 		WindowProps m_data;
+		SDL_GLContext m_GLContext;
 	};
 
 }
