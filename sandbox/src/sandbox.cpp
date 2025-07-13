@@ -27,10 +27,13 @@ public:
 	void keyboardEventCallback() {
 		EG_PROFILE_FUNCTION();
 		if ((Engine::Key::isKeyPressed(EG_SCANCODE_LCTRL) || Engine::Key::isKeyPressed(EG_SCANCODE_RCTRL)) && Engine::Key::wasKeyPressed(EG_SCANCODE_P)) {
-			m_AudioDebuggerLayer->m_ShowWindow = true;
+			m_AudioDebuggerLayer->m_ShowWindow = !m_AudioDebuggerLayer->m_ShowWindow;
 		}
 		else if (Engine::Key::wasKeyPressed(EG_SCANCODE_P)) {
 			m_AudioPlayer->PlaySound("assets/audio/music/music1_short.wav", false, 0.4f, &musicID);
+		}
+		if (Engine::Key::wasKeyPressed(EG_SCANCODE_O)) {
+			m_AudioPlayer->PlaySound("assets/audio/music/John Coltrane - Naima.wav", true, 0.8f, &musicID);
 		}
 		if (Engine::Key::isKeyPressed(EG_SCANCODE_K))
 		{
