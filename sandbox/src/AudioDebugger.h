@@ -17,6 +17,11 @@ public:
 		if (!this->m_ShowWindow)
 			return;
 		ImGui::Begin("Audio Debugger", &this->m_ShowWindow);
+		if (ImGui::Button("Stop All")) {
+			for (auto i = m_AudioPlayer->get()->GetSounds()->begin(); i != m_AudioPlayer->get()->GetSounds()->end(); i++) {
+				m_AudioPlayer->get()->StopSound(i->first);
+			}
+		}
 		for (auto i = m_AudioPlayer->get()->GetSounds()->begin(); i != m_AudioPlayer->get()->GetSounds()->end(); i++) {
 			// Incase of edge case where threads don't align
 			if (m_AudioPlayer->get()->GetSounds()->size() == 0)
