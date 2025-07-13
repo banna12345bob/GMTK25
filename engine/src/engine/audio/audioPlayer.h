@@ -3,6 +3,9 @@
 #include "engine/core/Window.h"
 #include <string>
 
+// Eventually want to remove this
+#include <SDL3/SDL.h>
+
 namespace Engine {
 
 	class AudioPlayer
@@ -24,5 +27,19 @@ namespace Engine {
 		virtual void SetLooping(int id, bool value) = 0;
 		virtual void SetVolume(int id, float_t value) = 0;
 		virtual void StopSound(int id) = 0;
+
+		struct Sound {
+			uint8_t* data;
+			uint32_t dataLen;
+			uint32_t currentOffset;		// Bytes
+			uint32_t bufferSize;		// Bytes
+			bool loop;					// Putting this after stream breaks the code, probably alignment issues
+			SDL_AudioFormat format;
+			float_t volume;
+			SDL_AudioStream* stream;
+			std::string filePath;
+		};
+
+		virtual std::unordered_map<int, Ref<Sound>>* GetSounds() = 0;
 	};
 }

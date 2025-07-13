@@ -1,6 +1,7 @@
 ﻿#include <engine.h>
 
 #include "SandboxImGuiLayer.h"
+#include "AudioDebugger.h"
 
 class sandbox : public Engine::Application
 {
@@ -9,7 +10,9 @@ public:
 	sandbox(Engine::WindowProps props)
 		: Engine::Application(props)
 	{
+		m_AudioDebuggerLayer = new AudioDebugger(&m_AudioPlayer);
 		m_Window->registerImGuiLayer(new SandboxImGuiLayer(this));
+		m_Window->registerImGuiLayer(m_AudioDebuggerLayer);
 	}
 
 	~sandbox()
@@ -22,12 +25,12 @@ public:
 
 	// A little example of how to do keyboard inputs
 	void keyboardEventCallback() {
-		if (Engine::Key::wasKeyPressed(EG_SCANCODE_P)) {
-			m_AudioPlayer->PlaySound("assets/audio/music/music1_short.wav", false, 0.4f, &musicID);
+		EG_PROFILE_FUNCTION();
+		if ((Engine::Key::isKeyPressed(EG_SCANCODE_LCTRL) || Engine::Key::isKeyPressed(EG_SCANCODE_RCTRL)) && Engine::Key::wasKeyPressed(EG_SCANCODE_P)) {
+			m_AudioDebuggerLayer->m_ShowWindow = true;
 		}
-		if (Engine::Key::wasKeyPressed(EG_SCANCODE_O))
-		{
-			m_AudioPlayer->StopSound(musicID);
+		else if (Engine::Key::wasKeyPressed(EG_SCANCODE_P)) {
+			m_AudioPlayer->PlaySound("assets/audio/music/music1_short.wav", false, 0.4f, &musicID);
 		}
 		if (Engine::Key::isKeyPressed(EG_SCANCODE_K))
 		{
@@ -44,6 +47,8 @@ public:
 	
 private:
 	unsigned int musicID;
+
+	AudioDebugger* m_AudioDebuggerLayer;
 };
 
 sandbox* app;

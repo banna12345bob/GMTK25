@@ -6,6 +6,9 @@ namespace Engine {
 	{
 	public:
 		virtual void renderImGUILayer() = 0;
+
+		// Layer not shown by default
+		bool m_ShowWindow = false;
 	};
 
 }

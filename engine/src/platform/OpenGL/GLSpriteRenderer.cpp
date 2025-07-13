@@ -78,8 +78,8 @@ namespace Engine {
 
 		// ** finally, bind vbo and vao ** //
 
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBindVertexArray(vao);
 	}
 
 	void GLSpriteRenderer::DrawSprite(GLTexture2D* texture, glm::vec2 position, glm::vec2 size, float rotate, glm::vec3 color) {
@@ -103,7 +103,8 @@ namespace Engine {
 
 		glBindVertexArray(vao);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
-		glBindVertexArray(0);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	/**

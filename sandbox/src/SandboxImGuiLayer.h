@@ -9,10 +9,15 @@ public:
 	SandboxImGuiLayer(Engine::Application* app) 
 		: m_Application(app)
 	{
+		m_ShowWindow = true;
 	}
 
 	virtual void renderImGUILayer() override
 	{
+		EG_PROFILE_FUNCTION();
+		if (!m_ShowWindow)
+			return;
+
 		// Begin with window. Requires window name
 		ImGui::Begin("Window info");
 

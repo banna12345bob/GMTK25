@@ -59,29 +59,31 @@ namespace Engine {
 	{
 		EG_PROFILE_FUNCTION();
 		bool retval = false;
-		Sound sound = Sound();
-		sound.currentOffset = 0;
-		sound.loop = loop;
-		sound.volume = std::clamp(volume, 0.0f, 1.0f);
+		Ref<Sound> sound = CreateRef<Sound>();
+		m_sounds.emplace(id, sound);
+		sound->currentOffset = 0;
+		sound->loop = loop;
+		sound->volume = std::clamp(volume, 0.0f, 1.0f);
+		sound->filePath = stringPath;
 
 		SDL_AudioSpec srcspec;
 
 		// Load file
 		const char* filePath = stringPath.c_str();
-		if (!SDL_LoadWAV(filePath, &srcspec, &sound.data, &sound.dataLen)) {
+		if (!SDL_LoadWAV(filePath, &srcspec, &sound->data, &sound->dataLen)) {
 			EG_CORE_WARN("Couldn't load .wav file '{0}'. Error: {1}", filePath, SDL_GetError());
 			return;
 		}
 
-		sound.format = srcspec.format;
+		sound->format = srcspec.format;
 
 		// Create and bind audio stream
-		sound.stream = SDL_CreateAudioStream(&srcspec, &m_deviceSpec);
-		if (!sound.stream) {
+		sound->stream = SDL_CreateAudioStream(&srcspec, &m_deviceSpec);
+		if (!sound->stream) {
 			EG_CORE_ERROR("Couldn't create audio stream. Error: {0}", SDL_GetError());
 			return;
 		}
-		else if (!SDL_BindAudioStream(m_deviceId, sound.stream)) {
+		else if (!SDL_BindAudioStream(m_deviceId, sound->stream)) {
 			EG_CORE_ERROR("Failed to bind '{0}' to device. Error: {1}", filePath, SDL_GetError());
 			return;
 		}
@@ -89,10 +91,9 @@ namespace Engine {
 		// Set buffer size in bytes. Will be equal to 0.5 seconds.
 		uint32_t bufferSizeInSamples = srcspec.freq * 0.1f;
 		uint32_t sampleSize = SDL_AUDIO_BYTESIZE(srcspec.format);
-		sound.bufferSize = bufferSizeInSamples * sampleSize;
+		sound->bufferSize = bufferSizeInSamples * sampleSize;
 
 		std::lock_guard lk(m_mutex);
-		m_sounds.emplace(id, sound);
 	}
 
 	void SDL_AudioPlayer::UpdateAudio()
@@ -100,7 +101,7 @@ namespace Engine {
 		EG_PROFILE_FUNCTION();
 		for (auto it = m_sounds.begin(); it != m_sounds.end(); )
 		{
-			Sound* current = &it->second;
+			Ref<Sound> current = it->second;
 
 			if (SDL_GetAudioStreamQueued(current->stream) < current->bufferSize)
 			{
@@ -141,7 +142,7 @@ namespace Engine {
 		std::function<void()> func = [this, id, value] {
 			std::lock_guard lk(m_mutex);
 			if (m_sounds.count(id)) {
-				m_sounds[id].loop = value;
+				m_sounds[id]->loop = value;
 			}
 		};
 
@@ -154,7 +155,7 @@ namespace Engine {
 		std::function<void()> func = [this, id, value] {
 			std::lock_guard lk(m_mutex);
 			if (m_sounds.count(id)) {
-				m_sounds[id].volume = std::clamp(value, 0.0f, 1.0f);
+				m_sounds[id]->volume = std::clamp(value, 0.0f, 1.0f);
 			}
 		};
 

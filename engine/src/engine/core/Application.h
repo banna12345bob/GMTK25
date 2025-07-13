@@ -1,9 +1,6 @@
 #pragma once
 
 #include "core.h"
-//#include <string>
-//#include <sstream>
-//#include <map>
 
 #include "engine/core/Window.h"
 #include "engine/events/eventHandler.h"
