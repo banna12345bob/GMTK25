@@ -4,6 +4,9 @@
 
 #include "engine/debug/Instrumentor.h"
 
+#include "engine/core/Keycodes.h"
+#include "engine/events/Key.h"
+
 namespace Engine {
 
 	Application::Application(WindowProps props)
@@ -26,11 +29,21 @@ namespace Engine {
 		m_GraphicsAPI = GraphicsAPI::Create(&m_Window);
 
 		m_GraphicsAPI->SetVSync(false);
+
+		m_AudioDebuggerLayer = new AudioDebugger(&m_AudioPlayer);
+		m_Window->registerImGuiLayer(m_AudioDebuggerLayer);
+
 	}
 
 	Application::~Application()
 	{
 		EG_PROFILE_FUNCTION();
+	}
+
+	void Application::AudioDebuggerKeyboardEventCallback() {
+		EG_PROFILE_FUNCTION();
+		if ((Key::isKeyPressed(EG_SCANCODE_LCTRL) || Key::isKeyPressed(EG_SCANCODE_RCTRL)) && Key::wasKeyPressed(EG_SCANCODE_P))
+			m_AudioDebuggerLayer->m_ShowWindow = !m_AudioDebuggerLayer->m_ShowWindow;
 	}
 
 	void Application::Run()

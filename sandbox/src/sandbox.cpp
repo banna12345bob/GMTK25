@@ -1,7 +1,6 @@
 ﻿#include <engine.h>
 
 #include "SandboxImGuiLayer.h"
-#include "AudioDebugger.h"
 
 class sandbox : public Engine::Application
 {
@@ -10,9 +9,7 @@ public:
 	sandbox(Engine::WindowProps props)
 		: Engine::Application(props)
 	{
-		m_AudioDebuggerLayer = new AudioDebugger(&m_AudioPlayer);
 		m_Window->registerImGuiLayer(new SandboxImGuiLayer(this));
-		m_Window->registerImGuiLayer(m_AudioDebuggerLayer);
 	}
 
 	~sandbox()
@@ -26,32 +23,25 @@ public:
 	// A little example of how to do keyboard inputs
 	void keyboardEventCallback() {
 		EG_PROFILE_FUNCTION();
-		if ((Engine::Key::isKeyPressed(EG_SCANCODE_LCTRL) || Engine::Key::isKeyPressed(EG_SCANCODE_RCTRL)) && Engine::Key::wasKeyPressed(EG_SCANCODE_P)) {
-			m_AudioDebuggerLayer->m_ShowWindow = !m_AudioDebuggerLayer->m_ShowWindow;
-		}
-		else if (Engine::Key::wasKeyPressed(EG_SCANCODE_P)) {
+		if (Engine::Key::wasKeyPressed(EG_SCANCODE_I))
 			m_AudioPlayer->PlaySound("assets/audio/music/music1_short.wav", false, 0.4f, &musicID);
-		}
-		if (Engine::Key::wasKeyPressed(EG_SCANCODE_O)) {
+
+		if (Engine::Key::wasKeyPressed(EG_SCANCODE_O))
 			m_AudioPlayer->PlaySound("assets/audio/music/John Coltrane - Naima.wav", true, 0.8f, &musicID);
-		}
+
 		if (Engine::Key::isKeyPressed(EG_SCANCODE_K))
-		{
 			m_Window->SetWidth(m_Window->GetWidth() + 10);
-		}
+
 		if (Engine::Key::isKeyPressed(EG_SCANCODE_L))
-		{
 			m_Window->SetWidth(m_Window->GetWidth() - 10);
-		}
-		if (Engine::Key::wasKeyPressed(EG_SCANCODE_V)) {
+
+		if (Engine::Key::wasKeyPressed(EG_SCANCODE_V))
 			m_GraphicsAPI->SetVSync((m_GraphicsAPI->GetVSync() == 0));
-		}
 	}
 	
 private:
 	unsigned int musicID;
 
-	AudioDebugger* m_AudioDebuggerLayer;
 };
 
 sandbox* app;
@@ -64,6 +54,7 @@ sandbox* app;
 
 static void keyboardEventCallbackWrapper(void* prt) {
 	app->keyboardEventCallback();
+	app->AudioDebuggerKeyboardEventCallback();
 }
 
 Engine::Application* Engine::CreateApplication()

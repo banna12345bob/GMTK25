@@ -9,6 +9,8 @@
 
 #include "engine/events/eventCallbackManager.h"
 
+#include "engine/audio/AudioDebugger.h"
+
 namespace Engine {
 
 	class Application
@@ -16,6 +18,8 @@ namespace Engine {
 	public:
         Application(WindowProps props);
 		virtual ~Application();
+
+		void AudioDebuggerKeyboardEventCallback();
 
 		virtual void Run();
 
@@ -28,6 +32,8 @@ namespace Engine {
 		eventCallbackManager* m_EventCallbackManager;
 
 		int m_frameRate;
+	private:
+		AudioDebugger* m_AudioDebuggerLayer;
 	};
 
 	//	To be defined in client
