@@ -14,7 +14,7 @@ namespace Engine {
 
 		virtual void HandleEvents() = 0;
 
-		static Scope<EventHandler> Create(Scope<Window>* window, eventCallbackManager* eventCallbackManager);
+		static Scope<EventHandler> Create();
 	};
 }
 

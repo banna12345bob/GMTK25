@@ -9,12 +9,9 @@ namespace Engine {
 	class SDLEventHandler : public EventHandler
 	{
 	public:
-		SDLEventHandler(Scope<Window>* window, eventCallbackManager* eventCallbackManager);
+		SDLEventHandler();
 		virtual void HandleEvents() override;
 
-	private:
-		Scope<Window>* m_Window;
-		eventCallbackManager* m_EventCallbackManager;
 	};
 }
 

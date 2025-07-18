@@ -6,8 +6,7 @@
 class SandboxImGuiLayer : public Engine::ImGuiLayer
 {
 public:
-	SandboxImGuiLayer(Engine::Application* app) 
-		: m_Application(app)
+	SandboxImGuiLayer()
 	{
 		m_ShowWindow = true;
 	}
@@ -21,15 +20,15 @@ public:
 		// Begin with window. Requires window name
 		ImGui::Begin("Window info");
 
-		ImGui::Text(("FPS: " + std::to_string(m_Application->m_frameRate)).c_str());
+		ImGui::Text(("FPS: " + std::to_string(Engine::Application::getApplication()->m_frameRate)).c_str());
 
 		ImGui::SeparatorText("Window Size");
-		ImGui::Text((std::string("Width: ") + std::to_string(m_Application->m_Window->GetWidth())).c_str());
-		ImGui::Text((std::string("Height: ") + std::to_string(m_Application->m_Window->GetHeight())).c_str());
+		ImGui::Text((std::string("Width: ") + std::to_string(Engine::Application::getApplication()->m_Window->GetWidth())).c_str());
+		ImGui::Text((std::string("Height: ") + std::to_string(Engine::Application::getApplication()->m_Window->GetHeight())).c_str());
 
 		ImGui::SeparatorText("Vsync");
 		std::string currentVsyncMode;
-		switch (m_Application->m_GraphicsAPI->GetVSync()) {
+		switch (Engine::Application::getApplication()->m_GraphicsAPI->GetVSync()) {
 			case -1:
 				currentVsyncMode = "Adaptave";
 				break;
@@ -44,7 +43,7 @@ public:
 				break;
 		}
 		if (ImGui::Button(("Vsync Mode: " + currentVsyncMode).c_str())) {
-			m_Application->m_GraphicsAPI->SetVSync((m_Application->m_GraphicsAPI->GetVSync() == 0));
+			Engine::Application::getApplication()->m_GraphicsAPI->SetVSync((Engine::Application::getApplication()->m_GraphicsAPI->GetVSync() == 0));
 		}
 
 		// Little header/tree demo
@@ -67,6 +66,5 @@ public:
 			ImGui::ShowDemoWindow(&m_ShowImGuiDemoWindow);
 	}
 private:
-	Engine::Application* m_Application;
 	bool m_ShowImGuiDemoWindow = false;
 };

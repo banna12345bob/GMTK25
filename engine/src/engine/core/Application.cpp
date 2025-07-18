@@ -9,9 +9,13 @@
 
 namespace Engine {
 
+	static Application* s_Instance = nullptr;
+
 	Application::Application(WindowProps props)
 	{
 		EG_PROFILE_FUNCTION();
+		s_Instance = this;
+
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -24,15 +28,15 @@ namespace Engine {
 
 		m_Window = Window::Create(props);
 		m_EventCallbackManager = new eventCallbackManager();
-		m_EventHandler = EventHandler::Create(&m_Window, m_EventCallbackManager);
+		m_EventHandler = EventHandler::Create();
 		m_AudioPlayer = AudioPlayer::Create();
 		m_GraphicsAPI = GraphicsAPI::Create(&m_Window);
 
 		m_GraphicsAPI->SetVSync(false);
 
-		m_AudioDebuggerLayer = new AudioDebugger(&m_AudioPlayer);
 		m_Window->registerImGuiLayer(m_AudioDebuggerLayer);
 
+		m_EventCallbackManager->registerKeyboardCallback(AudioDebuggerKeyboardEventCallback);
 	}
 
 	Application::~Application()
@@ -40,10 +44,15 @@ namespace Engine {
 		EG_PROFILE_FUNCTION();
 	}
 
-	void Application::AudioDebuggerKeyboardEventCallback() {
+	Application* Engine::Application::getApplication()
+	{
+		return s_Instance;
+	}
+
+	void Application::AudioDebuggerKeyboardEventCallback(void* callback) {
 		EG_PROFILE_FUNCTION();
 		if ((Key::isKeyPressed(EG_SCANCODE_LCTRL) || Key::isKeyPressed(EG_SCANCODE_RCTRL)) && Key::wasKeyPressed(EG_SCANCODE_P))
-			m_AudioDebuggerLayer->m_ShowWindow = !m_AudioDebuggerLayer->m_ShowWindow;
+			Application::getApplication()->m_AudioDebuggerLayer->m_ShowWindow = !Application::getApplication()->m_AudioDebuggerLayer->m_ShowWindow;
 	}
 
 	void Application::Run()

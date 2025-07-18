@@ -9,12 +9,11 @@ namespace Engine {
 	class AudioDebugger : public ImGuiLayer
 	{
 	public:
-		AudioDebugger(Scope<AudioPlayer>* audioPlayer);
+		AudioDebugger();
 
 		virtual void renderImGUILayer() override;
 
 	private:
-		Scope<AudioPlayer>* m_AudioPlayer;
 		float temp_volume = 0.5f;
 		bool temp_loop = false;
 	};

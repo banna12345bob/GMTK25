@@ -9,7 +9,9 @@ public:
 	sandbox(Engine::WindowProps props)
 		: Engine::Application(props)
 	{
-		m_Window->registerImGuiLayer(new SandboxImGuiLayer(this));
+		m_Window->registerImGuiLayer(new SandboxImGuiLayer());
+
+		m_EventCallbackManager->registerKeyboardCallback(keyboardEventCallback);
 	}
 
 	~sandbox()
@@ -21,45 +23,17 @@ public:
 	}
 
 	// A little example of how to do keyboard inputs
-	void keyboardEventCallback() {
+	static void keyboardEventCallback(void* callback) {
 		EG_PROFILE_FUNCTION();
 		if (Engine::Key::wasKeyPressed(EG_SCANCODE_I))
-			m_AudioPlayer->PlaySound("assets/audio/music/music1_short.wav", false, 0.4f, &musicID);
+			Engine::Application::getApplication()->m_AudioPlayer->PlaySound("assets/audio/music/music1_short.wav", false, 0.4f);
 
 		if (Engine::Key::wasKeyPressed(EG_SCANCODE_O))
-			m_AudioPlayer->PlaySound("assets/audio/music/John Coltrane - Naima.wav", true, 0.8f, &musicID);
-
-		if (Engine::Key::isKeyPressed(EG_SCANCODE_K))
-			m_Window->SetWidth(m_Window->GetWidth() + 10);
-
-		if (Engine::Key::isKeyPressed(EG_SCANCODE_L))
-			m_Window->SetWidth(m_Window->GetWidth() - 10);
-
-		if (Engine::Key::wasKeyPressed(EG_SCANCODE_V))
-			m_GraphicsAPI->SetVSync((m_GraphicsAPI->GetVSync() == 0));
+			Engine::Application::getApplication()->m_AudioPlayer->PlaySound("assets/audio/music/John Coltrane - Naima.wav", true, 0.8f);
 	}
-	
-private:
-	unsigned int musicID;
-
 };
-
-sandbox* app;
-
-// This sucks ass
-// If I include registerKeyboardCallback in the constructor of sandbox it complains that the event callback isn't static
-// When I make the callback static then it can't access memeber variables
-// So I have to make a global callback wrapper that can then get parsed into the register
-// ¯\_(ツ)_/¯ - Isaac
-
-static void keyboardEventCallbackWrapper(void* prt) {
-	app->keyboardEventCallback();
-	app->AudioDebuggerKeyboardEventCallback();
-}
 
 Engine::Application* Engine::CreateApplication()
 {
-	app = new sandbox(Engine::WindowProps("Sandbox", 520, 520, "assets/textures/Oak_Log.png"));
-	app->m_EventCallbackManager->registerKeyboardCallback(&keyboardEventCallbackWrapper);
-	return app;
+	return new sandbox(Engine::WindowProps("Sandbox", 520, 520, "assets/textures/Oak_Log.png"));
 }

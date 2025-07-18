@@ -1,12 +1,13 @@
 #include "AudioDebugger.h"
 
+#include "engine/core/Application.h"
+
 #include <imgui.h>
 #include <filesystem>
 
 namespace Engine {
 
-	AudioDebugger::AudioDebugger(Scope<AudioPlayer>* audioPlayer)
-		: m_AudioPlayer(audioPlayer)
+	AudioDebugger::AudioDebugger()
 	{
 	}
 
@@ -17,13 +18,13 @@ namespace Engine {
 
 		ImGui::Begin("Audio Debugger", &this->m_ShowWindow);
 			if (ImGui::Button("Stop All")) {
-				for (auto i = m_AudioPlayer->get()->GetSounds()->begin(); i != m_AudioPlayer->get()->GetSounds()->end(); i++) {
-					m_AudioPlayer->get()->StopSound(i->first);
+				for (auto i = Application::getApplication()->m_AudioPlayer->GetSounds()->begin(); i != Application::getApplication()->m_AudioPlayer->GetSounds()->end(); i++) {
+					Application::getApplication()->m_AudioPlayer->StopSound(i->first);
 				}
 			}
-			for (auto i = m_AudioPlayer->get()->GetSounds()->begin(); i != m_AudioPlayer->get()->GetSounds()->end(); i++) {
+			for (auto i = Application::getApplication()->m_AudioPlayer->GetSounds()->begin(); i != Application::getApplication()->m_AudioPlayer->GetSounds()->end(); i++) {
 				// Incase of edge case where threads don't align
-				if (m_AudioPlayer->get()->GetSounds()->size() == 0)
+				if (Application::getApplication()->m_AudioPlayer->GetSounds()->size() == 0)
 					break;
 
 				int id = i->first;
@@ -32,7 +33,7 @@ namespace Engine {
 					ImGui::SliderFloat("Volume", &i->second->volume, 0, 1);
 					ImGui::Checkbox("Loop", &i->second->loop);
 					if (ImGui::Button("Stop"))
-						m_AudioPlayer->get()->StopSound(id);
+						Application::getApplication()->m_AudioPlayer->StopSound(id);
 					ImGui::TreePop();
 				}
 			}
@@ -43,7 +44,7 @@ namespace Engine {
 			ImGui::SliderFloat("Volume", &temp_volume, 0, 1);
 			for (const auto& entry : std::filesystem::directory_iterator("assets/audio/music")) {
 				if (ImGui::Button(entry.path().string().c_str()))
-					m_AudioPlayer->get()->PlaySound(entry.path().string(), temp_loop, temp_volume);
+					Application::getApplication()->m_AudioPlayer->PlaySound(entry.path().string(), temp_loop, temp_volume);
 			}
 		ImGui::End();
 	}

@@ -19,7 +19,9 @@ namespace Engine {
         Application(WindowProps props);
 		virtual ~Application();
 
-		void AudioDebuggerKeyboardEventCallback();
+		static Application* getApplication();
+
+		static void AudioDebuggerKeyboardEventCallback(void* callback);
 
 		virtual void Run();
 
@@ -31,9 +33,9 @@ namespace Engine {
 		Scope<GraphicsAPI> m_GraphicsAPI;
 		eventCallbackManager* m_EventCallbackManager;
 
-		int m_frameRate;
+		int m_frameRate = 0;
 	private:
-		AudioDebugger* m_AudioDebuggerLayer;
+		AudioDebugger* m_AudioDebuggerLayer = new AudioDebugger();
 	};
 
 	//	To be defined in client
