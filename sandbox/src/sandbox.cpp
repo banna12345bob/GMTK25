@@ -9,9 +9,9 @@ public:
 	sandbox(Engine::WindowProps props)
 		: Engine::Application(props)
 	{
-		m_Window->registerImGuiLayer(new SandboxImGuiLayer());
+		getWindow()->registerImGuiLayer(new SandboxImGuiLayer());
 
-		m_EventCallbackManager->registerKeyboardCallback(keyboardEventCallback);
+		getCallbackManager()->registerKeyboardCallback(keyboardEventCallback);
 	}
 
 	~sandbox()
@@ -26,10 +26,10 @@ public:
 	static void keyboardEventCallback(void* callback) {
 		EG_PROFILE_FUNCTION();
 		if (Engine::Key::wasKeyPressed(EG_SCANCODE_I))
-			Engine::Application::getApplication()->m_AudioPlayer->PlaySound("assets/audio/music/music1_short.wav", false, 0.4f);
+			Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/music/music1_short.wav", false, 0.4f);
 
 		if (Engine::Key::wasKeyPressed(EG_SCANCODE_O))
-			Engine::Application::getApplication()->m_AudioPlayer->PlaySound("assets/audio/music/John Coltrane - Naima.wav", true, 0.8f);
+			Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/music/John Coltrane - Naima.wav", true, 0.8f);
 	}
 };
 

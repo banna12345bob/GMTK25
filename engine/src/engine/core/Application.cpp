@@ -30,9 +30,8 @@ namespace Engine {
 		m_EventCallbackManager = new eventCallbackManager();
 		m_EventHandler = EventHandler::Create();
 		m_AudioPlayer = AudioPlayer::Create();
-		m_GraphicsAPI = GraphicsAPI::Create(&m_Window);
 
-		m_GraphicsAPI->SetVSync(false);
+		m_Window->SetVSync(false);
 
 		m_Window->registerImGuiLayer(m_AudioDebuggerLayer);
 
@@ -68,7 +67,7 @@ namespace Engine {
 				m_frameRate = 1000 / deltaTime;
 
 			m_EventHandler->HandleEvents();
-			m_GraphicsAPI->Render();
+			m_Window->GL_SwapWindow();
 
 			this->UpdateApp();
 			b = a;

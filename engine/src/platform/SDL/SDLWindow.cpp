@@ -1,8 +1,5 @@
 #include "SDLWindow.h"
 
-#include "engine/graphics/GraphicsAPI.h"
-#include "platform/OpenGL/GLSpriteRenderer.h"
-
 #include <stb_image.h>
 
 #include <filesystem>
@@ -50,17 +47,17 @@ namespace Engine {
 		if (m_data.fullscreen)
 			SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN);
 
-		switch (GraphicsAPI::GetAPI())
-		{
-		case GraphicsAPI::API::None: {
-			EG_CORE_ASSERT(false, "Cannot have GraphicsAPI::None");
-			break;
-		}
-		case GraphicsAPI::API::OpenGL: {
-			CreateGLContext();
-			break;
-		}
-		}
+		CreateGLContext();
+		//switch (GraphicsAPI::GetAPI())
+		//{
+		//case GraphicsAPI::API::None: {
+			//EG_CORE_ASSERT(false, "Cannot have GraphicsAPI::None");
+			//break;
+		//}
+		//case GraphicsAPI::API::OpenGL: {
+			//break;
+		//}
+		//}
 
 		if (!std::filesystem::exists(m_data.pathToIcon)) {
 			m_data.pathToIcon = "";
@@ -144,6 +141,58 @@ namespace Engine {
 		SDL_GetWindowSize(m_window, &m_data.width, &m_data.height);
 	}
 
+	/**
+	* If turning VSync on, adaptive VSync will be tried first, then regualr VSync if that doesn't work.
+	*/
+	void SDLWindow::SetVSync(bool value) {
+		if (value) {
+			// Try adaptive VSync, if that doesn't work try the normal one
+			if (!SDL_GL_SetSwapInterval(-1)) {
+				EG_CORE_ERROR("Could not enable adaptive VSync: {0}", SDL_GetError());
+				if (!SDL_GL_SetSwapInterval(1)) {
+					EG_CORE_ERROR("Could not enable VSync: {0}", SDL_GetError());
+				}
+			}
+		}
+		else {
+			if (!SDL_GL_SetSwapInterval(0)) {
+				EG_CORE_ERROR("Could not disable VSync: {0}", SDL_GetError());
+			}
+		}
+
+		int state;
+		if (!SDL_GL_GetSwapInterval(&state)) {
+			EG_CORE_ERROR("Could not get VSync state: {0}", SDL_GetError());
+			return;
+		}
+
+		switch (state) {
+		case 0:
+			EG_CORE_INFO("VSync is off.");
+			break;
+		case 1:
+			EG_CORE_INFO("VSync is on.");
+			break;
+		case -1:
+			EG_CORE_INFO("Adaptive VSync is on.");
+			break;
+		}
+	}
+
+	/**
+	* Returns current VSync mode
+	* @returns 0 for off, 1 for VSync and -1 for adaptive VSync. Returns -2 on error
+	*/
+	int SDLWindow::GetVSync()
+	{
+		int state;
+		if (!SDL_GL_GetSwapInterval(&state)) {
+			EG_CORE_ERROR("Could not get VSync state: {0}", SDL_GetError());
+			return -2;
+		}
+		return state;
+	}
+
 	void SDLWindow::CreateGLContext() 
 	{
 		EG_PROFILE_FUNCTION();
@@ -157,14 +206,24 @@ namespace Engine {
 			EG_CORE_FATAL("SDL could not initialise the OpenGL context! {0}", SDL_GetError());
 			EG_CORE_ASSERT(false, "SDL ERROR");
 		}
+		EG_CORE_INFO("Created openGL context");
 		SDL_GL_MakeCurrent(m_window, m_GLContext);
 		ImGui_ImplSDL3_InitForOpenGL(m_window, m_GLContext);
 		ImGui_ImplOpenGL3_Init();
+
+		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
+			EG_CORE_FATAL("GLAD couldn't load OpenGL");
+			EG_CORE_ASSERT(false, "GLAD ERROR");
+		}
 	}
 
+	// Should NOT be in window
 	void SDLWindow::GL_SwapWindow()
 	{
 		EG_PROFILE_FUNCTION();
+
+		// Really should make ImGUI render independantly of the main window when undocked
+		// TODO: Maybe multithread this or something idk
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplSDL3_NewFrame();
 		ImGui::NewFrame();
@@ -173,12 +232,15 @@ namespace Engine {
 			this->getImGuiLayer(i)->renderImGUILayer();
 		}
 		ImGui::Render();
-		// Updates the window
-		glViewport(0, 0, this->GetWidth(), this->GetHeight());
-		switch (GraphicsAPI::GetAPI())
+
+		// TODO: Viewport stuff should NOT be here
 		{
-		case GraphicsAPI::API::None: EG_CORE_ASSERT(false, "Cannot have GraphicsAPI::None");
-		case GraphicsAPI::API::OpenGL: ;
+			// Updates the viewport
+			glViewport(0, 0, this->GetWidth(), this->GetHeight());
+
+			// Clears the viewport
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
 		}
 
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

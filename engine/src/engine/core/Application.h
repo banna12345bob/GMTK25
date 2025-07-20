@@ -5,7 +5,6 @@
 #include "engine/core/Window.h"
 #include "engine/events/eventHandler.h"
 #include "engine/audio/audioPlayer.h"
-#include "engine/graphics/GraphicsAPI.h"
 
 #include "engine/events/eventCallbackManager.h"
 
@@ -25,16 +24,19 @@ namespace Engine {
 
 		virtual void Run();
 
-		virtual void UpdateApp() = 0;
+		Scope<Window>& getWindow() { return m_Window; }
+		Scope<AudioPlayer>& getAudioPlayer() { return m_AudioPlayer; }
+		eventCallbackManager* getCallbackManager() { return m_EventCallbackManager; }
 
-		Scope<Window> m_Window;
-		Scope<EventHandler> m_EventHandler;
-		Scope<AudioPlayer> m_AudioPlayer;
-		Scope<GraphicsAPI> m_GraphicsAPI;
-		eventCallbackManager* m_EventCallbackManager;
+		virtual void UpdateApp() = 0;
 
 		int m_frameRate = 0;
 	private:
+		Scope<Window> m_Window;
+		Scope<EventHandler> m_EventHandler;
+		Scope<AudioPlayer> m_AudioPlayer;
+		eventCallbackManager* m_EventCallbackManager;
+
 		AudioDebugger* m_AudioDebuggerLayer = new AudioDebugger();
 	};
 

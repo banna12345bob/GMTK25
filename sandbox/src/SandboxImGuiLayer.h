@@ -23,12 +23,12 @@ public:
 		ImGui::Text(("FPS: " + std::to_string(Engine::Application::getApplication()->m_frameRate)).c_str());
 
 		ImGui::SeparatorText("Window Size");
-		ImGui::Text((std::string("Width: ") + std::to_string(Engine::Application::getApplication()->m_Window->GetWidth())).c_str());
-		ImGui::Text((std::string("Height: ") + std::to_string(Engine::Application::getApplication()->m_Window->GetHeight())).c_str());
+		ImGui::Text((std::string("Width: ") + std::to_string(Engine::Application::getApplication()->getWindow()->GetWidth())).c_str());
+		ImGui::Text((std::string("Height: ") + std::to_string(Engine::Application::getApplication()->getWindow()->GetHeight())).c_str());
 
 		ImGui::SeparatorText("Vsync");
 		std::string currentVsyncMode;
-		switch (Engine::Application::getApplication()->m_GraphicsAPI->GetVSync()) {
+		switch (Engine::Application::getApplication()->getWindow()->GetVSync()) {
 			case -1:
 				currentVsyncMode = "Adaptave";
 				break;
@@ -43,7 +43,7 @@ public:
 				break;
 		}
 		if (ImGui::Button(("Vsync Mode: " + currentVsyncMode).c_str())) {
-			Engine::Application::getApplication()->m_GraphicsAPI->SetVSync((Engine::Application::getApplication()->m_GraphicsAPI->GetVSync() == 0));
+			Engine::Application::getApplication()->getWindow()->SetVSync((Engine::Application::getApplication()->getWindow()->GetVSync() == 0));
 		}
 
 		// Little header/tree demo

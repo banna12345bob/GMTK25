@@ -20,6 +20,9 @@ namespace Engine {
 
 		virtual void ReloadWindow() override;
 
+		virtual void SetVSync(bool value) override;
+		virtual int GetVSync() override;
+
 		virtual void GL_SwapWindow() override;
 
 	private:

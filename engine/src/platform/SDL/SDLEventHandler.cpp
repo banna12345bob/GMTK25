@@ -25,12 +25,12 @@ namespace Engine {
 			ImGui_ImplSDL3_ProcessEvent(&e);
 			switch (e.type) {
 			case SDL_EVENT_QUIT:
-				Application::getApplication()->m_Window->SetRunning(false);
+				Application::getApplication()->getWindow()->SetRunning(false);
 				break;
 			case SDL_EVENT_WINDOW_RESIZED:
 				// TODO: Change OpenGL viewport size
-				Application::getApplication()->m_Window->ReloadWindow();
-				EG_CORE_INFO("W: {0}, H: {1}", Application::getApplication()->m_Window->GetWidth(), Application::getApplication()->m_Window->GetHeight());
+				Application::getApplication()->getWindow()->ReloadWindow();
+				EG_CORE_INFO("W: {0}, H: {1}", Application::getApplication()->getWindow()->GetWidth(), Application::getApplication()->getWindow()->GetHeight());
 				break;
 			case SDL_EVENT_WINDOW_MINIMIZED:
 				// TODO: Add a config option that caps the FPS if window minimized
@@ -41,13 +41,13 @@ namespace Engine {
 				break;
 			case SDL_EVENT_KEY_DOWN:
 				Key::setKeyPressed(e.key.scancode, true);
-				if (Application::getApplication()->m_EventCallbackManager->getKeyboardCallbacks()->size() == 0) {
+				if (Application::getApplication()->getCallbackManager()->getKeyboardCallbacks()->size() == 0) {
 					EG_CORE_WARN("No keyboard callbacks registered");
 					break;
 				}
-				for (int i = 0; i < Application::getApplication()->m_EventCallbackManager->getKeyboardCallbacks()->size(); i++)
+				for (int i = 0; i < Application::getApplication()->getCallbackManager()->getKeyboardCallbacks()->size(); i++)
 				{
-					Application::getApplication()->m_EventCallbackManager->getKeyboardCallbacks()->at(i)(nullptr);
+					Application::getApplication()->getCallbackManager()->getKeyboardCallbacks()->at(i)(nullptr);
 				}
 				break;
 			case SDL_EVENT_KEY_UP:
