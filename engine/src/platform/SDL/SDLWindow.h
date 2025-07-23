@@ -23,6 +23,8 @@ namespace Engine {
 		virtual void SetVSync(bool value) override;
 		virtual int GetVSync() override;
 
+		virtual void* getNativeWindow() override { return m_window; }
+
 		virtual void GL_SwapWindow() override;
 
 	private:

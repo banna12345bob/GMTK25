@@ -10,6 +10,8 @@
 
 #include "engine/audio/AudioDebugger.h"
 
+#include "engine/ImGui/ImGuiRenderer.h"
+
 namespace Engine {
 
 	class Application
@@ -27,6 +29,7 @@ namespace Engine {
 		Scope<Window>& getWindow() { return m_Window; }
 		Scope<AudioPlayer>& getAudioPlayer() { return m_AudioPlayer; }
 		eventCallbackManager* getCallbackManager() { return m_EventCallbackManager; }
+		ImGuiRenderer* getImGuiRenderer() { return m_ImGuiRenderer; }
 
 		virtual void UpdateApp() = 0;
 
@@ -36,6 +39,7 @@ namespace Engine {
 		Scope<EventHandler> m_EventHandler;
 		Scope<AudioPlayer> m_AudioPlayer;
 		eventCallbackManager* m_EventCallbackManager;
+		ImGuiRenderer* m_ImGuiRenderer;
 
 		AudioDebugger* m_AudioDebuggerLayer = new AudioDebugger();
 	};

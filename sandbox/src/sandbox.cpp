@@ -9,7 +9,7 @@ public:
 	sandbox(Engine::WindowProps props)
 		: Engine::Application(props)
 	{
-		getWindow()->registerImGuiLayer(new SandboxImGuiLayer());
+		getImGuiRenderer()->registerImGuiLayer(new SandboxImGuiLayer());
 
 		getCallbackManager()->registerKeyboardCallback(keyboardEventCallback);
 	}

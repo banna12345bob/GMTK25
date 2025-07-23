@@ -42,7 +42,7 @@ namespace Engine {
 		ImGui::Begin("Audio Debug Player");
 			ImGui::Checkbox("Loop", &temp_loop);
 			ImGui::SliderFloat("Volume", &temp_volume, 0, 1);
-			for (const auto& entry : std::filesystem::directory_iterator("assets/audio/music")) {
+			for (const auto& entry : std::filesystem::directory_iterator("assets\\audio\\music")) {
 				if (ImGui::Button(entry.path().string().c_str()))
 					Application::getApplication()->getAudioPlayer()->PlaySound(entry.path().string(), temp_loop, temp_volume);
 			}

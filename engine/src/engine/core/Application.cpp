@@ -1,7 +1,5 @@
 #include "Application.h"
 
-#include <imgui.h>
-
 #include "engine/debug/Instrumentor.h"
 
 #include "engine/core/Keycodes.h"
@@ -16,24 +14,15 @@ namespace Engine {
 		EG_PROFILE_FUNCTION();
 		s_Instance = this;
 
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking		
-		// Just be mindful that for some reason external ImGUI viewports are laggy when VSync is enabled
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
-		ImGui::StyleColorsDark();
-
 		m_Window = Window::Create(props);
 		m_EventCallbackManager = new eventCallbackManager();
 		m_EventHandler = EventHandler::Create();
 		m_AudioPlayer = AudioPlayer::Create();
+		m_ImGuiRenderer = new ImGuiRenderer();
 
 		m_Window->SetVSync(false);
 
-		m_Window->registerImGuiLayer(m_AudioDebuggerLayer);
+		getImGuiRenderer()->registerImGuiLayer(m_AudioDebuggerLayer);
 
 		m_EventCallbackManager->registerKeyboardCallback(AudioDebuggerKeyboardEventCallback);
 	}

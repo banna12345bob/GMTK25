@@ -2,7 +2,7 @@
 
 #include "engine/audio/audioPlayer.h"
 #include "engine/debug/Instrumentor.h"
-#include "engine/graphics/imgui/ImGuiLayer.h"
+#include "engine/ImGui/ImGuiLayer.h"
 
 namespace Engine {
 

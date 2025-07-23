@@ -6,10 +6,9 @@
 
 #include <glad/glad.h>
 
-#include <backends/imgui_impl_sdl3.h>
-#include <backends/imgui_impl_opengl3.h>
-
 #include "engine/debug/Instrumentor.h"
+
+#include "engine/core/Application.h"
 
 namespace Engine {
 
@@ -103,9 +102,6 @@ namespace Engine {
 	SDLWindow::~SDLWindow()
 	{
 		EG_PROFILE_FUNCTION();
-		ImGui_ImplOpenGL3_Shutdown();
-		ImGui_ImplSDL3_Shutdown();
-		ImGui::DestroyContext();
 		SDL_GL_DestroyContext(m_GLContext);
 		SDL_DestroyWindow(m_window);
 		SDL_Quit();
@@ -206,10 +202,9 @@ namespace Engine {
 			EG_CORE_FATAL("SDL could not initialise the OpenGL context! {0}", SDL_GetError());
 			EG_CORE_ASSERT(false, "SDL ERROR");
 		}
-		EG_CORE_INFO("Created openGL context");
+		EG_CORE_INFO("Created OpenGL context");
+
 		SDL_GL_MakeCurrent(m_window, m_GLContext);
-		ImGui_ImplSDL3_InitForOpenGL(m_window, m_GLContext);
-		ImGui_ImplOpenGL3_Init();
 
 		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
 			EG_CORE_FATAL("GLAD couldn't load OpenGL");
@@ -222,17 +217,6 @@ namespace Engine {
 	{
 		EG_PROFILE_FUNCTION();
 
-		// Really should make ImGUI render independantly of the main window when undocked
-		// TODO: Maybe multithread this or something idk
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplSDL3_NewFrame();
-		ImGui::NewFrame();
-		for (int i = 0; i < this->getImGuiLayersSize(); i++)
-		{
-			this->getImGuiLayer(i)->renderImGUILayer();
-		}
-		ImGui::Render();
-
 		// TODO: Viewport stuff should NOT be here
 		{
 			// Updates the viewport
@@ -242,18 +226,8 @@ namespace Engine {
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 		}
+		Application::getApplication()->getImGuiRenderer()->Render();
 
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-		{
-			SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
-			SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
-			ImGui::UpdatePlatformWindows();
-			ImGui::RenderPlatformWindowsDefault();
-			SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
-		}
 		SDL_GL_SwapWindow(m_window);
 	}
 }
