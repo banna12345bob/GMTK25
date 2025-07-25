@@ -2,6 +2,8 @@
 
 #include "engine/core/Window.h"
 
+#include "platform/OpenGL/GLShader.h"
+
 #include <SDL3/SDL.h>
 
 namespace Engine {
@@ -34,6 +36,9 @@ namespace Engine {
 
 		WindowProps m_data;
 		SDL_GLContext m_GLContext;
+
+		GLShader* shader;
+		unsigned int VAO;
 	};
 
 }

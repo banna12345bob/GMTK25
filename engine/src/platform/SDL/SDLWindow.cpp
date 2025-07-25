@@ -210,21 +210,8 @@ namespace Engine {
 			EG_CORE_FATAL("GLAD couldn't load OpenGL");
 			EG_CORE_ASSERT(false, "GLAD ERROR");
 		}
-	}
 
-	// Should NOT be in window
-	void SDLWindow::GL_SwapWindow()
-	{
-		EG_PROFILE_FUNCTION();
-
-		// TODO: Viewport stuff should NOT be here
 		{
-			// Updates the viewport
-			glViewport(0, 0, this->GetWidth(), this->GetHeight());
-
-			// Clears the viewport
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
 
 			float vertices[] = {
 				-0.5f, -0.5f, 0.0f,
@@ -246,12 +233,6 @@ namespace Engine {
 				"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
 				"}\0";
 
-			unsigned int vertexShader;
-			vertexShader = glCreateShader(GL_VERTEX_SHADER);
-			glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-			glCompileShader(vertexShader);
-
-
 			// ================== Creates the fragment shader ============================
 			const char* fragmentShaderSource = "#version 330 core\n"
 				"out vec4 FragColor;\n"
@@ -259,21 +240,7 @@ namespace Engine {
 				"{\n"
 				"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
 				"}\0";
-
-			unsigned int fragmentShader;
-			fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-			glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-			glCompileShader(fragmentShader);
-
-			// ================== Creates the combined shader ============================
-			unsigned int shaderProgram;
-			shaderProgram = glCreateProgram();
-			glAttachShader(shaderProgram, vertexShader);
-			glAttachShader(shaderProgram, fragmentShader);
-			glLinkProgram(shaderProgram);
-			glUseProgram(shaderProgram);
-			glDeleteShader(vertexShader);
-			glDeleteShader(fragmentShader);
+			shader = new GLShader(vertexShaderSource, fragmentShaderSource);
 
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 			glEnableVertexAttribArray(0);
@@ -283,10 +250,9 @@ namespace Engine {
 			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 			glEnableVertexAttribArray(0);
-			glUseProgram(shaderProgram);
+			shader->Use();
 
 			// Vertex array object
-			unsigned int VAO;
 			glGenVertexArrays(1, &VAO);
 
 			glBindVertexArray(VAO);
@@ -294,12 +260,27 @@ namespace Engine {
 			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 			glEnableVertexAttribArray(0);
-			glUseProgram(shaderProgram);
+			shader->Use();
 			glBindVertexArray(VAO);
+		}
+	}
 
+	// Should NOT be in window
+	void SDLWindow::GL_SwapWindow()
+	{
+		EG_PROFILE_FUNCTION();
+
+		// TODO: Viewport stuff should NOT be here
+		{
+			// Updates the viewport
+			glViewport(0, 0, this->GetWidth(), this->GetHeight());
+
+			// Clears the viewport
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
 
 			// Draw verticies using a VAO and our shader
-			glUseProgram(shaderProgram);
+			shader->Use();
 			glBindVertexArray(VAO);
 			glDrawArrays(GL_TRIANGLES, 0, 3);
 		}
