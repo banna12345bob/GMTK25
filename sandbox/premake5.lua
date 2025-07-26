@@ -30,6 +30,10 @@ project "sandbox"
 		"{COPY} %{IncludeDir.SDL3}/../lib/x64/SDL3.dll %{cfg.targetdir}"
 	}
 
+	flags {
+		"MultiProcessorCompile"
+	}
+
 	filter "system:windows"
 		systemversion "latest"
 		buildoptions { "/utf-8" }

@@ -38,6 +38,10 @@ project "engine"
 		"%{IncludeDir.SDL3}/../lib/x64/"
 	}
 
+	flags {
+		"MultiProcessorCompile"
+	}
+
 	filter "system:windows"
 		systemversion "latest"
 		buildoptions { "/utf-8" }

@@ -48,7 +48,7 @@ namespace Engine {
 			getImGuiLayer(i)->renderImGUILayer();
 
 		ImGuiIO& io = ImGui::GetIO();
-		io.DisplaySize = ImVec2(Application::getApplication()->getWindow()->GetWidth(), Application::getApplication()->getWindow()->GetHeight());
+		io.DisplaySize = ImVec2((float)Application::getApplication()->getWindow()->GetWidth(), (float)Application::getApplication()->getWindow()->GetHeight());
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

@@ -89,7 +89,7 @@ namespace Engine {
 		}
 
 		// Set buffer size in bytes. Will be equal to 0.5 seconds.
-		uint32_t bufferSizeInSamples = srcspec.freq * 0.1f;
+		uint32_t bufferSizeInSamples = (uint32_t)(srcspec.freq * 0.1f);
 		uint32_t sampleSize = SDL_AUDIO_BYTESIZE(srcspec.format);
 		sound->bufferSize = bufferSizeInSamples * sampleSize;
 

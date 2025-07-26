@@ -49,7 +49,7 @@ namespace Engine {
 		int a, b, deltaTime;
 		b = 0;
 		while (m_Window->GetRunning()) {
-			a = SDL_GetTicks();
+			a = (int)SDL_GetTicks();
 			deltaTime = a - b;
 
 			if (deltaTime != 0)

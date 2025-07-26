@@ -18,6 +18,10 @@ project "glad"
 		"include"
 	}
 
+	flags {
+		"MultiProcessorCompile"
+	}
+
 	filter "system:linux"
 		pic "On"
 		systemversion "latest"
