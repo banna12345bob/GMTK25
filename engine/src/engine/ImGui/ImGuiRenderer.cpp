@@ -5,7 +5,6 @@
 #include <backends/imgui_impl_sdl3.h>
 #include <backends/imgui_impl_opengl3.h>
 
-#include <SDL3/SDL.h>
 
 #include "engine/core/Application.h"
 
@@ -61,6 +60,11 @@ namespace Engine {
 			ImGui::RenderPlatformWindowsDefault();
 			SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
 		}
+	}
+
+	void ImGuiRenderer::handleImGUIEvents(const SDL_Event* event)
+	{
+		ImGui_ImplSDL3_ProcessEvent(event);
 	}
 
 }

@@ -7,8 +7,8 @@
 #include <glad/glad.h>
 
 #include "engine/debug/Instrumentor.h"
-
 #include "engine/core/Application.h"
+#include "engine/events/Key.h"
 
 namespace Engine {
 
@@ -189,6 +189,48 @@ namespace Engine {
 		return state;
 	}
 
+	void SDLWindow::HandleEvents()
+	{
+		EG_PROFILE_FUNCTION();
+		SDL_Event e;
+
+		if (SDL_PollEvent(&e)) {
+			Application::getApplication()->getImGuiRenderer()->handleImGUIEvents(&e);
+
+			switch (e.type) {
+			case SDL_EVENT_QUIT:
+				SetRunning(false);
+				break;
+			case SDL_EVENT_WINDOW_RESIZED:
+				// TODO: Change OpenGL viewport size
+				ReloadWindow();
+				EG_CORE_INFO("W: {0}, H: {1}", GetWidth(), GetHeight());
+				break;
+			case SDL_EVENT_WINDOW_MINIMIZED:
+				// TODO: Add a config option that caps the FPS if window minimized
+				EG_CORE_WARN("implement Window Minimized event");
+				break;
+			case SDL_EVENT_WINDOW_RESTORED:
+				EG_CORE_WARN("implement Window Restored events");
+				break;
+			case SDL_EVENT_KEY_DOWN:
+				Key::setKeyPressed(e.key.scancode, true);
+				if (Application::getApplication()->getCallbackManager()->getKeyboardCallbacks()->size() == 0) {
+					EG_CORE_WARN("No keyboard callbacks registered");
+					break;
+				}
+				for (int i = 0; i < Application::getApplication()->getCallbackManager()->getKeyboardCallbacks()->size(); i++)
+				{
+					Application::getApplication()->getCallbackManager()->getKeyboardCallbacks()->at(i)(nullptr);
+				}
+				break;
+			case SDL_EVENT_KEY_UP:
+				Key::setKeyPressed(e.key.scancode, false);
+				break;
+			}
+		}
+	}
+
 	void SDLWindow::CreateGLContext() 
 	{
 		EG_PROFILE_FUNCTION();
@@ -266,9 +308,11 @@ namespace Engine {
 	}
 
 	// Should NOT be in window
-	void SDLWindow::GL_SwapWindow()
+	void SDLWindow::Update()
 	{
 		EG_PROFILE_FUNCTION();
+
+		HandleEvents();
 
 		// TODO: Viewport stuff should NOT be here
 		{

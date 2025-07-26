@@ -49,12 +49,14 @@ namespace Engine {
 		*/
 		virtual int GetVSync() = 0;
 
+		virtual void HandleEvents() = 0;
+
 		virtual void* getNativeWindow() = 0;
 
 		virtual bool GetRunning() { return m_Running; }
 		virtual void SetRunning(bool running) { m_Running = running; }
 		
-		virtual void GL_SwapWindow() = 0;
+		virtual void Update() = 0;
 
 		static Scope<Window> Create(WindowProps props);
 
