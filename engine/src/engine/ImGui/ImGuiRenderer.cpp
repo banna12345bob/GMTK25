@@ -25,7 +25,7 @@ namespace Engine {
 		SDL_Window* window = static_cast<SDL_Window*>(Application::getApplication()->getWindow()->getNativeWindow());
 
 		ImGui_ImplSDL3_InitForOpenGL(window, SDL_GL_GetCurrentContext());
-		ImGui_ImplOpenGL3_Init("#version 330");
+		ImGui_ImplOpenGL3_Init("#version 440");
 	}
 
 	ImGuiRenderer::~ImGuiRenderer()
@@ -35,23 +35,27 @@ namespace Engine {
 		ImGui::DestroyContext();
 	}
 
-	void ImGuiRenderer::Render()
+	void ImGuiRenderer::StartFrame()
 	{
-		// Really should make ImGUI render independantly of the main window when undocked
-		// TODO: Maybe multithread this or something idk
+		EG_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplSDL3_NewFrame();
 		ImGui::NewFrame();
 
-		for (int i = 0; i < getImGuiLayersSize(); i++)
-			getImGuiLayer(i)->renderImGUILayer();
+		for (ImGuiLayer* layer : m_ImGuiLayers)
+			layer->renderImGUILayer();
+	}
+
+	void ImGuiRenderer::EndFrame()
+	{
+		EG_PROFILE_FUNCTION();
 
 		ImGuiIO& io = ImGui::GetIO();
 		io.DisplaySize = ImVec2((float)Application::getApplication()->getWindow()->GetWidth(), (float)Application::getApplication()->getWindow()->GetHeight());
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
 			SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();

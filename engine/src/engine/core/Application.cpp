@@ -15,6 +15,7 @@ namespace Engine {
 		s_Instance = this;
 
 		m_Window = Window::Create(props);
+		m_RenderAPI = RenderAPI::Create();
 		m_EventCallbackManager = new eventCallbackManager();
 		m_AudioPlayer = AudioPlayer::Create();
 		m_ImGuiRenderer = new ImGuiRenderer();
@@ -54,7 +55,8 @@ namespace Engine {
 			if (deltaTime != 0)
 				m_frameRate = 1000 / deltaTime;
 
-			m_Window->Update();
+			m_Window->HandleEvents();
+			m_RenderAPI->Render();
 
 			this->UpdateApp();
 			b = a;

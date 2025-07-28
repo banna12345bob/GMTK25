@@ -3,6 +3,7 @@
 #include "core.h"
 
 #include "engine/core/Window.h"
+#include "engine/renderer/RenderAPI.h"
 #include "engine/audio/audioPlayer.h"
 
 #include "engine/events/eventCallbackManager.h"
@@ -35,6 +36,7 @@ namespace Engine {
 		int m_frameRate = 0;
 	private:
 		Scope<Window> m_Window;
+		Scope<RenderAPI> m_RenderAPI;
 		Scope<AudioPlayer> m_AudioPlayer;
 		eventCallbackManager* m_EventCallbackManager;
 		ImGuiRenderer* m_ImGuiRenderer;

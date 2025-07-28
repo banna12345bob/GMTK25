@@ -14,15 +14,13 @@ namespace Engine {
 		ImGuiRenderer();
 		~ImGuiRenderer();
 
-		void Render();
+		void StartFrame();
+		void EndFrame();
 
 		void registerImGuiLayer(ImGuiLayer* ImGuiLayer) { m_ImGuiLayers.push_back(ImGuiLayer); }
 
 		void handleImGUIEvents(const SDL_Event* event);
 	private:
-		ImGuiLayer* getImGuiLayer(int index) { return m_ImGuiLayers[index]; }
-		int getImGuiLayersSize() { return (int)m_ImGuiLayers.size(); }
-
 		std::vector<ImGuiLayer*> m_ImGuiLayers;
 	};
 }

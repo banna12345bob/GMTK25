@@ -55,8 +55,6 @@ namespace Engine {
 
 		virtual bool GetRunning() { return m_Running; }
 		virtual void SetRunning(bool running) { m_Running = running; }
-		
-		virtual void Update() = 0;
 
 		static Scope<Window> Create(WindowProps props);
 

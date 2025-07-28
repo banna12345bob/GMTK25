@@ -29,8 +29,6 @@ namespace Engine {
 
 		virtual void* getNativeWindow() override { return m_window; }
 
-		virtual void Update() override;
-
 	private:
 		void CreateGLContext();
 
@@ -38,9 +36,6 @@ namespace Engine {
 
 		WindowProps m_data;
 		SDL_GLContext m_GLContext;
-
-		GLShader* shader;
-		unsigned int VAO;
 	};
 
 }
