@@ -9,6 +9,7 @@
 #include "engine/debug/Instrumentor.h"
 #include "engine/core/Application.h"
 #include "engine/events/Key.h"
+#include "engine/events/Mouse.h"
 
 namespace Engine {
 
@@ -226,6 +227,15 @@ namespace Engine {
 				break;
 			case SDL_EVENT_KEY_UP:
 				Key::setKeyPressed(e.key.scancode, false);
+				break;
+			case SDL_EVENT_MOUSE_BUTTON_DOWN:
+				Mouse::setButtonPressed(e.button.button, true);
+				break;
+			case SDL_EVENT_MOUSE_BUTTON_UP:
+				Mouse::setButtonPressed(e.button.button, true);
+				break;
+			case SDL_EVENT_MOUSE_MOTION:
+				Mouse::setPosition(e.motion.x, e.motion.y);
 				break;
 			}
 		}
