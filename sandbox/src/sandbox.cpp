@@ -21,6 +21,19 @@ public:
 
 	virtual void UpdateApp() {
 		// Run every frame
+
+		// GL_DEPTH_TEST is not enabled so be mindful of your drawing order
+		getRenderAPI()->RenderSquare({ 0, 0, 0 }, { 1, 1, 1 }, { 1, 1, 1 });
+		getRenderAPI()->RenderSquare({ -0.75, 0.75, 0.5 }, { 0.25, 0.25, 1 }, { 1, 0, 1 });
+
+		// Little test grid
+		/*for (float x = -1.0f; x < 1.0f; x += 0.1f)
+		{
+			for (float y = 1; y > -1.0f; y -= 0.1f)
+			{
+				getRenderAPI()->RenderSquare({ x, y, 0.5 }, { 0.05, 0.05, 1 }, { 0, 1, 1 });
+			}
+		}*/
 	}
 
 	// A little example of how to do keyboard inputs

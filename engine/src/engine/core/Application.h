@@ -27,6 +27,7 @@ namespace Engine {
 		virtual void Run();
 
 		Scope<Window>& getWindow() { return m_Window; }
+		Scope<RenderAPI>& getRenderAPI() { return m_RenderAPI; }
 		Scope<AudioPlayer>& getAudioPlayer() { return m_AudioPlayer; }
 		eventCallbackManager* getCallbackManager() { return m_EventCallbackManager; }
 		ImGuiRenderer* getImGuiRenderer() { return m_ImGuiRenderer; }

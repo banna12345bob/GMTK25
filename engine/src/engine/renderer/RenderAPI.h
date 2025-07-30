@@ -2,6 +2,8 @@
 
 #include "engine/core/core.h"
 
+#include <glm/glm.hpp>
+
 namespace Engine {
 
 	class RenderAPI
@@ -18,7 +20,11 @@ namespace Engine {
 		};
 
 	public:
-		virtual void Render() = 0;
+		virtual void StartFrame() = 0;
+		virtual void EndFrame() = 0;
+
+		// Very memory leaky
+		virtual void RenderSquare(glm::vec3 position, glm::vec3 scale, glm::vec3 colour) = 0;
 
 		void setRenderMode(RenderMode renderMode) { m_RenderMode = renderMode; }
 		bool getRenderMode() { return m_RenderMode; }

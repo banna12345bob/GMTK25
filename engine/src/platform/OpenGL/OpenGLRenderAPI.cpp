@@ -8,7 +8,7 @@
 
 namespace Engine {
 
-	void OpenGLMessageCallback(
+	static void OpenGLMessageCallback(
 		GLenum source,
 		GLenum type,
 		GLuint id,
@@ -46,32 +46,6 @@ namespace Engine {
 #endif // EG_DEBUG
 
 
-		glm::vec4 vertices[4] = {
-		{ 0.5f,  0.5f, 0.0f, 1.0f },  // top right
-		{ 0.5f, -0.5f, 0.0f, 1.0f },  // bottom right
-		{ -0.5f, -0.5f, 0.0f, 1.0f },  // bottom left
-		{ -0.5f,  0.5f, 0.0f, 1.0f }   // top left 
-		};
-
-		float vertices1[] = {
-		-0.75f, 1.0f, 0.0f,  // top right
-		-0.75f, 0.75f, 0.0f,  // bottom right
-		-1.0f,  0.75f, 0.0f,  // bottom left
-		-1.0f,  1.0f, 0.0f   // top left 
-		};
-
-		float vertices2[] = {
-		0.75f, -1.0f, 0.0f,  // top right
-		0.75f, -0.75f, 0.0f,  // bottom right
-		1.0f,  -0.75f, 0.0f,  // bottom left
-		1.0f,  -1.0f, 0.0f   // top left 
-		};
-
-		unsigned int indices[] = {
-			0, 1, 3,   // first triangle
-			1, 2, 3    // second triangle
-		};
-
 		// ===================== Creates the vertex shader ===========================
 		std::string vertexShaderSource = R"(
 			#version 330 core
@@ -91,62 +65,18 @@ namespace Engine {
 			in vec3 vPos;
 			out vec4 FragColor;
 
+			uniform vec3 fColour;
+
 			void main()
 			{
-			   FragColor = vec4(vPos + 0.5, 1.0f);
+				FragColor = vec4(fColour, 1.0f);
 			}
 			)";
 
 		shader = new GLShader(vertexShaderSource.c_str(), fragmentShaderSource.c_str());
-
-		// Generates VBO and EBO
-		// VBO is your vertex buffer object
-		// EBO is your element buffer object (your indicies)
-		unsigned int VBO[5], EBO[5];
-		glGenBuffers(5, VBO);
-		glGenBuffers(5, EBO);
-
-		// Generates the vertex array object
-		// Basically all your attributes
-		glGenVertexArrays(5, VAO);
-
-		// Bind your VAO
-		glBindVertexArray(VAO[0]);
-		// Bind the VBO
-		glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-		// Put the verticies into the VBO
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-		// Bind the EBO
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[0]);
-		// Put indices into EBO
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-		// How should OpenGL interprate the data
-		// In this case it is an unnormalised vec3 float
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-		// Enables the 0th vertex array attribute for this VAO
-		glEnableVertexAttribArray(0);
-		// Unbind the array
-		glBindVertexArray(0);
-
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), {0.75f, 0.75f, 0})
-			* glm::scale(glm::mat4(1.0f), { 0.5f, 0.5f, 0.5f });
-
-		for (size_t i = 0; i < 4; i++)
-		{
-			vertices[i] = transform * vertices[i];
-		}
-
-		glBindVertexArray(VAO[1]);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[1]);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-		glBindVertexArray(0);
 	}
 
-	void OpenGLRenderAPI::Render()
+	void OpenGLRenderAPI::StartFrame()
 	{
 		EG_PROFILE_FUNCTION();
 
@@ -164,17 +94,65 @@ namespace Engine {
 		case RenderMode::Wireframe: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
 		}
 
-		// Draw verticies using a VAO and our shader
-		shader->Use();
-		glBindVertexArray(VAO[0]);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	}
 
-		glBindVertexArray(VAO[1]);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
+	void OpenGLRenderAPI::EndFrame() 
+	{
 		Application::getApplication()->getImGuiRenderer()->EndFrame();
 
 		SDL_Window* window = static_cast<SDL_Window*>(Application::getApplication()->getWindow()->getNativeWindow());
 		SDL_GL_SwapWindow(window);
+	}
+
+	void OpenGLRenderAPI::RenderSquare(glm::vec3 position, glm::vec3 scale, glm::vec3 colour)
+	{
+		// Developer we have a memory leak
+		// I think its' the fact that we're recreating the buffers every frame
+
+		glm::vec4 newVerts[4];
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+			* glm::scale(glm::mat4(1.0f), scale);
+
+		for (size_t i = 0; i < 4; i++)
+		{
+			newVerts[i] = transform * vertices[i];
+		}
+
+		// Generates VBO and EBO
+		// VBO is your vertex buffer object
+		// EBO is your element buffer object (your indicies)
+		unsigned int VBO, EBO, VAO;
+		glGenBuffers(1, &VBO);
+		glGenBuffers(1, &EBO);
+
+		// Generates the vertex array object
+		// Basically all your attributes
+		glGenVertexArrays(1, &VAO);
+
+		// Bind your VAO
+		glBindVertexArray(VAO);
+		// Bind the VBO
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		// Put the verticies into the VBO
+		glBufferData(GL_ARRAY_BUFFER, sizeof(newVerts), newVerts, GL_STATIC_DRAW);
+		// Bind the EBO
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		// Put indices into EBO
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+		// How should OpenGL interprate the data
+		// In this case it is an unnormalised vec3 float
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+		// Enables the 0th vertex array attribute for this VAO
+		glEnableVertexAttribArray(0);
+		// Unbind the array
+		glBindVertexArray(0);
+
+
+		// Draw verticies using a VAO and our shader
+		shader->Use();
+		shader->SetVector3f("fColour", colour);
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
 }

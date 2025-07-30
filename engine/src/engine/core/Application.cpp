@@ -63,9 +63,10 @@ namespace Engine {
 				m_frameRate = 1000 / deltaTime;
 
 			m_Window->HandleEvents();
-			m_RenderAPI->Render();
-
+			m_RenderAPI->StartFrame();
 			this->UpdateApp();
+			m_RenderAPI->EndFrame();
+
 			b = a;
 		}
 	}

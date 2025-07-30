@@ -51,6 +51,8 @@ namespace Engine {
             char infoLog[512];
             glGetProgramInfoLog(this->id, 512, NULL, infoLog);
             EG_CORE_FATAL("Shader program linking failed! {0}", infoLog);
+
+            // Here instead of crashing we eventually want to return an error shader
             EG_CORE_ASSERT(false, "OpenGL Error");
         }
 
