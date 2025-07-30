@@ -5,6 +5,9 @@
 
 #include "engine/core/Keycodes.h"
 #include "engine/events/Key.h"
+#include "engine/events/Mouse.h"
+
+#include "engine/utils/Vector2.h"
 
 /*-----------------------Entry Point------------------------*/
 #include "engine/core/EntryPoint.h"

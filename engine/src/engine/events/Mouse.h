@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <SDL3/SDL_mouse.h>
 
-#include <engine/utils/Vector2D.h>
+#include <engine/utils/Vector2.h>
 
 namespace Engine {
 
@@ -33,7 +33,7 @@ namespace Engine {
 			bool m_IsPressed = false;
 		};
 
-		static Vector2 m_Position;
+		inline static Vector2 m_Position;
 
 		inline static std::unordered_map<int, MouseButton> m_MouseButtons;
 	};
