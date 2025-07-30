@@ -14,7 +14,7 @@ namespace Engine {
 		virtual void Render() override;
 	private:
 		GLShader* shader;
-		unsigned int VAO;
+		unsigned int VAO[5];
 	};
 }
 

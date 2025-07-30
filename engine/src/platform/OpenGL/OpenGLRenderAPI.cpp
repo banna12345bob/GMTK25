@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
-
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "engine/core/Application.h"
 
@@ -46,55 +46,104 @@ namespace Engine {
 #endif // EG_DEBUG
 
 
-		float vertices[] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.0f,  0.5f, 0.0f
+		glm::vec4 vertices[4] = {
+		{ 0.5f,  0.5f, 0.0f, 1.0f },  // top right
+		{ 0.5f, -0.5f, 0.0f, 1.0f },  // bottom right
+		{ -0.5f, -0.5f, 0.0f, 1.0f },  // bottom left
+		{ -0.5f,  0.5f, 0.0f, 1.0f }   // top left 
 		};
 
-		unsigned int VBO;
-		glGenBuffers(1, &VBO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		float vertices1[] = {
+		-0.75f, 1.0f, 0.0f,  // top right
+		-0.75f, 0.75f, 0.0f,  // bottom right
+		-1.0f,  0.75f, 0.0f,  // bottom left
+		-1.0f,  1.0f, 0.0f   // top left 
+		};
 
+		float vertices2[] = {
+		0.75f, -1.0f, 0.0f,  // top right
+		0.75f, -0.75f, 0.0f,  // bottom right
+		1.0f,  -0.75f, 0.0f,  // bottom left
+		1.0f,  -1.0f, 0.0f   // top left 
+		};
+
+		unsigned int indices[] = {
+			0, 1, 3,   // first triangle
+			1, 2, 3    // second triangle
+		};
 
 		// ===================== Creates the vertex shader ===========================
-		const char* vertexShaderSource = "#version 330 core\n"
-			"layout (location = 0) in vec3 aPos;\n"
-			"void main()\n"
-			"{\n"
-			"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-			"}\0";
+		std::string vertexShaderSource = R"(
+			#version 330 core
+			layout (location = 0) in vec3 aPos;
+			out vec3 vPos;
+
+			void main()
+			{
+				gl_Position = vec4(aPos, 1.0);
+				vPos = aPos;
+			}
+			)";
 
 		// ================== Creates the fragment shader ============================
-		const char* fragmentShaderSource = "#version 330 core\n"
-			"out vec4 FragColor;\n"
-			"void main()\n"
-			"{\n"
-			"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-			"}\0";
-		shader = new GLShader(vertexShaderSource, fragmentShaderSource);
+		std::string fragmentShaderSource = R"(
+			#version 330 core
+			in vec3 vPos;
+			out vec4 FragColor;
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
+			void main()
+			{
+			   FragColor = vec4(vPos + 0.5, 1.0f);
+			}
+			)";
 
-		// Vertex buffer object
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		shader = new GLShader(vertexShaderSource.c_str(), fragmentShaderSource.c_str());
+
+		// Generates VBO and EBO
+		// VBO is your vertex buffer object
+		// EBO is your element buffer object (your indicies)
+		unsigned int VBO[5], EBO[5];
+		glGenBuffers(5, VBO);
+		glGenBuffers(5, EBO);
+
+		// Generates the vertex array object
+		// Basically all your attributes
+		glGenVertexArrays(5, VAO);
+
+		// Bind your VAO
+		glBindVertexArray(VAO[0]);
+		// Bind the VBO
+		glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+		// Put the verticies into the VBO
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		// Bind the EBO
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[0]);
+		// Put indices into EBO
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+		// How should OpenGL interprate the data
+		// In this case it is an unnormalised vec3 float
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+		// Enables the 0th vertex array attribute for this VAO
 		glEnableVertexAttribArray(0);
-		shader->Use();
+		// Unbind the array
+		glBindVertexArray(0);
 
-		// Vertex array object
-		glGenVertexArrays(1, &VAO);
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), {0.75f, 0.75f, 0})
+			* glm::scale(glm::mat4(1.0f), { 0.5f, 0.5f, 0.5f });
 
-		glBindVertexArray(VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		for (size_t i = 0; i < 4; i++)
+		{
+			vertices[i] = transform * vertices[i];
+		}
+
+		glBindVertexArray(VAO[1]);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[1]);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
-		shader->Use();
-		glBindVertexArray(VAO);
+		glBindVertexArray(0);
 	}
 
 	void OpenGLRenderAPI::Render()
@@ -117,8 +166,11 @@ namespace Engine {
 
 		// Draw verticies using a VAO and our shader
 		shader->Use();
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glBindVertexArray(VAO[0]);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		glBindVertexArray(VAO[1]);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		Application::getApplication()->getImGuiRenderer()->EndFrame();
 

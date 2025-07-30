@@ -41,6 +41,13 @@ namespace Engine {
 		EG_PROFILE_FUNCTION();
 		if ((Key::isKeyPressed(EG_SCANCODE_LCTRL) || Key::isKeyPressed(EG_SCANCODE_RCTRL)) && Key::wasKeyPressed(EG_SCANCODE_P))
 			Application::getApplication()->m_AudioDebuggerLayer->m_ShowWindow = !Application::getApplication()->m_AudioDebuggerLayer->m_ShowWindow;
+
+		if (Key::wasKeyPressed(EG_SCANCODE_F1)) {
+			if (Application::getApplication()->m_RenderAPI->getRenderMode() == RenderAPI::RenderMode::Normal)
+				Application::getApplication()->m_RenderAPI->setRenderMode(RenderAPI::RenderMode::Wireframe);
+			else
+				Application::getApplication()->m_RenderAPI->setRenderMode(RenderAPI::RenderMode::Normal);
+		}
 	}
 
 	void Application::Run()
