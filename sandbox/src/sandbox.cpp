@@ -12,6 +12,7 @@ public:
 		getImGuiRenderer()->registerImGuiLayer(new SandboxImGuiLayer());
 
 		getCallbackManager()->registerKeyboardCallback(keyboardEventCallback);
+		getCallbackManager()->registerMouseDownCallback(mouseDownEventCallback);
 	}
 
 	~sandbox()
@@ -30,6 +31,15 @@ public:
 
 		if (Engine::Key::wasKeyPressed(EG_SCANCODE_O))
 			Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/music/John Coltrane - Naima.wav", true, 0.8f);
+	}
+
+	static void mouseDownEventCallback(void* callback) {
+		if (Engine::Mouse::isButtonDown(1))
+			EG_TRACE("Left mouse button pressed");
+		if (Engine::Mouse::isButtonDown(2))
+			EG_TRACE("Middle mouse button pressed");
+		if (Engine::Mouse::isButtonDown(3))
+			EG_TRACE("Right mouse button pressed");
 	}
 };
 

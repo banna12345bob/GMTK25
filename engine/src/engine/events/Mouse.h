@@ -10,15 +10,10 @@ namespace Engine {
 	class Mouse {
 	public:
 		/**
-		* Only returns true on first frame of key being pressed
-		@param int keycode: the id of the key to check
-		*/
-		static bool wasButtonPressed(int buttoncode);
-		/**
 		* Return true on every frame of key being pressed
 		@param int keycode: the id of the key to check
 		*/
-		static bool isButtonPressed(int buttoncode);
+		static bool isButtonDown(int buttoncode);
 		static void setButtonPressed(int buttoncode, bool value);
 		
 		static void setPosition(int x, int y);
@@ -29,7 +24,6 @@ namespace Engine {
 		struct MouseButton
 		{
 		public:
-			int m_TimesPressed = 0;
 			bool m_IsPressed = false;
 		};
 

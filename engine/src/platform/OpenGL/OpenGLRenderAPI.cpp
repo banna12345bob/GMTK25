@@ -110,11 +110,10 @@ namespace Engine {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-
-		// Wireframe mode
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		switch (getRenderMode()) {
+		case RenderMode::Normal:    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); break;
+		case RenderMode::Wireframe: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
+		}
 
 		// Draw verticies using a VAO and our shader
 		shader->Use();

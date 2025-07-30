@@ -8,7 +8,7 @@ namespace Engine {
 		Vector2();
 		Vector2(float x, float y);
 
-		float m_X;
-		float m_Y;
+		float x;
+		float y;
 	};
 }

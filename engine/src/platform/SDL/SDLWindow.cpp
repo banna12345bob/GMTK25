@@ -221,21 +221,26 @@ namespace Engine {
 					break;
 				}
 				for (int i = 0; i < Application::getApplication()->getCallbackManager()->getKeyboardCallbacks()->size(); i++)
-				{
 					Application::getApplication()->getCallbackManager()->getKeyboardCallbacks()->at(i)(nullptr);
-				}
 				break;
 			case SDL_EVENT_KEY_UP:
 				Key::setKeyPressed(e.key.scancode, false);
 				break;
 			case SDL_EVENT_MOUSE_BUTTON_DOWN:
 				Mouse::setButtonPressed(e.button.button, true);
+				if (Application::getApplication()->getCallbackManager()->getMouseDownCallbacks()->size() == 0)
+					EG_CORE_WARN("No mouse down callbacks registered");
+				
+				for (int i = 0; i < Application::getApplication()->getCallbackManager()->getMouseDownCallbacks()->size(); i++)
+					Application::getApplication()->getCallbackManager()->getMouseDownCallbacks()->at(i)(nullptr);
 				break;
 			case SDL_EVENT_MOUSE_BUTTON_UP:
-				Mouse::setButtonPressed(e.button.button, true);
+				Mouse::setButtonPressed(e.button.button, false);
 				break;
 			case SDL_EVENT_MOUSE_MOTION:
 				Mouse::setPosition(e.motion.x, e.motion.y);
+				for (int i = 0; i < Application::getApplication()->getCallbackManager()->getMouseMoveCallbacks()->size(); i++)
+					Application::getApplication()->getCallbackManager()->getMouseMoveCallbacks()->at(i)(nullptr);
 				break;
 			}
 		}
