@@ -1,11 +1,8 @@
 #pragma once
 
-#include "engine/core/Application.h"
+#include <glm/glm.hpp>
 
-#include "platform/OpenGL/GLShader.h"
-
-#include "engine/renderer/VertexArray.h"
-#include "engine/renderer/Buffers.h"
+#include <string>
 
 namespace Engine {
 
@@ -18,11 +15,25 @@ namespace Engine {
 		static void EndFrame();
 
 		/** Draw square
+		@param position: Just your x and y position
+		@param scale: x scale and y scale
+		@param colour: r,g,b,a
+		*/
+		static void DrawQuad(glm::vec2 position, glm::vec2 scale, glm::vec4 colour);
+		/** Draw square
 		@param position: Just your x, y and z position
 		@param scale: x scale and y scale
 		@param colour: r,g,b,a
 		*/
 		static void DrawQuad(glm::vec3 position, glm::vec2 scale, glm::vec4 colour);
+
+		/** Draw square with rotation
+		@param position: Just your x and y position
+		@param scale: x scale and y scale
+		@param rotation: Rotation in degrees
+		@param colour: r,g,b,a
+		*/
+		static void DrawQuad(glm::vec2 position, glm::vec2 scale, float rotation, glm::vec4 colour);
 		/** Draw square with rotation
 		@param position: Just your x, y and z position
 		@param scale: x scale and y scale
@@ -31,9 +42,6 @@ namespace Engine {
 		*/
 		static void DrawQuad(glm::vec3 position, glm::vec2 scale, float rotation, glm::vec4 colour);
 		static void DrawQuad(glm::vec3 position, glm::vec2 scale, std::string filepath, glm::vec3 tintColour);
-
-	private:
-		inline static GLShader* shader;
 	};
 }
 

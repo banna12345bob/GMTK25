@@ -4,6 +4,11 @@
 
 #include <glad/glad.h>
 
+
+#include "engine/renderer/VertexArray.h"
+#include "engine/renderer/Buffers.h"
+#include "engine/renderer/Shader.h"
+
 namespace Engine {
 
 	struct SquareVertex
@@ -24,6 +29,7 @@ namespace Engine {
 
 		Ref<VertexArray> QuadVertexArray;
 		Ref<VertexBuffer> QuadVertexBuffer;
+		Ref<Shader> ColourShader;
 
 		uint32_t squareIndexCount = 0;
 
@@ -39,32 +45,6 @@ namespace Engine {
 
 	void Renderer2D::Init()
 	{
-		// ===================== Creates the vertex shader ===========================
-		std::string vertexShaderSource = R"(
-			#version 450 core
-			layout(location = 0) in vec4 aPos;
-			layout(location = 1) in vec4 aColour;
-			out vec4 vColour;
-
-			void main()
-			{
-				gl_Position = aPos;
-				vColour = aColour;
-			}
-			)";
-
-		// ================== Creates the fragment shader ============================
-		std::string fragmentShaderSource = R"(
-			#version 450 core
-			in vec4 vColour;
-			out vec4 FragColor;
-
-			void main()
-			{
-				FragColor = vColour;
-			}
-			)";
-
 		s_Data.QuadVertexArray = VertexArray::Create();
 
 		s_Data.QuadVertexBuffer = VertexBuffer::Create(s_Data.maxVerticies * sizeof(SquareVertex));
@@ -99,7 +79,7 @@ namespace Engine {
 		s_Data.QuadVertexArray->SetIndexBuffer(indexBuffer);
 		delete[] squareIndices;
 
-		shader = new GLShader(vertexShaderSource.c_str(), fragmentShaderSource.c_str());
+		s_Data.ColourShader = Shader::Create("assets/shaders/colour.glsl");
 
 		s_Data.quadVertexPosition[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
 		s_Data.quadVertexPosition[1] = { 0.5f, -0.5f, 0.0f, 1.0f };
@@ -109,7 +89,7 @@ namespace Engine {
 
 	void Renderer2D::StartFrame() 
 	{
-		shader->Use();
+		s_Data.ColourShader->Bind();
 
 		s_Data.squareIndexCount = 0;
 		s_Data.squareVertexBufferPtr = s_Data.squareVertexBufferBase;
@@ -120,14 +100,24 @@ namespace Engine {
 		uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.squareVertexBufferPtr - (uint8_t*)s_Data.squareVertexBufferBase);
 		s_Data.QuadVertexBuffer->SetData(s_Data.squareVertexBufferBase, dataSize);
 
-		shader->Use();
+		s_Data.ColourShader->Bind();
 		uint32_t count = s_Data.squareIndexCount ? s_Data.squareIndexCount : s_Data.QuadVertexArray->GetIndexBuffer()->GetCount();
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+	}
+
+	void Renderer2D::DrawQuad(glm::vec2 position, glm::vec2 scale, glm::vec4 colour)
+	{
+		DrawQuad({ position.x, position.y, 0 }, scale, colour);
 	}
 
 	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 scale, glm::vec4 colour)
 	{
 		DrawQuad(position, scale, 0, colour);
+	}
+
+	void Renderer2D::DrawQuad(glm::vec2 position, glm::vec2 scale, float rotation, glm::vec4 colour)
+	{
+		DrawQuad({ position.x, position.y, 0 }, scale, rotation, colour);
 	}
 
 	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 scale, float rotation, glm::vec4 colour)
