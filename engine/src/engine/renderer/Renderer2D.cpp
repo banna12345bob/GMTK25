@@ -9,6 +9,8 @@
 #include "engine/renderer/Buffers.h"
 #include "engine/renderer/Shader.h"
 
+#include "engine/core/Application.h"
+
 namespace Engine {
 
 	struct SquareVertex
@@ -29,13 +31,15 @@ namespace Engine {
 
 		Ref<VertexArray> QuadVertexArray;
 		Ref<VertexBuffer> QuadVertexBuffer;
-		Ref<Shader> ColourShader;
+		Ref<Shader> TextureShader;
+		Ref<Texture2D> WhiteTexture;
 
 		uint32_t squareIndexCount = 0;
 
 		SquareVertex* squareVertexBufferBase = nullptr;
 		SquareVertex* squareVertexBufferPtr = nullptr;
 
+		std::array<Ref<Texture2D>, maxTextureSlots> textureSlots;
 		uint32_t textureSlotIndex = 1;
 
 		glm::vec4 quadVertexPosition[4];
@@ -49,11 +53,11 @@ namespace Engine {
 
 		s_Data.QuadVertexBuffer = VertexBuffer::Create(s_Data.maxVerticies * sizeof(SquareVertex));
 		s_Data.QuadVertexBuffer->SetLayout(BufferLayout({
-			{ ShaderDataType::Float3, "a_Pos" },
-			{ ShaderDataType::Float4, "aColour" },
-			{ ShaderDataType::Float2, "aTexCoord" },
-			{ ShaderDataType::Float, "aTexIndex" },
-			{ ShaderDataType::Float, "aTilingFactor" }
+			{ ShaderDataType::Float3, "a_Position" },
+			{ ShaderDataType::Float4, "a_Colour" },
+			{ ShaderDataType::Float2, "a_TexCoord" },
+			{ ShaderDataType::Float, "a_TexIndex" },
+			{ ShaderDataType::Float, "a_TilingFactor" }
 			}));
 		s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
 
@@ -79,7 +83,19 @@ namespace Engine {
 		s_Data.QuadVertexArray->SetIndexBuffer(indexBuffer);
 		delete[] squareIndices;
 
-		s_Data.ColourShader = Shader::Create("assets/shaders/colour.glsl");
+		s_Data.WhiteTexture = Texture2D::Create(1, 1);
+		uint32_t whiteTextureData = 0xffffffff;
+		s_Data.WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
+
+		int32_t samplers[s_Data.maxTextureSlots];
+		for (uint32_t i = 0; i < s_Data.maxTextureSlots; i++)
+			samplers[i] = i;
+
+		s_Data.TextureShader = Shader::Create("assets/shaders/texture.glsl");
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->SetIntArray("u_Texture", samplers, s_Data.maxTextureSlots);
+
+		s_Data.textureSlots[0] = s_Data.WhiteTexture;
 
 		s_Data.quadVertexPosition[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
 		s_Data.quadVertexPosition[1] = { 0.5f, -0.5f, 0.0f, 1.0f };
@@ -87,27 +103,37 @@ namespace Engine {
 		s_Data.quadVertexPosition[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
 	}
 
-	void Renderer2D::StartFrame() 
+	void Renderer2D::Shutdown()
 	{
-		s_Data.ColourShader->Bind();
-
-		s_Data.squareIndexCount = 0;
-		s_Data.squareVertexBufferPtr = s_Data.squareVertexBufferBase;
+		delete[] s_Data.squareVertexBufferBase;
 	}
 
-	void Renderer2D::EndFrame()
+	void Renderer2D::BeginScene() 
+	{
+		s_Data.squareIndexCount = 0;
+		s_Data.squareVertexBufferPtr = s_Data.squareVertexBufferBase;
+
+		s_Data.textureSlotIndex = 1;
+	}
+
+	void Renderer2D::EndScene()
 	{
 		uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.squareVertexBufferPtr - (uint8_t*)s_Data.squareVertexBufferBase);
 		s_Data.QuadVertexBuffer->SetData(s_Data.squareVertexBufferBase, dataSize);
 
-		s_Data.ColourShader->Bind();
-		uint32_t count = s_Data.squareIndexCount ? s_Data.squareIndexCount : s_Data.QuadVertexArray->GetIndexBuffer()->GetCount();
-		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+		Flush();
 	}
 
-	void Renderer2D::DrawQuad(glm::vec2 position, glm::vec2 scale, glm::vec4 colour)
+	void Renderer2D::Flush()
 	{
-		DrawQuad({ position.x, position.y, 0 }, scale, colour);
+		if (s_Data.squareIndexCount == 0)
+			return; // Nothing to draw
+
+		for (uint32_t i = 0; i < s_Data.textureSlotIndex; i++)
+			s_Data.textureSlots[i]->Bind(i);
+
+		Application::getApplication()->getRenderAPI()->DrawIndexed(s_Data.QuadVertexArray, s_Data.squareIndexCount);
+		
 	}
 
 	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 scale, glm::vec4 colour)
@@ -115,23 +141,18 @@ namespace Engine {
 		DrawQuad(position, scale, 0, colour);
 	}
 
-	void Renderer2D::DrawQuad(glm::vec2 position, glm::vec2 scale, float rotation, glm::vec4 colour)
-	{
-		DrawQuad({ position.x, position.y, 0 }, scale, rotation, colour);
-	}
-
 	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 scale, float rotation, glm::vec4 colour)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
-			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
-			* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
-
 		constexpr size_t squareVertexCount = 4;
 		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 
 		const float texIndex = 0.0f;
 
 		const float tilingFactor = 1.0f;
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
+			* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
 
 		for (size_t i = 0; i < squareVertexCount; i++)
 		{
@@ -146,8 +167,52 @@ namespace Engine {
 		s_Data.squareIndexCount += 6;
 	}
 
-	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 scale, std::string filepath, glm::vec3 tintColour)
+	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 scale, Ref<Texture2D>& texture, glm::vec4 tintColour, float tilingFactor)
 	{
-		EG_CORE_WARN("Needs to be implimented");
+		DrawQuad(position, scale, 0, texture, tintColour, tilingFactor);
+	}
+
+	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 scale, float rotation, Ref<Texture2D>& texture, glm::vec4 tintColour, float tilingFactor)
+	{
+		constexpr size_t squareVertexCount = 4;
+		constexpr glm::vec2 textureCoords[] = {
+			{ 0.0f, 0.0f },
+			{ 1.0f, 0.0f },
+			{ 1.0f, 1.0f },
+			{ 0.0f, 1.0f }
+		};
+
+		float textureIndex = 0.0f;
+		for (uint32_t i = 1; i < s_Data.textureSlotIndex; i++)
+		{
+			if (*s_Data.textureSlots[i].get() == *texture.get())
+			{
+				textureIndex = (float)i;
+				break;
+			}
+		}
+
+		if (textureIndex == 0.0f)
+		{
+			textureIndex = (float)s_Data.textureSlotIndex;
+			s_Data.textureSlots[s_Data.textureSlotIndex] = texture;
+			s_Data.textureSlotIndex++;
+		}
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
+			* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
+
+		for (size_t i = 0; i < squareVertexCount; i++)
+		{
+			s_Data.squareVertexBufferPtr->position = transform * s_Data.quadVertexPosition[i];
+			s_Data.squareVertexBufferPtr->colour = tintColour;
+			s_Data.squareVertexBufferPtr->texCoord = textureCoords[i];
+			s_Data.squareVertexBufferPtr->texIndex = textureIndex;
+			s_Data.squareVertexBufferPtr->tilingFactor = tilingFactor;
+			s_Data.squareVertexBufferPtr++;
+		}
+
+		s_Data.squareIndexCount += 6;
 	}
 }

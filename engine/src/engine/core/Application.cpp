@@ -32,6 +32,7 @@ namespace Engine {
 	Application::~Application()
 	{
 		EG_PROFILE_FUNCTION();
+		Renderer2D::Shutdown();
 	}
 
 	Application* Engine::Application::getApplication()
@@ -68,11 +69,11 @@ namespace Engine {
 
 			m_Window->HandleEvents();
 
-			getRenderAPI()->StartFrame();
-			Renderer2D::StartFrame();
+			m_ImGuiRenderer->StartFrame();
+			m_RenderAPI->SetClearColor({ 0, 0, 0, 0 });
+			m_RenderAPI->Clear();
 			UpdateApp();
-			Renderer2D::EndFrame();
-			getRenderAPI()->EndFrame();
+			m_ImGuiRenderer->EndFrame();
 
 			b = a;
 		}

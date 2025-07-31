@@ -21,6 +21,7 @@ public:
 
 	virtual void UpdateApp() {
 		// Run every frame
+		Engine::Renderer2D::BeginScene();
 
 		// GL_DEPTH_TEST is not enabled so be mindful of your drawing order
 		Engine::Renderer2D::DrawQuad({ 0, 0, 0 }, { 1, 1 }, { 1, 1, 1, 1 });
@@ -34,6 +35,8 @@ public:
 				Engine::Renderer2D::DrawQuad({ x, y, 0.5 }, { 0.05, 0.05, 1 }, { 0, 1, 1 });
 			}
 		}*/
+
+		Engine::Renderer2D::EndScene();
 	}
 
 	// A little example of how to do keyboard inputs
@@ -58,5 +61,5 @@ public:
 
 Engine::Application* Engine::CreateApplication()
 {
-	return new game(Engine::WindowProps("Sandbox", 520, 520, "assets/textures/Oak_Log.png"));
+	return new game(Engine::WindowProps("Game", 520, 520, "assets/textures/Oak_Log.png"));
 }

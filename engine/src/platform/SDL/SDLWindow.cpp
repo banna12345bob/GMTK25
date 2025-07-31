@@ -11,6 +11,8 @@
 #include "engine/events/Key.h"
 #include "engine/events/Mouse.h"
 
+#include "engine/renderer/RenderAPI.h"
+
 namespace Engine {
 
 	SDLWindow::SDLWindow(WindowProps props)
@@ -47,25 +49,18 @@ namespace Engine {
 		if (m_data.fullscreen)
 			SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN);
 
-		CreateGLContext();
-		//switch (GraphicsAPI::GetAPI())
-		//{
-		//case GraphicsAPI::API::None: {
-			//EG_CORE_ASSERT(false, "Cannot have GraphicsAPI::None");
-			//break;
-		//}
-		//case GraphicsAPI::API::OpenGL: {
-			//break;
-		//}
-		//}
+		switch (RenderAPI::getAPI())
+		{
+		case RenderAPI::API::None: EG_CORE_ASSERT(false, "Cannot have GraphicsAPI::None");	break;
+		case RenderAPI::API::OpenGL: CreateGLContext();	break;
+		}
 
 		if (!std::filesystem::exists(m_data.pathToIcon)) {
 			m_data.pathToIcon = "";
+			EG_CORE_ERROR("Failed to load image: {0}", m_data.pathToIcon);
 		}
 		if (m_data.pathToIcon == "")
-		{
 			return;
-		}
 
 		// Probably could colapse into it's own createSurfaceFromFile function but I can't be bothered
 		int width, height, bytesPerPixel;
@@ -91,13 +86,9 @@ namespace Engine {
 
 		SDL_Surface* icon = SDL_CreateSurfaceFrom(width, height, SDL_GetPixelFormatForMasks(bytesPerPixel * 8, Rmask, Gmask, Bmask, Amask), data, pitch);
 		if (icon->pixels)
-		{
 			SDL_SetWindowIcon(m_window, icon);
-		}
 		else
-		{
 			EG_CORE_ASSERT(false, "Failed to load image");
-		}
 	}
 
 	SDLWindow::~SDLWindow()

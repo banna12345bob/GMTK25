@@ -8,6 +8,7 @@
 #include "engine/events/Mouse.h"
 
 #include "engine/renderer/Renderer2D.h"
+#include "engine/renderer/Texture.h"
 
 #include "engine/utils/Vector2.h"
 

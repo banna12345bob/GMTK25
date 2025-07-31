@@ -4,6 +4,8 @@
 
 #include <glm/glm.hpp>
 
+#include "VertexArray.h"
+
 namespace Engine {
 
 	class RenderAPI
@@ -20,19 +22,21 @@ namespace Engine {
 		};
 
 	public:
-		virtual void StartFrame() = 0;
-		virtual void EndFrame() = 0;
+		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
 
-		void setRenderMode(RenderMode renderMode) { m_RenderMode = renderMode; }
-		bool getRenderMode() { return m_RenderMode; }
+		virtual void SetClearColor(const glm::vec4& colour) = 0;
+		virtual void Clear() = 0;
+
+		virtual void setRenderMode(RenderMode renderMode) = 0;
+		virtual RenderMode getRenderMode() = 0;
+
+		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount) = 0;
 
 		static RenderAPI::API getAPI();
 
 		static Scope<RenderAPI> Create();
 
 	private:
-		RenderMode m_RenderMode = RenderMode::Normal;
-
 		static RenderAPI::API s_API;
 	};
 }

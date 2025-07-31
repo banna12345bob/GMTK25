@@ -13,6 +13,9 @@ public:
 
 		getCallbackManager()->registerKeyboardCallback(keyboardEventCallback);
 		getCallbackManager()->registerMouseDownCallback(mouseDownEventCallback);
+
+		m_sandBoxTexture = Engine::Texture2D::Create("assets/textures/Oak_Log.png");
+		EG_TRACE("{0}, {1}", m_sandBoxTexture->getWidth(), m_sandBoxTexture->getHight());
 	}
 
 	~sandbox()
@@ -21,19 +24,22 @@ public:
 
 	virtual void UpdateApp() {
 		// Run every frame
+		Engine::Renderer2D::BeginScene();
 
 		// GL_DEPTH_TEST is not enabled so be mindful of your drawing order
-		Engine::Renderer2D::DrawQuad({ 0, 0 }, { 1, 1 }, 45, { 1, 1, 1, 1 });
-		Engine::Renderer2D::DrawQuad({ -0.75, 0.75, 0.5 }, { 0.25, 0.25 }, { 1, 0, 1, 1 });
+		Engine::Renderer2D::DrawQuad({ -0.75, 0.75, 0 }, { 0.25, 0.25 }, { 1, 0, 1, 1 });
+		Engine::Renderer2D::DrawQuad({ 0, 0, -0.1 }, { 1, 1 }, m_sandBoxTexture, {1, 0, 0, 0.75});
 
 		// Little test grid
 		for (float x = -1.0f; x < 1.1f; x += 0.1f)
 		{
 			for (float y = 1; y > -1.1f; y -= 0.1f)
 			{
-				Engine::Renderer2D::DrawQuad({ x, y, 0.5 }, { 0.05, 0.05 }, { 0, 1, 1, 0.5 });
+				Engine::Renderer2D::DrawQuad({ x, y, 0 }, { 0.05, 0.05 }, { 0, 1, 1, 1 });
 			}
 		}
+
+		Engine::Renderer2D::EndScene();
 	}
 
 	// A little example of how to do keyboard inputs
@@ -54,6 +60,9 @@ public:
 		if (Engine::Mouse::isButtonDown(3))
 			EG_TRACE("Right mouse button pressed");
 	}
+
+private:
+	Engine::Ref<Engine::Texture2D> m_sandBoxTexture;
 };
 
 Engine::Application* Engine::CreateApplication()

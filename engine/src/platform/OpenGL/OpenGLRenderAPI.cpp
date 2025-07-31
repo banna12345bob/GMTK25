@@ -45,37 +45,46 @@ namespace Engine {
 
 #endif // EG_DEBUG
 
-		//glEnable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_MULTISAMPLE);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	void OpenGLRenderAPI::StartFrame()
+	void OpenGLRenderAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 	{
-		EG_PROFILE_FUNCTION();
+		glViewport(x, y, width, height);
+	}
 
-		Application::getApplication()->getImGuiRenderer()->StartFrame();
+	void OpenGLRenderAPI::SetClearColor(const glm::vec4& colour)
+	{
+		glClearColor(colour.r, colour.g, colour.b, colour.a);
+	}
 
-		// Updates the viewport
-		glViewport(0, 0, Application::getApplication()->getWindow()->GetWidth(), Application::getApplication()->getWindow()->GetHeight());
+	void OpenGLRenderAPI::Clear()
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
 
-		// Clears the viewport
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+	void OpenGLRenderAPI::setRenderMode(RenderMode renderMode)
+	{
+		m_RenderMode = renderMode;
 
 		switch (getRenderMode()) {
 		case RenderMode::Normal:    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); break;
 		case RenderMode::Wireframe: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
 		}
-
 	}
 
-	void OpenGLRenderAPI::EndFrame() 
+	OpenGLRenderAPI::RenderMode OpenGLRenderAPI::getRenderMode()
 	{
-		Application::getApplication()->getImGuiRenderer()->EndFrame();
+		return m_RenderMode;
+	}
 
-		SDL_Window* window = static_cast<SDL_Window*>(Application::getApplication()->getWindow()->getNativeWindow());
-		SDL_GL_SwapWindow(window);
+	void OpenGLRenderAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
+	{
+		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
+		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
