@@ -108,8 +108,11 @@ namespace Engine {
 		delete[] s_Data.squareVertexBufferBase;
 	}
 
-	void Renderer2D::BeginScene() 
+	void Renderer2D::BeginScene(const OrthographicCamera& camera)
 	{
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+
 		s_Data.squareIndexCount = 0;
 		s_Data.squareVertexBufferPtr = s_Data.squareVertexBufferBase;
 

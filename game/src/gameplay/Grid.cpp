@@ -22,7 +22,7 @@ namespace game1 {
 	void Grid::DrawTiles() {
 		for (int i = 0; i < m_size; i++) {
 			for (int j = 0; j < m_size; j++) {
-				Engine::Renderer2D::DrawQuad(glm::vec3(i * 1, j * 1, 0), { 1, 1 }, m_emptyTileTex, glm::vec4(1, 1, 1, 1));
+				Engine::Renderer2D::DrawQuad(glm::vec3(i * 1, j * 1, 0), { 1, 1 }, m_emptyTileTex);
 			}
 		}
 	}

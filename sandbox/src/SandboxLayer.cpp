@@ -5,13 +5,17 @@
 #include <imgui/imgui.h>
 
 SandboxLayer::SandboxLayer()
-	: Layer("SandboxLayer")
+	: Layer("SandboxLayer"), m_CameraController(Engine::Application::getApplication()->getWindow()->GetWidth() / Engine::Application::getApplication()->getWindow()->GetHeight())
 {
 }
 
 void SandboxLayer::OnAttach()
 {
 	m_sandBoxTexture = Engine::Texture2D::Create("assets/textures/Oak_Log.png");
+
+	m_CameraController.SetZoomLevel(5.f);
+
+	m_CameraController.setPosition({ 1, -1, 0 });
 }
 
 void SandboxLayer::OnDetach()
@@ -20,20 +24,21 @@ void SandboxLayer::OnDetach()
 
 void SandboxLayer::OnUpdate()
 {
-	Engine::Renderer2D::BeginScene();
+	m_CameraController.OnUpdate();
 
-	// GL_DEPTH_TEST is not enabled so be mindful of your drawing order
-	Engine::Renderer2D::DrawQuad({ -0.75, 0.75, 0 }, { 0.25, 0.25 }, { 1, 0, 1, 1 });
-	Engine::Renderer2D::DrawQuad({ 0, 0, -0.1 }, { 1, 1 }, m_sandBoxTexture, { 1, 0, 0, 0.75 });
+	Engine::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
 	// Little test grid
-	for (float x = -1.0f; x < 1.1f; x += 0.1f)
+	for (float x = -2.0f; x < 2.f; x += 0.15f)
 	{
-		for (float y = 1; y > -1.1f; y -= 0.1f)
+		for (float y = 2; y > -2.f; y -= 0.15f)
 		{
-			Engine::Renderer2D::DrawQuad({ x, y, 0 }, { 0.05, 0.05 }, { 0, 1, 1, 1 });
+			Engine::Renderer2D::DrawQuad({ x, y, 0 }, { 0.1, 0.1 }, { 0, 1, 1, 1 });
 		}
 	}
+
+	Engine::Renderer2D::DrawQuad({ -1, 1, 1 }, { 1, 1 }, { 1, 0, 1, 1 });
+	Engine::Renderer2D::DrawQuad({ 0, 0, 1 }, { 1, 1 }, m_sandBoxTexture, { 1, 0, 0, 1 });
 
 	Engine::Renderer2D::EndScene();
 }

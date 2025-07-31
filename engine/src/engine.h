@@ -11,9 +11,6 @@
 
 #include "engine/renderer/Renderer2D.h"
 #include "engine/renderer/Texture.h"
+#include "engine/renderer/OrthographicCameraController.h"
 
 #include "engine/utils/Vector2.h"
-
-/*-----------------------Entry Point------------------------*/
-//#include "engine/core/EntryPoint.h"
-/*----------------------------------------------------------*/
