@@ -6,6 +6,7 @@
 
 #include "engine/core/Application.h"
 #include "engine/renderer/VertexArray.h"
+#include "engine/renderer/VertexBuffer.h"
 
 namespace Engine {
 
@@ -123,18 +124,15 @@ namespace Engine {
 		// Generates VBO and EBO
 		// VBO is your vertex buffer object
 		// EBO is your element buffer object (your indicies)
-		unsigned int VBO, EBO;
-		glGenBuffers(1, &VBO);
+		unsigned int EBO;
+
 		glGenBuffers(1, &EBO);
 
 		Ref<VertexArray> vertexArray = VertexArray::Create();
 
-		// Bind your VAO
 		vertexArray->Bind();
-		// Bind the VBO
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		// Put the verticies into the VBO
-		glBufferData(GL_ARRAY_BUFFER, sizeof(newVerts), newVerts, GL_STATIC_DRAW);
+		Ref<VertexBuffer> vertexBuffer = VertexBuffer::Create(newVerts, sizeof(newVerts));
+
 		// Bind the EBO
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		// Put indices into EBO

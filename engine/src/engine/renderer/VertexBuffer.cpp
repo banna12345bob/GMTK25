@@ -17,7 +17,7 @@ namespace Engine {
 		return nullptr;
 	}
 
-	Ref<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
+	Ref<VertexBuffer> VertexBuffer::Create(glm::vec4* vertices, uint32_t size)
 	{
 		switch (RenderAPI::getAPI()) {
 		case RenderAPI::API::None: EG_CORE_ASSERT(false, "Cannot have RenderAPI::None");
