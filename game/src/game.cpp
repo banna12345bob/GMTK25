@@ -1,6 +1,8 @@
 ﻿#include <engine.h>
 #include "gameplay/Block.h"
+#include "GameLayer.h"
 
+#include <engine/core/EntryPoint.h>
 
 class game : public Engine::Application
 {
@@ -12,31 +14,13 @@ public:
 		getCallbackManager()->registerKeyboardCallback(keyboardEventCallback);
 		getCallbackManager()->registerMouseDownCallback(mouseDownEventCallback);
 
+		PushLayer(new GameLayer());
+
 		game1::Block::LoadBlockData();
 	}
 
 	~game()
 	{
-	}
-
-	virtual void UpdateApp() {
-		// Run every frame
-		Engine::Renderer2D::BeginScene();
-
-		// GL_DEPTH_TEST is not enabled so be mindful of your drawing order
-		Engine::Renderer2D::DrawQuad({ 0, 0, 0 }, { 1, 1 }, { 1, 1, 1, 1 });
-		Engine::Renderer2D::DrawQuad({ -0.75, 0.75, 0.5 }, { 0.25, 0.25 }, { 1, 0, 1, 1 });
-
-		// Little test grid
-		/*for (float x = -1.0f; x < 1.0f; x += 0.1f)
-		{
-			for (float y = 1; y > -1.0f; y -= 0.1f)
-			{
-				Engine::Renderer2D::DrawQuad({ x, y, 0.5 }, { 0.05, 0.05, 1 }, { 0, 1, 1 });
-			}
-		}*/
-
-		Engine::Renderer2D::EndScene();
 	}
 
 	// A little example of how to do keyboard inputs

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "engine/core/core.h"
+
 #include "engine/core/Application.h"
 #include "engine/core/Log.h"
 
@@ -13,5 +15,5 @@
 #include "engine/utils/Vector2.h"
 
 /*-----------------------Entry Point------------------------*/
-#include "engine/core/EntryPoint.h"
+//#include "engine/core/EntryPoint.h"
 /*----------------------------------------------------------*/

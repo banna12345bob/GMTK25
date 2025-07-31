@@ -53,6 +53,18 @@ namespace Engine {
 		}
 	}
 
+	void Application::PushLayer(Layer* layer)
+	{
+		m_layerStack.PushLayer(layer);
+		layer->OnAttach();
+	}
+
+	void Application::PushOverlay(Layer* overlay)
+	{
+		m_layerStack.PushOverlay(overlay);
+		overlay->OnAttach();
+	}
+
 	void Application::Run()
 	{
 		EG_PROFILE_FUNCTION();
@@ -69,11 +81,19 @@ namespace Engine {
 
 			m_Window->HandleEvents();
 
-			m_ImGuiRenderer->StartFrame();
 			m_RenderAPI->SetClearColor({ 0, 0, 0, 0 });
 			m_RenderAPI->Clear();
-			UpdateApp();
+			for (Layer* layer : m_layerStack)
+				layer->OnUpdate();
+
+			m_ImGuiRenderer->StartFrame();
+			for (Layer* layer : m_layerStack)
+				layer->OnImGuiRender();
+			m_AudioDebuggerLayer->renderImGUILayer();
 			m_ImGuiRenderer->EndFrame();
+
+			SDL_Window* window = static_cast<SDL_Window*>(Application::getApplication()->getWindow()->getNativeWindow());
+			SDL_GL_SwapWindow(window);
 
 			b = a;
 		}

@@ -42,9 +42,6 @@ namespace Engine {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplSDL3_NewFrame();
 		ImGui::NewFrame();
-
-		for (ImGuiLayer* layer : m_ImGuiLayers)
-			layer->renderImGUILayer();
 	}
 
 	void ImGuiRenderer::EndFrame()
@@ -64,9 +61,6 @@ namespace Engine {
 			ImGui::RenderPlatformWindowsDefault();
 			SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
 		}
-
-		SDL_Window* window = static_cast<SDL_Window*>(Application::getApplication()->getWindow()->getNativeWindow());
-		SDL_GL_SwapWindow(window);
 	}
 
 	void ImGuiRenderer::handleImGUIEvents(const SDL_Event* event)

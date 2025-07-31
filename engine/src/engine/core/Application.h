@@ -12,6 +12,9 @@
 
 #include "engine/ImGui/ImGuiRenderer.h"
 
+#include "Layer.h"
+#include "LayerStack.h"
+
 namespace Engine {
 
 	class Application
@@ -24,6 +27,9 @@ namespace Engine {
 
 		static void AudioDebuggerKeyboardEventCallback(void* callback);
 
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* overlay);
+
 		virtual void Run();
 
 		Scope<Window>& getWindow() { return m_Window; }
@@ -31,8 +37,6 @@ namespace Engine {
 		Scope<AudioPlayer>& getAudioPlayer() { return m_AudioPlayer; }
 		eventCallbackManager* getCallbackManager() { return m_EventCallbackManager; }
 		ImGuiRenderer* getImGuiRenderer() { return m_ImGuiRenderer; }
-
-		virtual void UpdateApp() = 0;
 
 		int m_frameRate = 0;
 	private:
@@ -43,6 +47,8 @@ namespace Engine {
 		ImGuiRenderer* m_ImGuiRenderer;
 
 		AudioDebugger* m_AudioDebuggerLayer = new AudioDebugger();
+
+		LayerStack m_layerStack;
 	};
 
 	//	To be defined in client
