@@ -20,6 +20,7 @@ project "game"
 		"%{wks.location}/engine/vendor",
 		"%{IncludeDir.SDL3}",
 		"%{IncludeDir.glm}",
+		"%{wks.location}/engine/vendor/json/include"
 	}
 
 	links
