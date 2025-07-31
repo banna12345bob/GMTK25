@@ -4,6 +4,8 @@
 #include "engine/debug/Instrumentor.h"
 #include "engine/ImGui/ImGuiLayer.h"
 
+#include <filesystem>
+
 namespace Engine {
 
 	class AudioDebugger : public ImGuiLayer
@@ -13,9 +15,12 @@ namespace Engine {
 
 		virtual void renderImGUILayer() override;
 
+		void DirectoryIterator(std::filesystem::path path);
+
 	private:
-		float temp_volume = 0.5f;
-		bool temp_loop = false;
+		float m_tempVolume = 0.5f;
+		bool m_tempLoop = false;
+		std::vector<std::string> m_files;
 	};
 
 }

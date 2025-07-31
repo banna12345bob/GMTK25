@@ -3,12 +3,12 @@
 #include "engine/core/Application.h"
 
 #include <imgui.h>
-#include <filesystem>
 
 namespace Engine {
 
 	AudioDebugger::AudioDebugger()
 	{
+		DirectoryIterator("assets\\audio");
 	}
 
 	void AudioDebugger::renderImGUILayer() {
@@ -40,13 +40,23 @@ namespace Engine {
 		ImGui::End();
 
 		ImGui::Begin("Audio Debug Player");
-			ImGui::Checkbox("Loop", &temp_loop);
-			ImGui::SliderFloat("Volume", &temp_volume, 0, 1);
-			for (const auto& entry : std::filesystem::directory_iterator("assets\\audio\\music")) {
-				if (ImGui::Button(entry.path().string().c_str()))
-					Application::getApplication()->getAudioPlayer()->PlaySound(entry.path().string(), temp_loop, temp_volume);
+			ImGui::Checkbox("Loop", &m_tempLoop);
+			ImGui::SliderFloat("Volume", &m_tempVolume, 0, 1);
+			for (std::string entry : m_files) {
+				if (ImGui::Button(entry.c_str()))
+					Application::getApplication()->getAudioPlayer()->PlaySound(entry, m_tempLoop, m_tempVolume);
 			}
 		ImGui::End();
+	}
+
+	void AudioDebugger::DirectoryIterator(std::filesystem::path path)
+	{
+		for (const auto& entry : std::filesystem::directory_iterator(path)) {
+			if (entry.is_directory())
+				DirectoryIterator(entry);
+			else
+				m_files.push_back(entry.path().string());
+		}
 	}
 
 }

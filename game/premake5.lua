@@ -40,7 +40,8 @@ project "game"
 		systemversion "latest"
 		buildoptions { "/utf-8" }
 		postbuildcommands {
-			"{COPYDIR} %{wks.location}/%{prj.name}/assets/ %{cfg.targetdir}/assets"
+			"{COPYDIR} %{wks.location}/%{prj.name}/assets/ %{cfg.targetdir}/assets",
+			"{COPYDIR} %{wks.location}/%{prj.name}/data/ %{cfg.targetdir}/data"
 		}
 
 	filter "system:linux"
