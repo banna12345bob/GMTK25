@@ -7,6 +7,10 @@
 
 namespace Engine {
 
+	#define EG_MOUSECODE_LEFT 1
+	#define EG_MOUSECODE_RIGHT 2
+	#define EG_MOUSECODE_MIDDLE 3
+
 	class Mouse {
 	public:
 		/**
