@@ -1,4 +1,5 @@
 ﻿#include <engine.h>
+#include "gameplay/Block.h"
 
 
 class game : public Engine::Application
@@ -10,6 +11,8 @@ public:
 	{
 		getCallbackManager()->registerKeyboardCallback(keyboardEventCallback);
 		getCallbackManager()->registerMouseDownCallback(mouseDownEventCallback);
+
+		game1::Block::LoadBlockData();
 	}
 
 	~game()
