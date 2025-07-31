@@ -24,6 +24,7 @@ project "engine"
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.glad}",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.json}",
 	}
 
 	links 
