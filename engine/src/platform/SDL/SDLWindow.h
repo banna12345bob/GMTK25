@@ -2,8 +2,6 @@
 
 #include "engine/core/Window.h"
 
-#include "platform/OpenGL/GLShader.h"
-
 #include <SDL3/SDL.h>
 
 namespace Engine {
