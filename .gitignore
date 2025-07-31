@@ -28,6 +28,7 @@ imgui.ini
 
 **/bin
 **/bin-int
+**.aps
 
 *.zip
 EngineProfile-*.json

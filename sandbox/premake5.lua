@@ -10,7 +10,10 @@ project "sandbox"
 	files
 	{
 		"src/**.h",
-		"src/**.cpp"
+		"src/**.cpp",
+		"app.ico",
+		"app.rc",
+		"resource.h"
 	}
 
 	includedirs
