@@ -15,8 +15,6 @@ public:
 		getCallbackManager()->registerMouseDownCallback(mouseDownEventCallback);
 
 		PushLayer(new GameLayer());
-
-		game1::Block::LoadBlockData();
 	}
 
 	~game()

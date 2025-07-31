@@ -1,6 +1,9 @@
 #pragma once
 
 #include <engine.h>
+#include <gameplay/Grid.h>
+
+using namespace game1;
 
 class GameLayer : public Engine::Layer
 {
@@ -16,5 +19,7 @@ private:
 	Engine::Ref<Engine::Texture2D> m_sandBoxTexture;
 	bool m_ShowImGuiWindow = true;
 	bool m_ShowImGuiDemoWindow = false;
+
+	Grid m_grid;
 };
 
