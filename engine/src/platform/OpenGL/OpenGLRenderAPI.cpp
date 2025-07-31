@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "engine/core/Application.h"
+#include "engine/renderer/VertexArray.h"
 
 namespace Engine {
 
@@ -48,7 +49,7 @@ namespace Engine {
 
 		// ===================== Creates the vertex shader ===========================
 		std::string vertexShaderSource = R"(
-			#version 330 core
+			#version 440 core
 			layout (location = 0) in vec3 aPos;
 			out vec3 vPos;
 
@@ -61,7 +62,7 @@ namespace Engine {
 
 		// ================== Creates the fragment shader ============================
 		std::string fragmentShaderSource = R"(
-			#version 330 core
+			#version 440 core
 			in vec3 vPos;
 			out vec4 FragColor;
 
@@ -122,16 +123,14 @@ namespace Engine {
 		// Generates VBO and EBO
 		// VBO is your vertex buffer object
 		// EBO is your element buffer object (your indicies)
-		unsigned int VBO, EBO, VAO;
+		unsigned int VBO, EBO;
 		glGenBuffers(1, &VBO);
 		glGenBuffers(1, &EBO);
 
-		// Generates the vertex array object
-		// Basically all your attributes
-		glGenVertexArrays(1, &VAO);
+		Ref<VertexArray> vertexArray = VertexArray::Create();
 
 		// Bind your VAO
-		glBindVertexArray(VAO);
+		vertexArray->Bind();
 		// Bind the VBO
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		// Put the verticies into the VBO
@@ -152,7 +151,7 @@ namespace Engine {
 		// Draw verticies using a VAO and our shader
 		shader->Use();
 		shader->SetVector3f("fColour", colour);
-		glBindVertexArray(VAO);
+		vertexArray->Bind();
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
 }

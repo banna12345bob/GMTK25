@@ -29,11 +29,14 @@ namespace Engine {
 		void setRenderMode(RenderMode renderMode) { m_RenderMode = renderMode; }
 		bool getRenderMode() { return m_RenderMode; }
 
+		static RenderAPI::API getAPI();
+
 		static Scope<RenderAPI> Create();
+
 	private:
 		RenderMode m_RenderMode = RenderMode::Normal;
 
-		static API s_API;
+		static RenderAPI::API s_API;
 	};
 }
 

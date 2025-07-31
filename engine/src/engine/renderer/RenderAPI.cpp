@@ -18,4 +18,9 @@ namespace Engine {
 		return nullptr;
 	}
 
+	RenderAPI::API RenderAPI::getAPI()
+	{
+		return s_API;
+	}
+
 }
