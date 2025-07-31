@@ -23,8 +23,8 @@ public:
 		// Run every frame
 
 		// GL_DEPTH_TEST is not enabled so be mindful of your drawing order
-		Engine::Renderer2D::DrawQuad({ 0, 0, 0 }, { 1, 1, 1 }, { 1, 1, 1 });
-		Engine::Renderer2D::DrawQuad({ -0.75, 0.75, 0.5 }, { 0.25, 0.25, 1 }, { 1, 0, 1 });
+		Engine::Renderer2D::DrawQuad({ 0, 0, 0 }, { 1, 1 }, { 1, 1, 1, 1 });
+		Engine::Renderer2D::DrawQuad({ -0.75, 0.75, 0.5 }, { 0.25, 0.25 }, { 1, 0, 1, 1 });
 
 		// Little test grid
 		/*for (float x = -1.0f; x < 1.0f; x += 0.1f)

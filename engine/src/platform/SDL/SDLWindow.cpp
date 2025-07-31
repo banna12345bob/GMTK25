@@ -252,7 +252,7 @@ namespace Engine {
 		// Create the OpenGl context
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 4);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
 		m_GLContext = SDL_GL_CreateContext(m_window);
 		// Ensure the context was actually initialised
 		if (m_GLContext == NULL) {

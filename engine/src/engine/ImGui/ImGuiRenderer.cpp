@@ -25,7 +25,7 @@ namespace Engine {
 		SDL_Window* window = static_cast<SDL_Window*>(Application::getApplication()->getWindow()->getNativeWindow());
 
 		ImGui_ImplSDL3_InitForOpenGL(window, SDL_GL_GetCurrentContext());
-		ImGui_ImplOpenGL3_Init("#version 440");
+		ImGui_ImplOpenGL3_Init("#version 450");
 	}
 
 	ImGuiRenderer::~ImGuiRenderer()

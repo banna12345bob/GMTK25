@@ -13,7 +13,7 @@ namespace Engine {
         // constructor
         GLShader(const char* vertexShader, const char* fragmentShader);
         // Sets shader as the active shader
-        GLShader& Use();
+        void Use();
         // compiles the shader from given source code
         void Compile(const char* vertexShader, const char* fragmentShader);
 

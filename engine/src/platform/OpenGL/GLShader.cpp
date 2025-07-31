@@ -61,9 +61,8 @@ namespace Engine {
         glDeleteShader(fs);
     }
 
-    GLShader& GLShader::Use() {
-        glUseProgram(this->id);
-        return *this;
+    void GLShader::Use() {
+        glUseProgram(id);
     }
 
     void GLShader::Compile(const char* vertexSource, const char* fragmentSource) {

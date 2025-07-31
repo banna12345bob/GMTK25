@@ -57,6 +57,8 @@ namespace Engine {
 		EG_PROFILE_FUNCTION();
 		int a, b, deltaTime;
 		b = 0;
+		Renderer2D::Init();
+
 		while (m_Window->GetRunning()) {
 			a = (int)SDL_GetTicks();
 			deltaTime = a - b;
@@ -65,9 +67,12 @@ namespace Engine {
 				m_frameRate = 1000 / deltaTime;
 
 			m_Window->HandleEvents();
+
+			getRenderAPI()->StartFrame();
 			Renderer2D::StartFrame();
 			UpdateApp();
 			Renderer2D::EndFrame();
+			getRenderAPI()->EndFrame();
 
 			b = a;
 		}
