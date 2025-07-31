@@ -1,5 +1,5 @@
 workspace "GMTK25"
-	startproject "sandbox"
+	startproject "game"
 
 	configurations
 	{
@@ -27,3 +27,4 @@ group "Dependencies"
 group ""
 	include "engine"
 	include "sandbox"
+	include "game"

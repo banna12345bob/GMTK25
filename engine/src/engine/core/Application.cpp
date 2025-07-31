@@ -5,6 +5,8 @@
 #include "engine/core/Keycodes.h"
 #include "engine/events/Key.h"
 
+#include "engine/renderer/Renderer2D.h"
+
 namespace Engine {
 
 	static Application* s_Instance = nullptr;
@@ -63,9 +65,9 @@ namespace Engine {
 				m_frameRate = 1000 / deltaTime;
 
 			m_Window->HandleEvents();
-			m_RenderAPI->StartFrame();
-			this->UpdateApp();
-			m_RenderAPI->EndFrame();
+			Renderer2D::StartFrame();
+			UpdateApp();
+			Renderer2D::EndFrame();
 
 			b = a;
 		}

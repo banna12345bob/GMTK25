@@ -1,21 +1,18 @@
 ﻿#include <engine.h>
 
-#include "SandboxImGuiLayer.h"
 
-class sandbox : public Engine::Application
+class game : public Engine::Application
 {
 public:
 
-	sandbox(Engine::WindowProps props)
+	game(Engine::WindowProps props)
 		: Engine::Application(props)
 	{
-		getImGuiRenderer()->registerImGuiLayer(new SandboxImGuiLayer());
-
 		getCallbackManager()->registerKeyboardCallback(keyboardEventCallback);
 		getCallbackManager()->registerMouseDownCallback(mouseDownEventCallback);
 	}
 
-	~sandbox()
+	~game()
 	{
 	}
 
@@ -58,5 +55,5 @@ public:
 
 Engine::Application* Engine::CreateApplication()
 {
-	return new sandbox(Engine::WindowProps("Sandbox", 520, 520, "assets/textures/Oak_Log.png"));
+	return new game(Engine::WindowProps("Sandbox", 520, 520, "assets/textures/Oak_Log.png"));
 }
