@@ -127,8 +127,13 @@ namespace Engine {
 
 	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 scale, glm::vec4 colour)
 	{
+		DrawQuad(position, scale, 0, colour);
+	}
+
+	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 scale, float rotation, glm::vec4 colour)
+	{
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
-			//* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
+			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
 			* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
 
 		constexpr size_t squareVertexCount = 4;
