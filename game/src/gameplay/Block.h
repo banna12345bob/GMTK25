@@ -41,7 +41,7 @@ namespace game1 {
 				rarity(r) {}
 		};
 
-		Block::Block(BaseBlock baseBlock, Manufacturer manufacturer, Modifier modifier);
+		Block(BaseBlock baseBlock, Manufacturer manufacturer, Modifier modifier);
 
 		static void LoadBlockData();
 

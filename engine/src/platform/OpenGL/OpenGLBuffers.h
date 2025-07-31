@@ -14,8 +14,8 @@ namespace Engine {
 		virtual void Bind() override;
 		virtual void Unbind() override;
 
-		virtual const BufferLayout& GetLayout() override { return m_Layout; }
-		virtual void SetLayout(BufferLayout& layout) override { m_Layout = layout; }
+		virtual const BufferLayout& GetLayout() const override { return m_Layout; }
+		virtual void SetLayout(const BufferLayout& layout) override { m_Layout = layout; }
 
 		virtual void SetData(const void* data, uint32_t size) override;
 

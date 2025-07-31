@@ -112,8 +112,8 @@ namespace Engine {
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 
-		virtual const BufferLayout& GetLayout() = 0;
-		virtual void SetLayout(BufferLayout& layout) = 0;
+		virtual const BufferLayout& GetLayout() const = 0;
+		virtual void SetLayout(const BufferLayout& layout) = 0;
 
 		virtual void SetData(const void* data, uint32_t size) = 0;
 
