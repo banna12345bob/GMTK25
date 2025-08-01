@@ -3,8 +3,6 @@
 #include <engine.h>
 #include <engine/core/EntryPoint.h>
 
-#include "SandboxImGuiLayer.h"
-
 #include "SandboxLayer.h"
 
 class sandbox : public Engine::Application
@@ -14,8 +12,6 @@ public:
 	sandbox(Engine::WindowProps props)
 		: Engine::Application(props)
 	{
-		//getImGuiRenderer()->registerImGuiLayer(new SandboxImGuiLayer());
-
 		getCallbackManager()->registerKeyboardCallback(keyboardEventCallback);
 		getCallbackManager()->registerMouseDownCallback(mouseDownEventCallback);
 

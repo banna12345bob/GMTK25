@@ -15,7 +15,11 @@ public:
 private:
 	Engine::OrthographicCameraController m_CameraController;
 
+	Engine::Ref<Engine::Texture2D> m_Tilesheet;
 	Engine::Ref<Engine::Texture2D> m_sandBoxTexture;
+
+	Engine::Ref<Engine::Texture2D> m_TreeTexture, m_MushroomsTexture;
+
 	bool m_ShowImGuiWindow = true;
 	bool m_ShowImGuiDemoWindow = false;
 };

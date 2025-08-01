@@ -178,12 +178,6 @@ namespace Engine {
 	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 scale, float rotation, Ref<Texture2D>& texture, glm::vec4 tintColour, float tilingFactor)
 	{
 		constexpr size_t squareVertexCount = 4;
-		constexpr glm::vec2 textureCoords[] = {
-			{ 0.0f, 0.0f },
-			{ 1.0f, 0.0f },
-			{ 1.0f, 1.0f },
-			{ 0.0f, 1.0f }
-		};
 
 		float textureIndex = 0.0f;
 		for (uint32_t i = 1; i < s_Data.textureSlotIndex; i++)
@@ -195,11 +189,23 @@ namespace Engine {
 			}
 		}
 
-		if (textureIndex == 0.0f)
+		if (texture->isSubTexture())
 		{
-			textureIndex = (float)s_Data.textureSlotIndex;
-			s_Data.textureSlots[s_Data.textureSlotIndex] = texture;
-			s_Data.textureSlotIndex++;
+			Ref<SubTexture2D> subTex = std::static_pointer_cast<SubTexture2D>(texture);
+			if (textureIndex == 0.0f)
+			{
+				textureIndex = (float)s_Data.textureSlotIndex;
+				s_Data.textureSlots[s_Data.textureSlotIndex] = subTex->GetTexture();
+				s_Data.textureSlotIndex++;
+			}
+		}
+		else {
+			if (textureIndex == 0.0f)
+			{
+				textureIndex = (float)s_Data.textureSlotIndex;
+				s_Data.textureSlots[s_Data.textureSlotIndex] = texture;
+				s_Data.textureSlotIndex++;
+			}
 		}
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
@@ -210,7 +216,7 @@ namespace Engine {
 		{
 			s_Data.squareVertexBufferPtr->position = transform * s_Data.quadVertexPosition[i];
 			s_Data.squareVertexBufferPtr->colour = tintColour;
-			s_Data.squareVertexBufferPtr->texCoord = textureCoords[i];
+			s_Data.squareVertexBufferPtr->texCoord = texture->getTextureCoords()[i];
 			s_Data.squareVertexBufferPtr->texIndex = textureIndex;
 			s_Data.squareVertexBufferPtr->tilingFactor = tilingFactor;
 			s_Data.squareVertexBufferPtr++;

@@ -12,10 +12,12 @@ SandboxLayer::SandboxLayer()
 void SandboxLayer::OnAttach()
 {
 	m_sandBoxTexture = Engine::Texture2D::Create("assets/textures/Oak_Log.png");
+	m_Tilesheet = Engine::Texture2D::Create("assets/textures/kenny/kenny_tiny_town.png");
 
-	m_CameraController.SetZoomLevel(5.f);
+	m_TreeTexture = Engine::SubTexture2D::CreateFromCoords(m_Tilesheet, { 4, 9 }, { 16, 16 }, { 1, 2 });
+	m_MushroomsTexture = Engine::SubTexture2D::CreateFromCoords(m_Tilesheet, { 5, 8 }, { 16, 16 });
 
-	m_CameraController.setPosition({ 1, -1, 0 });
+	m_CameraController.SetZoomLevel(2.f);
 }
 
 void SandboxLayer::OnDetach()
@@ -37,7 +39,10 @@ void SandboxLayer::OnUpdate()
 		}
 	}
 
-	Engine::Renderer2D::DrawQuad({ -1, 1, 1 }, { 1, 1 }, { 1, 0, 1, 1 });
+	Engine::Renderer2D::DrawQuad({ -1, 1, 1 }, { 1.5f, 1.5f }, m_Tilesheet);
+	Engine::Renderer2D::DrawQuad({ 1, 1, 1 }, { 1, 2 }, m_TreeTexture);
+	Engine::Renderer2D::DrawQuad({ 1, -1, 1 }, { 1, 1 }, m_MushroomsTexture);
+
 	Engine::Renderer2D::DrawQuad({ 0, 0, 1 }, { 1, 1 }, m_sandBoxTexture, { 1, 0, 0, 1 });
 
 	Engine::Renderer2D::EndScene();

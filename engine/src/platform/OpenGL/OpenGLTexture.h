@@ -14,7 +14,7 @@ namespace Engine {
 		virtual ~OpenGLTexture2D();
 
 		virtual uint32_t getWidth() const override { return m_Width; }
-		virtual uint32_t getHight() const override { return m_Height; }
+		virtual uint32_t getHeight() const override { return m_Height; }
 
 		virtual void SetData(void* data, uint32_t size) override;
 
