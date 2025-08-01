@@ -12,6 +12,7 @@
 #include "engine/events/Mouse.h"
 
 #include "engine/renderer/RenderAPI.h"
+#include "engine/renderer/RenderCommand.h"
 
 namespace Engine {
 
@@ -196,6 +197,7 @@ namespace Engine {
 			case SDL_EVENT_WINDOW_RESIZED:
 				// TODO: Change OpenGL viewport size
 				ReloadWindow();
+				RenderCommand::SetViewport(0, 0, GetWidth(), GetHeight());
 				EG_CORE_INFO("W: {0}, H: {1}", GetWidth(), GetHeight());
 				break;
 			case SDL_EVENT_WINDOW_MINIMIZED:
