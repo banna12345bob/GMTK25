@@ -21,10 +21,11 @@ project "game"
 		"%{IncludeDir.spdlog}",
 		"%{wks.location}/engine/src",
 		"%{wks.location}/engine/vendor",
+		"%{wks.location}/game/src",
 		"%{IncludeDir.SDL3}",
 		"%{IncludeDir.glm}",
-		"%{wks.location}/engine/vendor/json/include",
-		"%{wks.location}/game/src"
+		"%{IncludeDir.json}",
+		"%{IncludeDir.zipFile}",
 	}
 
 	links

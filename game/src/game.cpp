@@ -4,6 +4,8 @@
 
 #include <engine/core/EntryPoint.h>
 
+#include <zip_file.hpp>
+
 class game : public Engine::Application
 {
 public:
@@ -15,6 +17,10 @@ public:
 		getCallbackManager()->registerMouseDownCallback(mouseDownEventCallback);
 
 		PushLayer(new GameLayer());
+
+		// miniz_cpp::zip_file file;
+		// file.load("assets/assets.zip");
+		// EG_TRACE(file.read("shaders/colour.glsl"));
 	}
 
 	~game()

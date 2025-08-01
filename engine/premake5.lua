@@ -25,6 +25,7 @@ project "engine"
 		"%{IncludeDir.glad}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.json}",
+		"%{IncludeDir.zipFile}",
 	}
 
 	links 
