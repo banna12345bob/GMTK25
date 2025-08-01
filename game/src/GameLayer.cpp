@@ -8,7 +8,6 @@
 GameLayer::GameLayer()
 	: Layer("GameLayer"), m_CameraController(Engine::Application::getApplication()->getWindow()->GetWidth() / Engine::Application::getApplication()->getWindow()->GetHeight())
 {
-	m_LettersSubtexture = std::unordered_map<char, Engine::Ref<Engine::Texture2D>>();
 }
 
 void GameLayer::OnAttach() // I am assuming this is this just whenever gameplay is started
@@ -21,19 +20,7 @@ void GameLayer::OnAttach() // I am assuming this is this just whenever gameplay 
 	m_TestButton = new Button(m_CameraController.GetCamera(), oak_log, { 0, 0, 0.1 }, { 64, 64 });
 
 	m_RegularFont = Engine::Texture2D::Create("assets/textures/regular_font.png");
-	m_LettersSubtexture['!'] = Engine::SubTexture2D::CreateFromCoords(m_RegularFont, { 0, 0 }, { 5, 7 });
-	m_LettersSubtexture['\''] = Engine::SubTexture2D::CreateFromCoords(m_RegularFont, { 1, 0 }, { 5, 7 });
-	m_LettersSubtexture[','] = Engine::SubTexture2D::CreateFromCoords(m_RegularFont, { 2, 0 }, { 5, 7 });
-	m_LettersSubtexture['.'] = Engine::SubTexture2D::CreateFromCoords(m_RegularFont, { 3, 0 }, { 5, 7 });
-	m_LettersSubtexture['?'] = Engine::SubTexture2D::CreateFromCoords(m_RegularFont, { 4, 0 }, { 5, 7 });
-	m_LettersSubtexture[':'] = Engine::SubTexture2D::CreateFromCoords(m_RegularFont, { 5, 0 }, { 5, 7 });
-	m_LettersSubtexture['%'] = Engine::SubTexture2D::CreateFromCoords(m_RegularFont, { 6, 0 }, { 5, 7 });
-
-	for (int i = 0; i < 9; i++)
-		m_LettersSubtexture[char(48+i)] = Engine::SubTexture2D::CreateFromCoords(m_RegularFont, {i, 1}, {5, 7});
-
-	for (int i = 0; i < 26; i++)
-		m_LettersSubtexture[char(65+i)] = Engine::SubTexture2D::CreateFromCoords(m_RegularFont, { i, 2 }, { 5, 7 });
+	m_TextRenderer = new TextRendering(m_RegularFont, { 5, 7 });
 
 	m_CameraZoom = glm::sqrt(std::pow(Engine::Application::getApplication()->getWindow()->GetWidth(), 2) + std::pow(Engine::Application::getApplication()->getWindow()->GetWidth(), 2)) / 4;
 
@@ -67,15 +54,7 @@ void GameLayer::OnRender()
 	Engine::Renderer2D::BeginScene(m_CameraController.GetCamera());
 	m_TestButton->Render();
 
-	Engine::Renderer2D::DrawQuad({ -5 * 3, 0, .5 }, glm::vec2({ 5, 7 }), m_LettersSubtexture['%']);
-	Engine::Renderer2D::DrawQuad({ -5 * 2, 0, .5 }, glm::vec2({ 5, 7 }), m_LettersSubtexture['\'']);
-	Engine::Renderer2D::DrawQuad({ -5 * 1, 0, .5 }, glm::vec2({ 5, 7 }), m_LettersSubtexture['0']);
-	Engine::Renderer2D::DrawQuad({ 5 * 0, 0, .5 }, glm::vec2({ 5, 7 }), m_LettersSubtexture['O']);
-	Engine::Renderer2D::DrawQuad({ 5 * 1, 0, .5 }, glm::vec2({ 5, 7 }), m_LettersSubtexture['A']);
-	Engine::Renderer2D::DrawQuad({ 5 * 2, 0, .5 }, glm::vec2({ 5, 7 }), m_LettersSubtexture['K']);
-	Engine::Renderer2D::DrawQuad({ 5 * 4, 0, .5 }, glm::vec2({ 5, 7 }), m_LettersSubtexture['L']);
-	Engine::Renderer2D::DrawQuad({ 5 * 5, 0, .5 }, glm::vec2({ 5, 7 }), m_LettersSubtexture['O']);
-	Engine::Renderer2D::DrawQuad({ 5 * 6, 0, .5 }, glm::vec2({ 5, 7 }), m_LettersSubtexture['G']);
+	m_TextRenderer->RenderText("OAK LOG!", 1.f, { 0.f, 0.f, 0.5f });
 
 	m_grid.DrawTiles();
 

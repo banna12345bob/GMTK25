@@ -3,6 +3,7 @@
 #include <engine.h>
 #include "gameplay/Grid.h"
 #include "UI/Button.h"
+#include "UI/TextRendering.h"
 
 using namespace game1;
 
@@ -26,7 +27,7 @@ private:
 
 	Engine::Ref<Engine::Texture2D> m_RegularFont;
 
-	std::unordered_map<char, Engine::Ref<Engine::Texture2D>> m_LettersSubtexture;
+	TextRendering* m_TextRenderer;
 
 	Button* m_TestButton;
 
