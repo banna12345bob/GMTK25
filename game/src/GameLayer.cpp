@@ -1,7 +1,8 @@
 #include "GameLayer.h"
 
+#include "engine/core/Log.h"
 #include <glm/glm.hpp>
-
+#include "glm/gtc/matrix_transform.hpp"
 #include <imgui/imgui.h>
 
 GameLayer::GameLayer()
@@ -28,14 +29,10 @@ void GameLayer::OnUpdate()
 	m_CameraController.setPosition({ m_CameraPos[0], m_CameraPos[1], 0.f});
 
 	m_CameraController.OnUpdate();
-
-	Engine::RenderCommand::SetClearColor({ 0, 0, 0, 0 });
-	Engine::RenderCommand::Clear();
-
 	// Run every frame
 	Engine::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-	Engine::Renderer2D::DrawQuad({ 0, 0, .5f }, { 0.5f, 0.5f }, { 0, 1, 1, 1 });
+	//Engine::Renderer2D::DrawQuad({ 0, 0, -.5f }, { 0.5f, 0.5f }, { 0, 1, 1, 1 });
 
 	m_grid.DrawTiles();
 
@@ -49,4 +46,15 @@ void GameLayer::OnImGuiRender()
 	ImGui::SliderFloat("Zoom", &m_CameraZoom, .1f, 20.f);
 	ImGui::SliderFloat2("Position", m_CameraPos, -5, 5, "%.3f", 1.0f);
 	ImGui::End();
+}
+
+glm::vec2 GameLayer::GetMouseWorldPosition() {
+	glm::vec2 posVec = glm::unProject(
+		glm::vec3(Engine::Mouse::getPosition().x, float(Engine::Application::getApplication()->getWindow()->GetHeight()) - Engine::Mouse::getPosition().y, 1.0f),
+		glm::mat4(1.0f),
+		m_CameraController.GetCamera().GetViewProjectionMatrix(),
+		glm::vec4(0.0f, 0.0f, float(Engine::Application::getApplication()->getWindow()->GetWidth()), float(Engine::Application::getApplication()->getWindow()->GetHeight()))
+	);
+
+	return posVec;
 }
