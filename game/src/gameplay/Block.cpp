@@ -14,11 +14,6 @@ namespace game1 {
 		m_typeBonus(typeBonus),
 		m_connections(connections) {}
 
-<<<<<<< HEAD
-	void Block::Draw(int x, int y) {
-		Engine::Renderer2D::DrawQuad(glm::vec3(x, y, .9f), { 32, 32 }, m_typeTextures[m_type]);
-		Engine::Renderer2D::DrawQuad(glm::vec3(x, y, .9f), { 32, 32 }, m_numberTextures[m_value][m_typeBonus]);
-=======
 	void Block::Update() {
 
 	}
@@ -58,7 +53,6 @@ namespace game1 {
 				Engine::Renderer2D::DrawQuad({ x, y, 0.83 + (i * 0.001f)}, {32,32}, m_arrowTextures[i][m_connections[i]]);
 			}
 		}
->>>>>>> 818a0ae (Draw blocks on grid and activate them)
 	}
 
 	Block* Block::GenerateBlock() {
