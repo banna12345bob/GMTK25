@@ -33,7 +33,10 @@ void SandboxLayer::OnUpdate()
 {
 	m_CurrentFrame += 0.005;
 	m_CameraController.OnUpdate();
+}
 
+void SandboxLayer::OnRender()
+{
 	Engine::RenderCommand::SetClearColor({ 0, 0, 0, 0 });
 	Engine::RenderCommand::Clear();
 

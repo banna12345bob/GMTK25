@@ -83,8 +83,10 @@ namespace Engine {
 
 			m_Window->HandleEvents();
 
-			for (Layer* layer : m_layerStack)
+			for (Layer* layer : m_layerStack) {
 				layer->OnUpdate();
+				layer->OnRender();
+			}
 
 			m_ImGuiRenderer->StartFrame();
 			for (Layer* layer : m_layerStack)

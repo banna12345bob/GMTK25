@@ -11,6 +11,7 @@ public:
 	virtual void OnAttach() override;
 	virtual void OnDetach() override;
 	void OnUpdate() override;
+	void OnRender() override;
 	virtual void OnImGuiRender() override;
 private:
 	Engine::OrthographicCameraController m_CameraController;

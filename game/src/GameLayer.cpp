@@ -15,6 +15,9 @@ void GameLayer::OnAttach() // I am assuming this is this just whenever gameplay 
 	Block::LoadBlockData();
 	m_grid = Grid(16);
 
+	Engine::Ref<Engine::Texture2D> oak_log = Engine::Texture2D::Create("assets/textures/cat.jpg");
+	m_TestButton = new Button(oak_log, { 0, 0, 0.5 }, glm::vec2({ 64, 64 }) * 4.f);
+
 	m_CameraZoom = glm::sqrt(std::pow(Engine::Application::getApplication()->getWindow()->GetWidth(), 2) + std::pow(Engine::Application::getApplication()->getWindow()->GetWidth(), 2));
 
 	m_CameraController.SetZoomLevel(m_CameraZoom);
@@ -28,10 +31,13 @@ void GameLayer::OnDetach()
 void GameLayer::OnUpdate()
 {
 	m_CameraController.SetZoomLevel(m_CameraZoom);
-	m_CameraController.setPosition({ m_CameraPos[0], m_CameraPos[1], 0.f});
+	m_CameraController.setPosition({ m_CameraPos[0], m_CameraPos[1], 0.f });
 
 	m_CameraController.OnUpdate();
+}
 
+void GameLayer::OnRender()
+{
 	Engine::RenderCommand::SetClearColor({ 0, 0, 0, 0 });
 	Engine::RenderCommand::Clear();
 
@@ -41,6 +47,8 @@ void GameLayer::OnUpdate()
 	//Engine::Renderer2D::DrawQuad({ 0, 0, -.5f }, { 0.5f, 0.5f }, { 0, 1, 1, 1 });
 
 	m_grid.DrawTiles();
+
+	m_TestButton->Render(m_CameraController.GetCamera());
 
 	Engine::Renderer2D::EndScene();
 }
