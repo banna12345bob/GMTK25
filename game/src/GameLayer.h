@@ -18,6 +18,7 @@ public:
 private:
 	Engine::OrthographicCameraController m_CameraController;
 	float m_CameraZoom = 1.f;
+	float m_CameraPos[2] = { 0.f, 0.f };
 
 	Grid m_grid;
 };

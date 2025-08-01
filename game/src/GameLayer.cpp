@@ -15,6 +15,7 @@ void GameLayer::OnAttach() // I am assuming this is this just whenever gameplay 
 	m_grid = Grid(16);
 
 	m_CameraController.SetZoomLevel(m_CameraZoom);
+	m_CameraController.setPosition({ m_CameraPos[0], m_CameraPos[1], 0.f });
 }
 
 void GameLayer::OnDetach()
@@ -24,6 +25,7 @@ void GameLayer::OnDetach()
 void GameLayer::OnUpdate()
 {
 	m_CameraController.SetZoomLevel(m_CameraZoom);
+	m_CameraController.setPosition({ m_CameraPos[0], m_CameraPos[1], 0.f});
 
 	m_CameraController.OnUpdate();
 
@@ -45,5 +47,6 @@ void GameLayer::OnImGuiRender()
 	// Any ImGui rendering code goes here
 	ImGui::Begin("Camera Test");
 	ImGui::SliderFloat("Zoom", &m_CameraZoom, .1f, 20.f);
+	ImGui::SliderFloat2("Position", m_CameraPos, -5, 5, "%.3f", 1.0f);
 	ImGui::End();
 }

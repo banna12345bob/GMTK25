@@ -22,7 +22,7 @@ void SandboxLayer::OnAttach()
 	m_Animation[0] = Engine::Texture2D::Create("assets/textures/tile.png");
 	m_Animation[1] = Engine::Texture2D::Create("assets/textures/tile2.png");
 
-	m_CameraController.SetZoomLevel(Engine::Application::getApplication()->getWindow()->GetWidth() / Engine::Application::getApplication()->getWindow()->GetHeight());
+	m_CameraController.SetZoomLevel(2.f);
 }
 
 void SandboxLayer::OnDetach()
