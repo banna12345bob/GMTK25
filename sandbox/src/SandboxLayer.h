@@ -20,6 +20,8 @@ private:
 
 	Engine::Ref<Engine::Texture2D> m_TreeTexture, m_MushroomsTexture;
 
+	glm::vec2 m_mousePos;
+
 	bool m_ShowImGuiWindow = true;
 	bool m_ShowImGuiDemoWindow = false;
 };

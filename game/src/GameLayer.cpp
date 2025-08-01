@@ -27,10 +27,13 @@ void GameLayer::OnUpdate()
 
 	m_CameraController.OnUpdate();
 
+	Engine::RenderCommand::SetClearColor({ 0, 0, 0, 0 });
+	Engine::RenderCommand::Clear();
+
 	// Run every frame
 	Engine::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-	Engine::Renderer2D::DrawQuad({ 0, 0, -.5f }, { 0.5f, 0.5f }, { 0, 1, 1, 1 });
+	Engine::Renderer2D::DrawQuad({ 0, 0, .5f }, { 0.5f, 0.5f }, { 0, 1, 1, 1 });
 
 	m_grid.DrawTiles();
 

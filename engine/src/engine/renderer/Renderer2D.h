@@ -44,6 +44,9 @@ namespace Engine {
 		*/
 		static void DrawQuad(glm::vec3 position, glm::vec2 scale, Ref<Texture2D>& texture, glm::vec4 tintColour = glm::vec4(1.0f), float tilingFactor = 1.0f);
 		static void DrawQuad(glm::vec3 position, glm::vec2 scale, float rotation, Ref<Texture2D>& texture, glm::vec4 tintColour = glm::vec4(1.0f), float tilingFactor = 1.0f);
+
+	private:
+		static void FlushAndReset();
 	};
 }
 

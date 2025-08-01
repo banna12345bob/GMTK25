@@ -28,7 +28,7 @@ namespace Engine {
 		EG_CORE_FATAL("Unknown severity level!");
 	}
 
-	OpenGLRenderAPI::OpenGLRenderAPI()
+	void OpenGLRenderAPI::Init()
 	{
 		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
 			EG_CORE_FATAL("GLAD couldn't load OpenGL");

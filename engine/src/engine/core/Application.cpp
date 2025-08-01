@@ -6,6 +6,7 @@
 #include "engine/events/Key.h"
 
 #include "engine/renderer/Renderer2D.h"
+#include "engine/renderer/RenderCommand.h"
 
 namespace Engine {
 
@@ -17,7 +18,6 @@ namespace Engine {
 		s_Instance = this;
 
 		m_Window = Window::Create(props);
-		m_RenderAPI = RenderAPI::Create();
 		m_EventCallbackManager = new eventCallbackManager();
 		m_AudioPlayer = AudioPlayer::Create();
 		m_ImGuiRenderer = new ImGuiRenderer();
@@ -27,6 +27,9 @@ namespace Engine {
 		getImGuiRenderer()->registerImGuiLayer(m_AudioDebuggerLayer);
 
 		m_EventCallbackManager->registerKeyboardCallback(AudioDebuggerKeyboardEventCallback);
+
+		RenderCommand::Init();
+		Renderer2D::Init();
 	}
 
 	Application::~Application()
@@ -46,10 +49,10 @@ namespace Engine {
 			Application::getApplication()->m_AudioDebuggerLayer->m_ShowWindow = !Application::getApplication()->m_AudioDebuggerLayer->m_ShowWindow;
 
 		if (Key::wasKeyPressed(EG_SCANCODE_F1)) {
-			if (Application::getApplication()->m_RenderAPI->getRenderMode() == RenderAPI::RenderMode::Normal)
-				Application::getApplication()->m_RenderAPI->setRenderMode(RenderAPI::RenderMode::Wireframe);
+			if (RenderCommand::GetRenderMode() == RenderAPI::RenderMode::Normal)
+				RenderCommand::SetRenderMode(RenderAPI::RenderMode::Wireframe);
 			else
-				Application::getApplication()->m_RenderAPI->setRenderMode(RenderAPI::RenderMode::Normal);
+				RenderCommand::SetRenderMode(RenderAPI::RenderMode::Normal);
 		}
 	}
 
@@ -70,7 +73,6 @@ namespace Engine {
 		EG_PROFILE_FUNCTION();
 		int a, b, deltaTime;
 		b = 0;
-		Renderer2D::Init();
 
 		while (m_Window->GetRunning()) {
 			a = (int)SDL_GetTicks();
@@ -81,8 +83,6 @@ namespace Engine {
 
 			m_Window->HandleEvents();
 
-			m_RenderAPI->SetClearColor({ 0, 0, 0, 0 });
-			m_RenderAPI->Clear();
 			for (Layer* layer : m_layerStack)
 				layer->OnUpdate();
 

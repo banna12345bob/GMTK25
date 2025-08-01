@@ -8,8 +8,7 @@
 #include "engine/renderer/VertexArray.h"
 #include "engine/renderer/Buffers.h"
 #include "engine/renderer/Shader.h"
-
-#include "engine/core/Application.h"
+#include "engine/renderer/RenderCommand.h"
 
 namespace Engine {
 
@@ -135,8 +134,17 @@ namespace Engine {
 		for (uint32_t i = 0; i < s_Data.textureSlotIndex; i++)
 			s_Data.textureSlots[i]->Bind(i);
 
-		Application::getApplication()->getRenderAPI()->DrawIndexed(s_Data.QuadVertexArray, s_Data.squareIndexCount);
-		
+		RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.squareIndexCount);
+	}
+
+	void Renderer2D::FlushAndReset()
+	{
+		EndScene();
+
+		s_Data.squareIndexCount = 0;
+		s_Data.squareVertexBufferPtr = s_Data.squareVertexBufferPtr;
+
+		s_Data.textureSlotIndex = 1;
 	}
 
 	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 scale, glm::vec4 colour)
@@ -146,6 +154,9 @@ namespace Engine {
 
 	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 scale, float rotation, glm::vec4 colour)
 	{
+		if (s_Data.squareIndexCount >= Renderer2DData::maxIndices)
+			FlushAndReset();
+
 		constexpr size_t squareVertexCount = 4;
 		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 
@@ -177,6 +188,9 @@ namespace Engine {
 
 	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 scale, float rotation, Ref<Texture2D>& texture, glm::vec4 tintColour, float tilingFactor)
 	{
+		if (s_Data.squareIndexCount >= Renderer2DData::maxIndices)
+			FlushAndReset();
+
 		constexpr size_t squareVertexCount = 4;
 
 		float textureIndex = 0.0f;
@@ -189,23 +203,20 @@ namespace Engine {
 			}
 		}
 
-		if (texture->isSubTexture())
+		if (textureIndex == 0.0f)
 		{
-			Ref<SubTexture2D> subTex = std::static_pointer_cast<SubTexture2D>(texture);
-			if (textureIndex == 0.0f)
+			if (s_Data.squareIndexCount >= Renderer2DData::maxIndices)
+				FlushAndReset();
+
+			textureIndex = (float)s_Data.textureSlotIndex;
+			if (texture->isSubTexture())
 			{
-				textureIndex = (float)s_Data.textureSlotIndex;
+				Ref<SubTexture2D> subTex = std::static_pointer_cast<SubTexture2D>(texture);
 				s_Data.textureSlots[s_Data.textureSlotIndex] = subTex->GetTexture();
-				s_Data.textureSlotIndex++;
 			}
-		}
-		else {
-			if (textureIndex == 0.0f)
-			{
-				textureIndex = (float)s_Data.textureSlotIndex;
+			else
 				s_Data.textureSlots[s_Data.textureSlotIndex] = texture;
-				s_Data.textureSlotIndex++;
-			}
+			s_Data.textureSlotIndex++;
 		}
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)

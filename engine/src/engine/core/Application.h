@@ -3,7 +3,6 @@
 #include "core.h"
 
 #include "engine/core/Window.h"
-#include "engine/renderer/RenderAPI.h"
 #include "engine/audio/audioPlayer.h"
 
 #include "engine/events/eventCallbackManager.h"
@@ -33,7 +32,6 @@ namespace Engine {
 		virtual void Run();
 
 		Scope<Window>& getWindow() { return m_Window; }
-		Scope<RenderAPI>& getRenderAPI() { return m_RenderAPI; }
 		Scope<AudioPlayer>& getAudioPlayer() { return m_AudioPlayer; }
 		eventCallbackManager* getCallbackManager() { return m_EventCallbackManager; }
 		ImGuiRenderer* getImGuiRenderer() { return m_ImGuiRenderer; }
@@ -41,7 +39,6 @@ namespace Engine {
 		int m_frameRate = 0;
 	private:
 		Scope<Window> m_Window;
-		Scope<RenderAPI> m_RenderAPI;
 		Scope<AudioPlayer> m_AudioPlayer;
 		eventCallbackManager* m_EventCallbackManager;
 		ImGuiRenderer* m_ImGuiRenderer;

@@ -4,6 +4,8 @@
 
 #include <imgui/imgui.h>
 
+#include <glm/gtc/matrix_transform.hpp>
+
 SandboxLayer::SandboxLayer()
 	: Layer("SandboxLayer"), m_CameraController(Engine::Application::getApplication()->getWindow()->GetWidth() / Engine::Application::getApplication()->getWindow()->GetHeight())
 {
@@ -27,6 +29,9 @@ void SandboxLayer::OnDetach()
 void SandboxLayer::OnUpdate()
 {
 	m_CameraController.OnUpdate();
+
+	Engine::RenderCommand::SetClearColor({ 0, 0, 0, 0 });
+	Engine::RenderCommand::Clear();
 
 	Engine::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
