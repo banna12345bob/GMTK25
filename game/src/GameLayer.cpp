@@ -13,7 +13,8 @@ GameLayer::GameLayer()
 void GameLayer::OnAttach() // I am assuming this is this just whenever gameplay is started
 {
 	Block::LoadBlockData();
-	m_grid = Grid(16);
+	Block::LoadBlockTextures();
+	m_grid = Grid(5);
 
 	Engine::Ref<Engine::Texture2D> oak_log = Engine::Texture2D::Create("assets/textures/Oak_Log.png");
 	m_TestButton = new Button(m_CameraController.GetCamera(), oak_log, {0, 0, 0.5}, {64, 64});
@@ -51,6 +52,10 @@ void GameLayer::OnRender()
 
 	m_grid.DrawTiles();
 
+	//glm::vec2 pos = GameLayer::GetMouseWorldPosition();
+	//EG_TRACE("POS {0}, {1}", pos.x, pos.y);
+
+	m_grid.DrawTiles();
 	m_TestButton->Render();
 
 	Engine::Renderer2D::EndScene();
