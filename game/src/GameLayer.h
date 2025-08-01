@@ -24,6 +24,10 @@ private:
 	float m_CameraZoom = 1.f;
 	float m_CameraPos[2] = { 0.f, 0.f };
 
+	Engine::Ref<Engine::Texture2D> m_RegularFont;
+
+	std::unordered_map<char, Engine::Ref<Engine::Texture2D>> m_LettersSubtexture;
+
 	Button* m_TestButton;
 
 	Grid m_grid;

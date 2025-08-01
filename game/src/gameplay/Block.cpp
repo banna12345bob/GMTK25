@@ -14,8 +14,8 @@ namespace game1 {
 		m_typeBonus(typeBonus) {}
 
 	void Block::Draw(int x, int y) {
-		Engine::Renderer2D::DrawQuad(glm::vec3(x, y, 1), { 32, 32 }, m_typeTextures[m_type]);
-		Engine::Renderer2D::DrawQuad(glm::vec3(x, y, 1), { 32, 32 }, m_numberTextures[m_value][m_typeBonus]);
+		Engine::Renderer2D::DrawQuad(glm::vec3(x, y, .9f), { 32, 32 }, m_typeTextures[m_type]);
+		Engine::Renderer2D::DrawQuad(glm::vec3(x, y, .9f), { 32, 32 }, m_numberTextures[m_value][m_typeBonus]);
 	}
 
 	Block* Block::GenerateBlock() {
