@@ -77,7 +77,7 @@ namespace Engine {
 		EG_PROFILE_FUNCTION();
 
 		uint32_t WindowFlags = SDL_WINDOW_OPENGL;
-		WindowFlags |= SDL_WINDOW_RESIZABLE;
+		//WindowFlags |= SDL_WINDOW_RESIZABLE;
 
 		EG_CORE_ASSERT(m_data.width > 0 && m_data.height > 0, "Invalid Window size");
 
@@ -89,6 +89,7 @@ namespace Engine {
 		}
 
 		if (m_data.fullscreen) {
+			EG_CORE_WARN("Fullscreen is very buggy and unsupported");
 			int displaycount;
 			const SDL_DisplayMode* DM = SDL_GetCurrentDisplayMode(SDL_GetDisplays(&displaycount)[0]);
 			m_data.width = DM->w;

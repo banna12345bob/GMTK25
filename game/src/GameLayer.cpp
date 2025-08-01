@@ -31,6 +31,10 @@ void GameLayer::OnUpdate()
 	m_CameraController.setPosition({ m_CameraPos[0], m_CameraPos[1], 0.f});
 
 	m_CameraController.OnUpdate();
+
+	Engine::RenderCommand::SetClearColor({ 0, 0, 0, 0 });
+	Engine::RenderCommand::Clear();
+
 	// Run every frame
 	Engine::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
