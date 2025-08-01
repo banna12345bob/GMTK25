@@ -5,18 +5,27 @@
 class Button
 {
 public:
-	Button(Engine::Ref<Engine::Texture2D>& texture, glm::vec3 pos, glm::vec2 scale);
+	Button(Engine::OrthographicCamera& camera, Engine::Ref<Engine::Texture2D>& texture, glm::vec3 pos, glm::vec2 scale);
 
-	void Render(Engine::OrthographicCamera Camera);
+	void Render();
 
-	bool IsHovering(Engine::OrthographicCamera Camera);
-	bool IsPressed(Engine::OrthographicCamera Camera);
+	glm::vec3 GetPos() { return m_Position; }
+	glm::vec2 GetScale() { return m_Scale; }
+
+	void SetPos(glm::vec3 pos) { m_Position = pos; }
+	void SetScale(glm::vec2 scale) { m_Scale = scale; }
+
+	bool IsHovering();
+	bool IsPressed(int buttoncode);
+	bool WasPressed(int buttoncode);
 private:
-	glm::vec2 GetMouseWorldPosition(Engine::OrthographicCamera Camera);
+	glm::vec2 GetMouseWorldPosition();
 private:
+	std::unordered_map<int, int> m_TimesPressed;
 	Engine::Ref<Engine::Texture2D> m_Texture;
 	glm::vec3 m_Position;
 	glm::vec2 m_Scale;
-	glm::vec4 m_Tint;
+
+	Engine::OrthographicCamera& m_Camera;
 };
 

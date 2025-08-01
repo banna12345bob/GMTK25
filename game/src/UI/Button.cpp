@@ -2,37 +2,48 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-Button::Button(Engine::Ref<Engine::Texture2D>& texture, glm::vec3 pos, glm::vec2 scale)
-	: m_Texture(texture), m_Position(pos), m_Scale(scale)
+Button::Button(Engine::OrthographicCamera& camera, Engine::Ref<Engine::Texture2D>& texture, glm::vec3 pos, glm::vec2 scale)
+	: m_Camera(camera), m_Texture(texture), m_Position(pos), m_Scale(scale)
 {
 }
 
-void Button::Render(Engine::OrthographicCamera Camera)
+void Button::Render()
 {
-	m_Tint = { 1, 1, 1, 1 };
-	if (IsPressed(Camera))
-		m_Tint = { 1, 0, 0, 1 };
-
-	Engine::Renderer2D::DrawQuad(m_Position, m_Scale, m_Texture, m_Tint);
+	Engine::Renderer2D::DrawQuad(m_Position, m_Scale, m_Texture);
 }
 
-bool Button::IsHovering(Engine::OrthographicCamera Camera)
+bool Button::IsHovering()
 {
-	glm::vec2 mousePos = GetMouseWorldPosition(Camera);
+	glm::vec2 mousePos = GetMouseWorldPosition();
 	return mousePos.x > m_Position.x - (m_Scale.x / 2) && mousePos.x < m_Position.x + (m_Scale.x / 2)
 		&& mousePos.y > m_Position.y - (m_Scale.y / 2) && mousePos.y < m_Position.y + (m_Scale.y / 2);
 }
 
-bool Button::IsPressed(Engine::OrthographicCamera Camera)
+bool Button::IsPressed(int buttoncode)
 {
-	return IsHovering(Camera) && Engine::Mouse::isButtonDown(EG_MOUSECODE_LEFT);
+	if (IsHovering() && Engine::Mouse::isButtonDown(buttoncode))
+		m_TimesPressed[buttoncode]++;
+	else
+		m_TimesPressed[buttoncode] = 0;
+
+	return m_TimesPressed[buttoncode] != 0;
 }
 
-glm::vec2 Button::GetMouseWorldPosition(Engine::OrthographicCamera Camera) {
+bool Button::WasPressed(int buttoncode)
+{
+	if (IsHovering() && Engine::Mouse::isButtonDown(buttoncode))
+		m_TimesPressed[buttoncode]++;
+	else
+		m_TimesPressed[buttoncode] = 0;
+
+	return m_TimesPressed[buttoncode] == 1;
+}
+
+glm::vec2 Button::GetMouseWorldPosition() {
 	glm::vec2 posVec = glm::unProject(
 		glm::vec3(Engine::Mouse::getPosition().x, float(Engine::Application::getApplication()->getWindow()->GetHeight()) - Engine::Mouse::getPosition().y, 1.0f),
 		glm::mat4(1.0f),
-		Camera.GetViewProjectionMatrix(),
+		m_Camera.GetViewProjectionMatrix(),
 		glm::vec4(0.0f, 0.0f, float(Engine::Application::getApplication()->getWindow()->GetWidth()), float(Engine::Application::getApplication()->getWindow()->GetHeight()))
 	);
 

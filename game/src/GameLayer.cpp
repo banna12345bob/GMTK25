@@ -15,8 +15,8 @@ void GameLayer::OnAttach() // I am assuming this is this just whenever gameplay 
 	Block::LoadBlockData();
 	m_grid = Grid(16);
 
-	Engine::Ref<Engine::Texture2D> oak_log = Engine::Texture2D::Create("assets/textures/cat.jpg");
-	m_TestButton = new Button(oak_log, { 0, 0, 0.5 }, glm::vec2({ 64, 64 }) * 4.f);
+	Engine::Ref<Engine::Texture2D> oak_log = Engine::Texture2D::Create("assets/textures/Oak_Log.png");
+	m_TestButton = new Button(m_CameraController.GetCamera(), oak_log, {0, 0, 0.5}, {64, 64});
 
 	m_CameraZoom = glm::sqrt(std::pow(Engine::Application::getApplication()->getWindow()->GetWidth(), 2) + std::pow(Engine::Application::getApplication()->getWindow()->GetWidth(), 2));
 
@@ -34,6 +34,11 @@ void GameLayer::OnUpdate()
 	m_CameraController.setPosition({ m_CameraPos[0], m_CameraPos[1], 0.f });
 
 	m_CameraController.OnUpdate();
+
+	if (m_TestButton->WasPressed(EG_MOUSECODE_LEFT))
+		m_TestButton->SetScale(m_TestButton->GetScale() * 4.f);
+	if (m_TestButton->WasPressed(EG_MOUSECODE_RIGHT))
+		m_TestButton->SetScale(m_TestButton->GetScale() / 4.f);
 }
 
 void GameLayer::OnRender()
@@ -44,11 +49,9 @@ void GameLayer::OnRender()
 	// Run every frame
 	Engine::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-	//Engine::Renderer2D::DrawQuad({ 0, 0, -.5f }, { 0.5f, 0.5f }, { 0, 1, 1, 1 });
-
 	m_grid.DrawTiles();
 
-	m_TestButton->Render(m_CameraController.GetCamera());
+	m_TestButton->Render();
 
 	Engine::Renderer2D::EndScene();
 }
