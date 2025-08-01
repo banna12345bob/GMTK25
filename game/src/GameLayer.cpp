@@ -61,17 +61,14 @@ void GameLayer::OnRender()
 
 	// Run every frame
 	Engine::Renderer2D::BeginScene(m_CameraController.GetCamera());
-	m_TestButton->Render();
+	//m_TestButton->Render();
 
 	m_TextRenderer->RenderText("OAK LOG!", 1.f, { 0.f, 0.f, 0.5f });
-
-	m_grid->DrawTiles();
 
 	//glm::vec2 pos = GameLayer::GetMouseWorldPosition();
 	//EG_TRACE("POS {0}, {1}", pos.x, pos.y);
 
-	m_grid->DrawTiles();
-	m_TestButton->Render();
+	m_grid->Draw();
 
 	Engine::Renderer2D::EndScene();
 }

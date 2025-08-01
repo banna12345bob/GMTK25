@@ -4,6 +4,7 @@
 #include <random>
 
 #include "engine/core/Log.h"
+#include "Grid.h"
 #include <engine.h>
 
 namespace game1 {
@@ -18,15 +19,18 @@ namespace game1 {
 
 	}
 
-	void Block::Activate(int* currentPoints, std::map<Block::BlockType, std::vector<Engine::Vector2i>>* blocksActivated, Engine::Vector2i pos) {
+	void Block::Activate(int* currentPoints, std::map<Block::BlockType, std::vector<Engine::Vector2i>>* blocksActivated, Engine::Vector2i pos, Grid* grid) {
 		if (m_typeBonus == NONE) {
 			*currentPoints += m_value;
+			grid->AddPointsText(m_value, pos);
 		}
 		else {
 			if (blocksActivated->find(m_typeBonus) == blocksActivated->end()) {
 				blocksActivated[m_typeBonus];
 			}
 			*currentPoints += m_value * (*blocksActivated)[m_typeBonus].size();
+
+			grid->AddPointsText(m_value, &(*blocksActivated)[m_typeBonus]);
 		}
 
 		(*blocksActivated)[m_type].push_back(pos);

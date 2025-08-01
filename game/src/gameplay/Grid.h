@@ -3,6 +3,7 @@
 #include "engine.h"
 #include <vector>
 #include "Block.h"
+#include "UI/TextRendering.h"
 
 namespace game1 {
 
@@ -41,12 +42,27 @@ namespace game1 {
 		void Start();
 		void Update(int deltaTime);
 		void ActivateBlock(Block* block);
+		void AddPointsText(int value, Engine::Vector2i gridPos);
+		void AddPointsText(int value, std::vector<Engine::Vector2i>* gridPositions);
 		Tile* GetTile(Engine::Vector2i position);
 		Tile* GetTile(int x, int y);
 
-		void DrawTiles();
+		void Draw();
 
 	private:
+
+		struct PointsText {
+
+			std::string text;
+			glm::vec3 pos;
+			int msLeft;
+
+			PointsText(std::string text, glm::vec3 pos)
+				: text(text),
+				pos(pos),
+				msLeft(m_pointsTextDuration) {}
+		};
+
 		Engine::Ref<Engine::Texture2D> m_emptyTileTex;
 		int m_size;
 		std::vector<std::vector<Tile>> m_tiles;
@@ -59,5 +75,10 @@ namespace game1 {
 		std::map<Block::BlockType, std::vector<Engine::Vector2i>> m_blocksActivated;
 
 		int m_currentPoints;
+		TextRendering* m_textRenderer;
+		std::vector<PointsText> m_pointsText;
+		static inline int m_pointsTextDuration = 400;
+		
+		static inline int m_cellSize = 32;
 	};
 }

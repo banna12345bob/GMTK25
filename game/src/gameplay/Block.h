@@ -8,6 +8,8 @@
 
 namespace game1 {
 	
+	class Grid; // Forward declare to avoid cicular dependency.
+
 	class Block
 	{
 	public:
@@ -23,7 +25,7 @@ namespace game1 {
 		Block(int value, BlockType type, BlockType typeBonus, std::array<int, 4> connections);
 		
 		void Update();
-		void Activate(int* currentPoints, std::map<Block::BlockType, std::vector<Engine::Vector2i>>* blocksActivated, Engine::Vector2i pos);
+		void Activate(int* currentPoints, std::map<Block::BlockType, std::vector<Engine::Vector2i>>* blocksActivated, Engine::Vector2i pos, Grid* grid);
 		int GetOutDirection();
 		void Draw(int x, int y, bool activating);
 
