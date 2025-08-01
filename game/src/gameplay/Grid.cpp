@@ -20,9 +20,9 @@ namespace game1 {
 	}
 
 	void Grid::DrawTiles() {
-		for (int i = 0; i < m_size; i++) {
-			for (int j = 0; j < m_size; j++) {
-				Engine::Renderer2D::DrawQuad(glm::vec3(i * 1, j * 1, 0), { 1, 1 }, m_emptyTileTex);
+		for (int i = 0; i < m_size*64; i += 64) {
+			for (int j = 0; j < m_size*64; j += 64) {
+				Engine::Renderer2D::DrawQuad(glm::vec3(i * 1, j * 1, 0), { 64, 64 }, m_emptyTileTex);
 			}
 		}
 	}
