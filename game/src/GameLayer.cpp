@@ -10,11 +10,11 @@ GameLayer::GameLayer()
 {
 }
 
-void GameLayer::OnAttach() // I am assuming this is this just whenever gameplay is started
+void GameLayer::OnAttach()
 {
 	Block::LoadBlockData();
 	Block::LoadBlockTextures();
-	m_grid = Grid(5);
+	m_grid = std::make_unique<Grid>(5);
 
 	Engine::Ref<Engine::Texture2D> oak_log = Engine::Texture2D::Create("assets/textures/Oak_Log.png");
 	m_TestButton = new Button(m_CameraController.GetCamera(), oak_log, { 0, 0, 0.1 }, { 64, 64 });
@@ -26,6 +26,8 @@ void GameLayer::OnAttach() // I am assuming this is this just whenever gameplay 
 
 	m_CameraController.SetZoomLevel(m_CameraZoom);
 	m_CameraController.setPosition({ m_CameraPos[0], m_CameraPos[1], 0.f });
+
+	m_oldTime = std::chrono::high_resolution_clock::now();
 }
 
 void GameLayer::OnDetach()
@@ -34,6 +36,11 @@ void GameLayer::OnDetach()
 
 void GameLayer::OnUpdate()
 {
+	std::chrono::high_resolution_clock::time_point newTime = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> timeSpan = std::chrono::duration_cast<std::chrono::duration<double>>(newTime - m_oldTime);
+	int deltaTime = (int)(timeSpan.count() * 1000);
+	m_oldTime = newTime;
+
 	m_CameraController.SetZoomLevel(m_CameraZoom);
 	m_CameraController.setPosition({ m_CameraPos[0], m_CameraPos[1], 0.f });
 
@@ -43,6 +50,8 @@ void GameLayer::OnUpdate()
 		m_TestButton->SetScale(m_TestButton->GetScale() * 4.f);
 	if (m_TestButton->WasPressed(EG_MOUSECODE_RIGHT))
 		m_TestButton->SetScale(m_TestButton->GetScale() / 4.f);
+
+	m_grid->Update(deltaTime);
 }
 
 void GameLayer::OnRender()
@@ -56,12 +65,13 @@ void GameLayer::OnRender()
 
 	m_TextRenderer->RenderText("OAK LOG!", 1.f, { 0.f, 0.f, 0.5f });
 
-	m_grid.DrawTiles();
+	m_grid->DrawTiles();
 
 	//glm::vec2 pos = GameLayer::GetMouseWorldPosition();
 	//EG_TRACE("POS {0}, {1}", pos.x, pos.y);
 
-	m_grid.DrawTiles();
+	m_grid->DrawTiles();
+	m_TestButton->Render();
 
 	Engine::Renderer2D::EndScene();
 }

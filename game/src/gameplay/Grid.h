@@ -1,8 +1,8 @@
 #pragma once
 
 #include "engine.h"
-#include "Block.h"
 #include <vector>
+#include "Block.h"
 
 namespace game1 {
 
@@ -39,8 +39,10 @@ namespace game1 {
 		Grid();
 		Grid(int size);
 		void Start();
-		void Update();
-		Tile GetTile(Engine::Vector2i position);
+		void Update(int deltaTime);
+		void ActivateBlock(Block* block);
+		Tile* GetTile(Engine::Vector2i position);
+		Tile* GetTile(int x, int y);
 
 		void DrawTiles();
 
@@ -50,7 +52,12 @@ namespace game1 {
 		std::vector<std::vector<Tile>> m_tiles;
 
 		bool m_executing;
-		Engine::Vector2i m_currentTile;
+		Engine::Vector2i m_currentPos;
 		Block* m_currentBlock;
+		int m_msToActivateBlock;	// Time before moving onto the next block
+		int m_msActivating;			// Exectuting the current block
+		std::map<Block::BlockType, std::vector<Engine::Vector2i>> m_blocksActivated;
+
+		int m_currentPoints;
 	};
 }

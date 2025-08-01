@@ -4,7 +4,6 @@
 
 #include <engine/core/EntryPoint.h>
 
-#include <zip_file.hpp>
 
 class game : public Engine::Application
 {
