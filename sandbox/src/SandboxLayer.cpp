@@ -19,7 +19,10 @@ void SandboxLayer::OnAttach()
 	m_TreeTexture = Engine::SubTexture2D::CreateFromCoords(m_Tilesheet, { 4, 9 }, { 16, 16 }, { 1, 2 });
 	m_MushroomsTexture = Engine::SubTexture2D::CreateFromCoords(m_Tilesheet, { 5, 8 }, { 16, 16 });
 
-	m_CameraController.SetZoomLevel(2.f);
+	m_Animation[0] = Engine::Texture2D::Create("assets/textures/tile.png");
+	m_Animation[1] = Engine::Texture2D::Create("assets/textures/tile2.png");
+
+	m_CameraController.SetZoomLevel(Engine::Application::getApplication()->getWindow()->GetWidth() / Engine::Application::getApplication()->getWindow()->GetHeight());
 }
 
 void SandboxLayer::OnDetach()
@@ -28,6 +31,7 @@ void SandboxLayer::OnDetach()
 
 void SandboxLayer::OnUpdate()
 {
+	m_CurrentFrame += 0.005;
 	m_CameraController.OnUpdate();
 
 	Engine::RenderCommand::SetClearColor({ 0, 0, 0, 0 });
@@ -48,7 +52,10 @@ void SandboxLayer::OnUpdate()
 	Engine::Renderer2D::DrawQuad({ 1, 1, 1 }, { 1, 2 }, m_TreeTexture);
 	Engine::Renderer2D::DrawQuad({ 1, -1, 1 }, { 1, 1 }, m_MushroomsTexture);
 
-	Engine::Renderer2D::DrawQuad({ 0, 0, 1 }, { 1, 1 }, m_sandBoxTexture, { 1, 0, 0, 1 });
+	if ((int)m_CurrentFrame % 2)
+		Engine::Renderer2D::DrawQuad({ 0, 0, 1 }, { 1, 1 }, m_Animation[0]);
+	else
+		Engine::Renderer2D::DrawQuad({ 0, 0, 1 }, { 1, 1 }, m_Animation[1]);
 
 	Engine::Renderer2D::EndScene();
 }
@@ -63,6 +70,7 @@ void SandboxLayer::OnImGuiRender()
 	ImGui::Begin("Window info");
 
 	ImGui::Text(("FPS: " + std::to_string(Engine::Application::getApplication()->m_frameRate)).c_str());
+	ImGui::Text(("AnimationIndex: " + std::to_string(m_CurrentFrame)).c_str());
 
 	ImGui::SeparatorText("Window Size");
 	ImGui::Text((std::string("Width: ") + std::to_string(Engine::Application::getApplication()->getWindow()->GetWidth())).c_str());

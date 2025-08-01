@@ -20,7 +20,9 @@ private:
 
 	Engine::Ref<Engine::Texture2D> m_TreeTexture, m_MushroomsTexture;
 
-	glm::vec2 m_mousePos;
+	Engine::Ref<Engine::Texture2D> m_Animation[2];
+
+	float m_CurrentFrame = 0;
 
 	bool m_ShowImGuiWindow = true;
 	bool m_ShowImGuiDemoWindow = false;
