@@ -17,6 +17,8 @@
 namespace Engine {
 	bool EventWatcher(void* userdata, SDL_Event* event)
 	{
+		Application::getApplication()->getImGuiRenderer()->handleImGUIEvents(event);
+
 		switch (event->type) {
 		case SDL_EVENT_QUIT:
 			Application::getApplication()->getWindow()->SetRunning(false);
