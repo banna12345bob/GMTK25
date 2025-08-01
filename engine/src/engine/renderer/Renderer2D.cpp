@@ -26,7 +26,7 @@ namespace Engine {
 		static const uint32_t maxQuads = 20000;
 		static const uint32_t maxVerticies = maxQuads * 4;
 		static const uint32_t maxIndices = maxQuads * 6;
-		static const uint32_t maxTextureSlots = 32;
+		static const uint32_t maxTextureSlots = 128;
 
 		Ref<VertexArray> QuadVertexArray;
 		Ref<VertexBuffer> QuadVertexBuffer;
