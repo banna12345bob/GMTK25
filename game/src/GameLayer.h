@@ -15,6 +15,8 @@ public:
 	virtual void OnDetach() override;
 	void OnUpdate() override;
 	virtual void OnImGuiRender() override;
+
+	glm::vec2 GetMouseWorldPosition();
 private:
 	Engine::OrthographicCameraController m_CameraController;
 	float m_CameraZoom = 1.f;
