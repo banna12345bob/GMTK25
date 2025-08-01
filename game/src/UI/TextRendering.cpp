@@ -24,6 +24,7 @@ void TextRendering::RenderText(std::string text, float fontSize, glm::vec3 pos, 
 	int i = 0;
 	for (char character : text)
 	{
+		character = std::toupper(character);
 		if (m_Characters.find(character) != m_Characters.end())
 			Engine::Renderer2D::DrawQuad({ pos.x + (m_CharacterBaseSize.x * i) + characterPadding, pos.y, pos.z }, m_CharacterBaseSize * fontSize, m_Characters[character]);
 		else
