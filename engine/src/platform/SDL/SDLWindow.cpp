@@ -15,11 +15,65 @@
 #include "engine/renderer/RenderCommand.h"
 
 namespace Engine {
+	bool EventWatcher(void* userdata, SDL_Event* event)
+	{
+		switch (event->type) {
+		case SDL_EVENT_QUIT:
+			Application::getApplication()->getWindow()->SetRunning(false);
+			break;
+		case SDL_EVENT_WINDOW_RESIZED:
+			// TODO: Change OpenGL viewport size
+			Application::getApplication()->getWindow()->ReloadWindow();
+			break;
+		case SDL_EVENT_WINDOW_MINIMIZED:
+			// TODO: Add a config option that caps the FPS if window minimized
+			EG_CORE_WARN("implement Window Minimized event");
+			break;
+		case SDL_EVENT_WINDOW_RESTORED:
+			EG_CORE_WARN("implement Window Restored events");
+			break;
+		case SDL_EVENT_KEY_DOWN:
+			Key::setKeyPressed(event->key.scancode, true);
+			if (Application::getApplication()->getCallbackManager()->getKeyboardCallbacks()->size() == 0) {
+				EG_CORE_WARN("No keyboard callbacks registered");
+				break;
+			}
+			for (int i = 0; i < Application::getApplication()->getCallbackManager()->getKeyboardCallbacks()->size(); i++)
+				Application::getApplication()->getCallbackManager()->getKeyboardCallbacks()->at(i)(nullptr);
+			break;
+		case SDL_EVENT_KEY_UP:
+			Key::setKeyPressed(event->key.scancode, false);
+			break;
+		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+			Mouse::setButtonPressed(event->button.button, true);
+			if (Application::getApplication()->getCallbackManager()->getMouseDownCallbacks()->size() == 0)
+				EG_CORE_WARN("No mouse down callbacks registered");
+
+			for (int i = 0; i < Application::getApplication()->getCallbackManager()->getMouseDownCallbacks()->size(); i++)
+				Application::getApplication()->getCallbackManager()->getMouseDownCallbacks()->at(i)(nullptr);
+			break;
+		case SDL_EVENT_MOUSE_BUTTON_UP:
+			Mouse::setButtonPressed(event->button.button, false);
+			break;
+		case SDL_EVENT_MOUSE_MOTION:
+			Mouse::setPosition(event->motion.x, event->motion.y);
+			for (int i = 0; i < Application::getApplication()->getCallbackManager()->getMouseMoveCallbacks()->size(); i++)
+				Application::getApplication()->getCallbackManager()->getMouseMoveCallbacks()->at(i)(nullptr);
+			break;
+		}
+		return true;
+	}
 
 	SDLWindow::SDLWindow(WindowProps props)
 		: m_data(props)
 	{
+		Init(props);
+	}
+
+	void SDLWindow::Init(WindowProps props)
+	{
 		EG_PROFILE_FUNCTION();
+
 		uint32_t WindowFlags = SDL_WINDOW_OPENGL;
 		WindowFlags |= SDL_WINDOW_RESIZABLE;
 
@@ -55,6 +109,8 @@ namespace Engine {
 		case RenderAPI::API::None: EG_CORE_ASSERT(false, "Cannot have GraphicsAPI::None");	break;
 		case RenderAPI::API::OpenGL: CreateGLContext();	break;
 		}
+
+		SDL_AddEventWatch(EventWatcher, this);
 
 		if (!std::filesystem::exists(m_data.pathToIcon)) {
 			m_data.pathToIcon = "";
@@ -128,6 +184,7 @@ namespace Engine {
 	{
 		EG_PROFILE_FUNCTION();
 		SDL_GetWindowSize(m_window, &m_data.width, &m_data.height);
+		RenderCommand::SetViewport(0, 0, GetWidth(), GetHeight());
 	}
 
 	/**
@@ -184,59 +241,8 @@ namespace Engine {
 
 	void SDLWindow::HandleEvents()
 	{
-		EG_PROFILE_FUNCTION();
 		SDL_Event e;
-
-		if (SDL_PollEvent(&e)) {
-			Application::getApplication()->getImGuiRenderer()->handleImGUIEvents(&e);
-
-			switch (e.type) {
-			case SDL_EVENT_QUIT:
-				SetRunning(false);
-				break;
-			case SDL_EVENT_WINDOW_RESIZED:
-				// TODO: Change OpenGL viewport size
-				ReloadWindow();
-				RenderCommand::SetViewport(0, 0, GetWidth(), GetHeight());
-				EG_CORE_INFO("W: {0}, H: {1}", GetWidth(), GetHeight());
-				break;
-			case SDL_EVENT_WINDOW_MINIMIZED:
-				// TODO: Add a config option that caps the FPS if window minimized
-				EG_CORE_WARN("implement Window Minimized event");
-				break;
-			case SDL_EVENT_WINDOW_RESTORED:
-				EG_CORE_WARN("implement Window Restored events");
-				break;
-			case SDL_EVENT_KEY_DOWN:
-				Key::setKeyPressed(e.key.scancode, true);
-				if (Application::getApplication()->getCallbackManager()->getKeyboardCallbacks()->size() == 0) {
-					EG_CORE_WARN("No keyboard callbacks registered");
-					break;
-				}
-				for (int i = 0; i < Application::getApplication()->getCallbackManager()->getKeyboardCallbacks()->size(); i++)
-					Application::getApplication()->getCallbackManager()->getKeyboardCallbacks()->at(i)(nullptr);
-				break;
-			case SDL_EVENT_KEY_UP:
-				Key::setKeyPressed(e.key.scancode, false);
-				break;
-			case SDL_EVENT_MOUSE_BUTTON_DOWN:
-				Mouse::setButtonPressed(e.button.button, true);
-				if (Application::getApplication()->getCallbackManager()->getMouseDownCallbacks()->size() == 0)
-					EG_CORE_WARN("No mouse down callbacks registered");
-				
-				for (int i = 0; i < Application::getApplication()->getCallbackManager()->getMouseDownCallbacks()->size(); i++)
-					Application::getApplication()->getCallbackManager()->getMouseDownCallbacks()->at(i)(nullptr);
-				break;
-			case SDL_EVENT_MOUSE_BUTTON_UP:
-				Mouse::setButtonPressed(e.button.button, false);
-				break;
-			case SDL_EVENT_MOUSE_MOTION:
-				Mouse::setPosition(e.motion.x, e.motion.y);
-				for (int i = 0; i < Application::getApplication()->getCallbackManager()->getMouseMoveCallbacks()->size(); i++)
-					Application::getApplication()->getCallbackManager()->getMouseMoveCallbacks()->at(i)(nullptr);
-				break;
-			}
-		}
+		SDL_PollEvent(&e);
 	}
 
 	void SDLWindow::CreateGLContext() 
