@@ -37,12 +37,12 @@ public:
 	}
 
 	static void mouseDownEventCallback(void* callback) {
-		if (Engine::Mouse::isButtonDown(EG_MOUSECODE_LEFT))
-			EG_TRACE("Left mouse button pressed");
-		if (Engine::Mouse::isButtonDown(EG_MOUSECODE_MIDDLE))
-			EG_TRACE("Middle mouse button pressed");
-		if (Engine::Mouse::isButtonDown(EG_MOUSECODE_RIGHT))
-			EG_TRACE("Right mouse button pressed");
+		//if (Engine::Mouse::isButtonDown(EG_MOUSECODE_LEFT))
+		//	EG_TRACE("Left mouse button pressed");
+		//if (Engine::Mouse::isButtonDown(EG_MOUSECODE_MIDDLE))
+		//	EG_TRACE("Middle mouse button pressed");
+		//if (Engine::Mouse::isButtonDown(EG_MOUSECODE_RIGHT))
+		//	EG_TRACE("Right mouse button pressed");
 	}
 };
 

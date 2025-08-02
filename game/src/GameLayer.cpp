@@ -9,7 +9,7 @@
 GameLayer::GameLayer()
 	: Layer("GameLayer"), m_CameraController(Engine::Application::getApplication()->getWindow()->GetWidth() / Engine::Application::getApplication()->getWindow()->GetHeight())
 {
-	m_AnimationHelper = AnimationHelper();
+	m_AnimationHelper = InterpolationHelper();
 }
 
 void GameLayer::OnAttach()
@@ -36,7 +36,7 @@ void GameLayer::OnDetach()
 
 void GameLayer::OnUpdate(Engine::Timestep ts)
 {
-	AnimationHelper::Update(ts);
+	InterpolationHelper::Update(ts);
 
 	m_CameraController.SetZoomLevel(m_CameraZoom);
 	m_CameraController.setPosition({ m_CameraPos[0], m_CameraPos[1], 0.f });
@@ -47,9 +47,9 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 	m_grid->Update(ts.GetSeconds());
 
 	if (m_TestButton->WasPressed(EG_MOUSECODE_LEFT))
-		m_AnimationHelper.StartLerpFloat(m_TestButton->GetPos().x, m_end, m_duration);
+		m_AnimationHelper.StartInterpolation(m_TestButton->GetPos().x, m_end, m_duration);
 
-	m_TestButton->SetPos({ m_AnimationHelper.GetLerpFloat(), 0.f, 0.9f });
+	m_TestButton->SetPos({ m_AnimationHelper.QuadraticEaseIn(), 0.f, 0.9f});
 }
 
 void GameLayer::OnRender()

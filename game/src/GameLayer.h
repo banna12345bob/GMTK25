@@ -4,7 +4,7 @@
 #include "gameplay/Grid.h"
 #include "UI/Button.h"
 #include "UI/TextRendering.h"
-#include "UI/AnnimationHelper.h"
+#include "UI/InterpolationHelper.h"
 
 using namespace game1;
 
@@ -33,7 +33,7 @@ private:
 	Button* m_TestButton;
 
 	std::unique_ptr<Grid> m_grid;
-	AnimationHelper m_AnimationHelper;
+	InterpolationHelper m_AnimationHelper;
 
 	float m_duration = 2.5f, m_end = 100.f;
 };
