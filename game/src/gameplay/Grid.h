@@ -57,14 +57,15 @@ namespace game1 {
 			glm::vec3 pos;
 			int msLeft;
 
-			PointsText(std::string text, glm::vec3 pos)
+			PointsText(std::string text, glm::vec3 pos, int duration)
 				: text(text),
 				pos(pos),
-				msLeft(m_pointsTextDuration) {}
+				msLeft(duration) {}
 		};
 
-		Engine::Ref<Engine::Texture2D> m_emptyTileTex;
 		int m_size;
+		Engine::Vector2i m_gridOffset; // To center it
+		Engine::Ref<Engine::Texture2D> m_emptyTileTex;
 		std::vector<std::vector<Tile>> m_tiles;
 
 		bool m_executing;
@@ -77,7 +78,7 @@ namespace game1 {
 		int m_currentPoints;
 		TextRendering* m_textRenderer;
 		std::vector<PointsText> m_pointsText;
-		static inline int m_pointsTextDuration = 400;
+		int m_pointsTextDuration = 400;
 		
 		static inline int m_cellSize = 32;
 	};

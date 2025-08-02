@@ -24,7 +24,8 @@ void GameLayer::OnAttach()
 	m_RegularFont = Engine::Texture2D::Create("assets/textures/regular_font.png");
 	m_TextRenderer = new TextRendering(m_RegularFont, { 5, 7 });
 
-	m_CameraZoom = glm::sqrt(std::pow(Engine::Application::getApplication()->getWindow()->GetWidth(), 2) + std::pow(Engine::Application::getApplication()->getWindow()->GetWidth(), 2)) / 4;
+	//m_CameraZoom = glm::sqrt(std::pow(Engine::Application::getApplication()->getWindow()->GetWidth(), 2) + std::pow(Engine::Application::getApplication()->getWindow()->GetWidth(), 2)) / 4;
+	m_CameraZoom = 128;
 
 	m_CameraController.SetZoomLevel(m_CameraZoom);
 	m_CameraController.setPosition({ m_CameraPos[0], m_CameraPos[1], 0.f });
@@ -44,7 +45,7 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 
 	m_CameraController.OnUpdate();
 
-	m_grid->Update(ts.GetSeconds());
+	m_grid->Update(ts.GetMilliseconds());
 
 	if (m_TestButton->WasPressed(EG_MOUSECODE_LEFT))
 		m_AnimationHelper.StartInterpolation(m_TestButton->GetPos().x, m_end, m_duration);
@@ -59,12 +60,12 @@ void GameLayer::OnRender()
 
 	// Run every frame
 	Engine::Renderer2D::BeginScene(m_CameraController.GetCamera());
-	m_TestButton->Render();
+	//m_TestButton->Render();
 
 	//m_TextRenderer->RenderText("OAK LOG!", 1.f, { 0.f, -100.f, 0.5f });
 
-	//glm::vec2 pos = GameLayer::GetMouseWorldPosition();
-	//EG_TRACE("POS {0}, {1}", pos.x, pos.y);
+	glm::vec2 pos = GameLayer::GetMouseWorldPosition();
+	EG_TRACE("POS {0}, {1}", pos.x, pos.y);
 
 	m_grid->Draw();
 

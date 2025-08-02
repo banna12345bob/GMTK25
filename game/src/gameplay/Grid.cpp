@@ -11,13 +11,16 @@ namespace game1 {
 		m_currentPos(Engine::Vector2i(-1, -1)),
 		m_executing(false),
 		m_currentPoints(0),
-		m_msToActivateBlock(600)
+		m_msToActivateBlock(1000),
+		m_pointsTextDuration(800)
 	{
 		for (int i = 0; i < m_size; i++) {
 			for (int j = 0; j < m_size; j++) {
 				m_tiles[i][j] = Grid::Tile(i, j);
 			}
 		}
+
+		m_gridOffset = Engine::Vector2i(-m_cellSize * (m_size / 2), -m_cellSize * (m_size / 2) + 40);
 
 		m_emptyTileTex = Engine::Texture2D::Create("assets/textures/grid/empty_tile.png");
 		Engine::Ref<Engine::Texture2D> font = Engine::Texture2D::Create("assets/textures/regular_font.png");
@@ -49,7 +52,7 @@ namespace game1 {
 		ActivateBlock(block);
 		
 		m_executing = false;
-		m_msToActivateBlock = 600;
+		m_msToActivateBlock = 1000;
 	}
 
 	void Grid::Update(Engine::Timestep deltaTime) {
@@ -103,8 +106,8 @@ namespace game1 {
 	}
 
 	void Grid::AddPointsText(int value, Engine::Vector2i gridPos) {
-		glm::vec3 pos = { gridPos.x * m_cellSize, gridPos.y * m_cellSize + 26, 0.85 };
-		m_pointsText.push_back(PointsText("+" + std::to_string(value), pos));
+		glm::vec3 pos = { gridPos.x * m_cellSize + m_gridOffset.x, gridPos.y * m_cellSize + m_gridOffset.y + 26, 0.85 };
+		m_pointsText.push_back(PointsText("+" + std::to_string(value), pos, m_pointsTextDuration));
 	}
 	void Grid::AddPointsText(int value, std::vector<Engine::Vector2i>* gridPositions) {
 		for (auto gridPos : *gridPositions) {
@@ -121,16 +124,18 @@ namespace game1 {
 
 	void Grid::Draw() {
 
+		
+
 		// Tiles
 		for (int i = 0; i < m_size; i++) {
 			for (int j = 0; j < m_size; j++) {
-				Engine::Renderer2D::DrawQuad(glm::vec3(i * 32, j * 32, 0.80), { 32, 32 }, m_emptyTileTex);
+				Engine::Renderer2D::DrawQuad(glm::vec3(i * m_cellSize + m_gridOffset.x, j * m_cellSize + m_gridOffset.y, 0.80), { m_cellSize, m_cellSize }, m_emptyTileTex);
 
 				Tile* tile = &m_tiles[i][j];
 				Block* block = nullptr;
 				if (tile->GetBlock(block)) {
 					bool activating = m_currentPos.x == i && m_currentPos.y == j;
-					block->Draw(i*32, j*32, activating);
+					block->Draw(i*m_cellSize + m_gridOffset.x, j* m_cellSize + m_gridOffset.y, activating);
 				}
 			}
 		}
