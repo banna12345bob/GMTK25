@@ -27,5 +27,6 @@ output/builds
 **/bin-int
 **.aps
 
+imgui.ini
 *.zip
 EngineProfile-*.json
