@@ -71,20 +71,18 @@ namespace Engine {
 	void Application::Run()
 	{
 		EG_PROFILE_FUNCTION();
-		int a, b, deltaTime;
-		b = 0;
+
+		m_LastFrameTime = SDL_GetTicks();
 
 		while (m_Window->GetRunning()) {
-			a = (int)SDL_GetTicks();
-			deltaTime = a - b;
-
-			if (deltaTime != 0)
-				m_frameRate = 1000 / deltaTime;
+			float time = SDL_GetTicks();
+			Timestep timestep = time - m_LastFrameTime;
+			m_LastFrameTime = time;
 
 			m_Window->HandleEvents();
 
 			for (Layer* layer : m_layerStack) {
-				layer->OnUpdate();
+				layer->OnUpdate(timestep);
 				layer->OnRender();
 			}
 
@@ -96,8 +94,6 @@ namespace Engine {
 
 			SDL_Window* window = static_cast<SDL_Window*>(Application::getApplication()->getWindow()->getNativeWindow());
 			SDL_GL_SwapWindow(window);
-
-			b = a;
 		}
 	}
 }

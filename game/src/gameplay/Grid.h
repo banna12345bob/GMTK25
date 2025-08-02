@@ -40,7 +40,7 @@ namespace game1 {
 		Grid();
 		Grid(int size);
 		void Start();
-		void Update(int deltaTime);
+		void Update(Engine::Timestep deltaTime);
 		void ActivateBlock(Block* block);
 		void AddPointsText(int value, Engine::Vector2i gridPos);
 		void AddPointsText(int value, std::vector<Engine::Vector2i>* gridPositions);

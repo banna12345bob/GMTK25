@@ -35,8 +35,6 @@ namespace Engine {
 		Scope<AudioPlayer>& getAudioPlayer() { return m_AudioPlayer; }
 		eventCallbackManager* getCallbackManager() { return m_EventCallbackManager; }
 		ImGuiRenderer* getImGuiRenderer() { return m_ImGuiRenderer; }
-
-		int m_frameRate = 0;
 	private:
 		Scope<Window> m_Window;
 		Scope<AudioPlayer> m_AudioPlayer;
@@ -46,6 +44,8 @@ namespace Engine {
 		AudioDebugger* m_AudioDebuggerLayer = new AudioDebugger();
 
 		LayerStack m_layerStack;
+
+		float m_LastFrameTime;
 	};
 
 	//	To be defined in client

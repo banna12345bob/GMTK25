@@ -10,7 +10,7 @@ public:
 
 	virtual void OnAttach() override;
 	virtual void OnDetach() override;
-	void OnUpdate() override;
+	void OnUpdate(Engine::Timestep ts) override;
 	void OnRender() override;
 	virtual void OnImGuiRender() override;
 private:

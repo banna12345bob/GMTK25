@@ -5,9 +5,11 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include <imgui/imgui.h>
 
+
 GameLayer::GameLayer()
 	: Layer("GameLayer"), m_CameraController(Engine::Application::getApplication()->getWindow()->GetWidth() / Engine::Application::getApplication()->getWindow()->GetHeight())
 {
+	m_AnimationHelper = AnimationHelper();
 }
 
 void GameLayer::OnAttach()
@@ -26,32 +28,28 @@ void GameLayer::OnAttach()
 
 	m_CameraController.SetZoomLevel(m_CameraZoom);
 	m_CameraController.setPosition({ m_CameraPos[0], m_CameraPos[1], 0.f });
-
-	m_oldTime = std::chrono::high_resolution_clock::now();
 }
 
 void GameLayer::OnDetach()
 {
 }
 
-void GameLayer::OnUpdate()
+void GameLayer::OnUpdate(Engine::Timestep ts)
 {
-	std::chrono::high_resolution_clock::time_point newTime = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> timeSpan = std::chrono::duration_cast<std::chrono::duration<double>>(newTime - m_oldTime);
-	int deltaTime = (int)(timeSpan.count() * 1000);
-	m_oldTime = newTime;
+	AnimationHelper::Update(ts);
 
 	m_CameraController.SetZoomLevel(m_CameraZoom);
 	m_CameraController.setPosition({ m_CameraPos[0], m_CameraPos[1], 0.f });
 
+
 	m_CameraController.OnUpdate();
 
-	if (m_TestButton->WasPressed(EG_MOUSECODE_LEFT))
-		m_TestButton->SetScale(m_TestButton->GetScale() * 4.f);
-	if (m_TestButton->WasPressed(EG_MOUSECODE_RIGHT))
-		m_TestButton->SetScale(m_TestButton->GetScale() / 4.f);
+	m_grid->Update(ts.GetSeconds());
 
-	m_grid->Update(deltaTime);
+	if (m_TestButton->IsPressed(EG_MOUSECODE_LEFT))
+		m_AnimationHelper.StartLerpFloat(m_start, m_end, 2.5f);
+
+	m_TestButton->SetPos({ m_AnimationHelper.GetLerpFloat(), 0.f, 0.9f });
 }
 
 void GameLayer::OnRender()
@@ -61,9 +59,9 @@ void GameLayer::OnRender()
 
 	// Run every frame
 	Engine::Renderer2D::BeginScene(m_CameraController.GetCamera());
-	//m_TestButton->Render();
+	m_TestButton->Render();
 
-	m_TextRenderer->RenderText("OAK LOG!", 1.f, { 0.f, 0.f, 0.5f });
+	//m_TextRenderer->RenderText("OAK LOG!", 1.f, { 0.f, -100.f, 0.5f });
 
 	//glm::vec2 pos = GameLayer::GetMouseWorldPosition();
 	//EG_TRACE("POS {0}, {1}", pos.x, pos.y);
@@ -77,6 +75,8 @@ void GameLayer::OnImGuiRender()
 {
 	// Any ImGui rendering code goes here
 	ImGui::Begin("Camera Test");
+	ImGui::SliderFloat("start", &m_start, -10.f, 10.f);
+	ImGui::SliderFloat("end", &m_end, 0.f, 100.f);
 	ImGui::SliderFloat("Zoom", &m_CameraZoom, .1f, 2000.f);
 	ImGui::SliderFloat2("Position", m_CameraPos, -5, 5, "%.3f", 1.0f);
 	ImGui::End();

@@ -29,9 +29,9 @@ void SandboxLayer::OnDetach()
 {
 }
 
-void SandboxLayer::OnUpdate()
+void SandboxLayer::OnUpdate(Engine::Timestep ts)
 {
-	m_CurrentFrame += 0.005;
+	m_CurrentFrame += 0.0005 * ts;
 	m_CameraController.OnUpdate();
 }
 
@@ -72,7 +72,7 @@ void SandboxLayer::OnImGuiRender()
 	// Begin with window. Requires window name
 	ImGui::Begin("Window info");
 
-	ImGui::Text(("FPS: " + std::to_string(Engine::Application::getApplication()->m_frameRate)).c_str());
+	//ImGui::Text(("FPS: " + std::to_string(Engine::Application::getApplication()->m_frameRate)).c_str());
 	ImGui::Text(("AnimationIndex: " + std::to_string(m_CurrentFrame)).c_str());
 
 	ImGui::SeparatorText("Window Size");

@@ -48,12 +48,12 @@ namespace game1 {
 
 		ActivateBlock(block);
 		
-		m_executing = true;
+		m_executing = false;
 		m_msToActivateBlock = 600;
 	}
 
-	void Grid::Update(int deltaTime) {
-		if (!m_executing) return;
+	void Grid::Update(Engine::Timestep deltaTime) {
+		if (!m_executing) { m_executing = true; return; }
 
 		m_msActivating += deltaTime;
 		if (m_msActivating > m_msToActivateBlock) {

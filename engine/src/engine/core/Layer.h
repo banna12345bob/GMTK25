@@ -3,6 +3,8 @@
 #include "engine/core/core.h"
 #include <string>
 
+#include "engine/core/TimeStep.h"
+
 namespace Engine {
 
 	class Layer
@@ -13,7 +15,7 @@ namespace Engine {
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(Timestep ts) {}
 		virtual void OnRender() {}
 		virtual void OnImGuiRender() {}
 

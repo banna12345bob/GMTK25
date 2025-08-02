@@ -6,6 +6,7 @@
 #include "engine/core/Log.h"
 
 #include "engine/core/Keycodes.h"
+#include "engine/core/Timestep.h"
 #include "engine/events/Key.h"
 #include "engine/events/Mouse.h"
 
