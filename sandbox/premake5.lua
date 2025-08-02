@@ -59,7 +59,8 @@ project "sandbox"
 
 	filter "configurations:Release*"
 		defines "EG_RELEASE"
-		runtime "Debug"
+		runtime "Release"
+		optimize "on"
 		symbols "on"
 
 	filter "configurations:Dist*"

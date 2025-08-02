@@ -4,11 +4,6 @@
 
 class InterpolationHelper {
 public:
-	InterpolationHelper(float start)
-		: m_Start(start)
-	{
-	}
-
 	static void Update(Engine::Timestep ts) 
 	{ 
 		m_TimeMS += ts;

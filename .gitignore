@@ -23,9 +23,6 @@ output/builds
 *.log
 *.pyc
 
-
-imgui.ini
-
 **/bin
 **/bin-int
 **.aps

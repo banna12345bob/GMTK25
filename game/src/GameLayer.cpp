@@ -8,9 +8,9 @@
 
 GameLayer::GameLayer()
 	: Layer("GameLayer"), m_CameraController(Engine::Application::getApplication()->getWindow()->GetWidth() / Engine::Application::getApplication()->getWindow()->GetHeight()),
-	m_AnimationHelper(m_CameraPos[1])
+	m_CurrentScene(Scene::Menu)
 {
-	m_CurrentScene = Scene::Menu;
+	m_AnimationHelper.StartInterpolation(m_CameraPos[1], m_CameraPos[1], 0.f);
 }
 
 void GameLayer::OnAttach()
@@ -24,9 +24,6 @@ void GameLayer::OnAttach()
 
 	Engine::Ref<Engine::Texture2D> quitButton = Engine::Texture2D::Create("assets/textures/UI/quit_button.png");
 	m_QuitButton = new Button(m_CameraController.GetCamera(), quitButton, { 0, -375 - 64, 0.1 }, { 100, 100 / 2 });
-
-	//Engine::Ref<Engine::Texture2D> regularFont = Engine::Texture2D::Create("assets/textures/fonts/regular_font.png");
-	//m_TextRenderer = new TextRendering(regularFont, { 5, 7 });
 
 	m_GameLogo = Engine::Texture2D::Create("assets/textures/UI/game_logo.png");
 	m_TargetText = Engine::Texture2D::Create("assets/textures/UI/target.png");

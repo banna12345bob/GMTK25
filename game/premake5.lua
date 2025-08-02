@@ -34,7 +34,8 @@ project "game"
 	}
 	
 	postbuildcommands {
-		"{COPY} %{IncludeDir.SDL3}/../lib/x64/SDL3.dll %{cfg.targetdir}"
+		"{COPY} %{IncludeDir.SDL3}/../lib/x64/SDL3.dll %{cfg.targetdir}",
+		"{COPY} imgui.ini %{cfg.targetdir}"
 	}
 
 	flags {
@@ -63,7 +64,8 @@ project "game"
 
 	filter "configurations:Release*"
 		defines "EG_RELEASE"
-		runtime "Debug"
+		runtime "Release"
+		optimize "on"
 		symbols "on"
 
 	filter "configurations:Dist*"

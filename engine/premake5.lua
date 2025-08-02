@@ -62,8 +62,9 @@ project "engine"
 
 	filter "configurations:Release*"
 		defines "EG_RELEASE"
-		runtime "Debug"
+		runtime "Release"
 		symbols "on"
+		optimize "on"
 
 	filter "configurations:Dist*"
 		defines "EG_DIST"
