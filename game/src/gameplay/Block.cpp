@@ -4,13 +4,15 @@
 #include <random>
 
 #include "engine/core/Log.h"
-#include "Grid.h"
 #include <engine.h>
+#include "Grid.h"
 
 namespace game1 {
 	
-	Block::Block(int value, BlockType type, BlockType typeBonus, std::array<int, 4> connections)
-		: m_value(value),
+	Block::Block(Engine::Vector2i pos, Tile* tile, int value, BlockType type, BlockType typeBonus, std::array<int, 4> connections)
+		: m_pos(pos),
+		m_tile(tile),
+		m_value(value),
 		m_type(type),
 		m_typeBonus(typeBonus),
 		m_connections(connections) {}
@@ -19,10 +21,10 @@ namespace game1 {
 
 	}
 
-	void Block::Activate(int* currentPoints, std::map<Block::BlockType, std::vector<Engine::Vector2i>>* blocksActivated, Engine::Vector2i pos, Grid* grid) {
+	void Block::Activate(int* currentPoints, std::map<Block::BlockType, std::vector<Block*>>* blocksActivated, Grid* grid) {
 		if (m_typeBonus == NONE) {
 			*currentPoints += m_value;
-			grid->AddPointsText(m_value, pos);
+			grid->AddPointsText(m_value, this);
 		}
 		else {
 			if (blocksActivated->find(m_typeBonus) == blocksActivated->end()) {
@@ -33,7 +35,7 @@ namespace game1 {
 			grid->AddPointsText(m_value, &(*blocksActivated)[m_typeBonus]);
 		}
 
-		(*blocksActivated)[m_type].push_back(pos);
+		(*blocksActivated)[m_type].push_back(this);
 	}
 
 	int Block::GetOutDirection() {
@@ -44,23 +46,26 @@ namespace game1 {
 		}
 	}
 
-	void Block::Draw(int x, int y, bool activating) {
+	bool Block::Hovering(Engine::Vector2i mouseGamePos) { // Probably could store a rectangle or something, but I don't want to right now
+		return mouseGamePos.x >= m_pos.x - m_size / 2 && mouseGamePos.x < m_pos.x + m_size / 2 && mouseGamePos.y >= m_pos.y - m_size / 2 && mouseGamePos.y < m_pos.y + m_size / 2;
+	}
+
+	void Block::Draw(bool activating) {
 		glm::vec4 tint = { 1,1,1,1 };
 		if (activating) {
 			tint = { 0.6f, 0.7f, 0.9f, 1 };
 		}
-		Engine::Renderer2D::DrawQuad(glm::vec3(x, y, 0.81), { 32, 32 }, m_typeTextures[m_type], tint);
-		Engine::Renderer2D::DrawQuad(glm::vec3(x, y, 0.82), { 32, 32 }, m_numberTextures[m_value][m_typeBonus], tint);
+		Engine::Renderer2D::DrawQuad({ m_pos.x, m_pos.y, 0.81 }, { m_size, m_size }, m_typeTextures[m_type], tint);
+		Engine::Renderer2D::DrawQuad({ m_pos.x, m_pos.y, 0.82 }, { m_size, m_size }, m_numberTextures[m_value][m_typeBonus], tint);
 
 		for (int i = 0; i < m_connections.size(); i++) {
 			if (m_connections[i] != 0) {
-				Engine::Renderer2D::DrawQuad({ x, y, 0.83 + (i * 0.001f)}, {32,32}, m_arrowTextures[i][m_connections[i]]);
+				Engine::Renderer2D::DrawQuad({ m_pos.x, m_pos.y, 0.83 + (i * 0.001f) }, { m_size,m_size }, m_arrowTextures[i][m_connections[i]]);
 			}
 		}
 	}
-
-	Block* Block::GenerateBlock() {
-		return new Block(3, HOSAKA, NONE, { 0, -1, 0, 1 });
+	void Block::DrawOutline() {
+		Engine::Renderer2D::DrawQuad({ m_pos.x, m_pos.y, 0.88 }, { m_size, m_size }, m_outlineTex);
 	}
 
 	void Block::LoadBlockData() {
@@ -104,5 +109,8 @@ namespace game1 {
 			m_arrowTextures[i][1] = Engine::SubTexture2D::CreateFromCoords(tex, { i, 1 }, { 32, 32 });	// Outgoing
 			m_arrowTextures[i][-1] = Engine::SubTexture2D::CreateFromCoords(tex, { i, 0 }, { 32, 32 });	// Incoming
 		}
+
+		// Outline
+		m_outlineTex = Engine::Texture2D::Create("assets/textures/grid/outline.png");
 	}
 }

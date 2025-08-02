@@ -25,7 +25,7 @@ public:
 	void OnRender() override;
 	virtual void OnImGuiRender() override;
 
-	glm::vec2 GetMouseWorldPosition();
+	glm::vec2 GetMouseGamePosition();
 private:
 	Scene m_CurrentScene;
 

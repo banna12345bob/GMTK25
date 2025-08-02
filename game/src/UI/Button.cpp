@@ -15,7 +15,7 @@ void Button::Render()
 bool Button::IsHovering()
 {
 	if (!m_ButtonEnabled) return false;
-	glm::vec2 mousePos = GetMouseWorldPosition();
+	glm::vec2 mousePos = GetMouseGamePosition();
 	return mousePos.x > m_Position.x - (m_Scale.x / 2) && mousePos.x < m_Position.x + (m_Scale.x / 2)
 		&& mousePos.y > m_Position.y - (m_Scale.y / 2) && mousePos.y < m_Position.y + (m_Scale.y / 2);
 }
@@ -40,7 +40,7 @@ bool Button::WasPressed(int buttoncode)
 	return m_TimesPressed[buttoncode] == 1;
 }
 
-glm::vec2 Button::GetMouseWorldPosition() {
+glm::vec2 Button::GetMouseGamePosition() {
 	glm::vec2 posVec = glm::unProject(
 		glm::vec3(Engine::Mouse::getPosition().x, float(Engine::Application::getApplication()->getWindow()->GetHeight()) - Engine::Mouse::getPosition().y, 1.0f),
 		glm::mat4(1.0f),

@@ -3,49 +3,27 @@
 #include "engine.h"
 #include <vector>
 #include "Block.h"
+#include "Tile.h"
 #include "UI/TextRendering.h"
 
+class GameLayer;
+
 namespace game1 {
+
 
 	class Grid
 	{
 	public:
-		struct Tile {
-			Engine::Vector2i m_gridPos;
-			Block* m_block;
-			int m_connections[4] = { 0, 0, 0, 0 };	// Up, left, down, right. 1 for outgoing, -1 for incoming, 0 for none.
-
-			Tile() : Tile(-1, -1) {}
-			Tile(int x, int y) {
-				m_gridPos = Engine::Vector2i(x, y);
-				m_block = nullptr;
-			}
-			~Tile() { delete m_block; }
-
-			bool GetBlock(Block*& block) {
-				if (m_block == nullptr) return false;
-				block = m_block;
-
-				return true;
-			}
-			bool AttachBlock(Block* block) {
-				if (m_block != nullptr) return false;
-				m_block = block;
-
-				return true;
-			}
-			
-		};
-
-		Grid();
-		Grid(int size);
+		Grid(int size, GameLayer* gameLayer);
 		void Start();
 		void Update(Engine::Timestep deltaTime);
-		void ActivateBlock(Block* block);
-		void AddPointsText(int value, Engine::Vector2i gridPos);
-		void AddPointsText(int value, std::vector<Engine::Vector2i>* gridPositions);
+		void AddPointsText(int value, Block* block);
+		void AddPointsText(int value, std::vector<Block*>* gridPositions);
 		Tile* GetTile(Engine::Vector2i position);
 		Tile* GetTile(int x, int y);
+		bool HoveringGrid();
+
+		Engine::Vector2i TilePosToScreenPos(Engine::Vector2i tilePos);
 
 		void Draw();
 
@@ -63,6 +41,16 @@ namespace game1 {
 				msLeft(duration) {}
 		};
 
+		void ActivateBlock(Block* block);
+		Block* TrySelectBlock(Engine::Vector2i hoveredTile);
+		void SwapBlocks(Block* b1, Block* b2);
+		void MoveBlock(Block* block, Engine::Vector2i hoveredTile);
+		Engine::Vector2i GetHoveredTile();
+
+		void RemoveFromUnattachedList(Block* block);
+
+		GameLayer* m_gameLayer;
+
 		int m_size;
 		Engine::Vector2i m_gridOffset; // To center it
 		Engine::Ref<Engine::Texture2D> m_emptyTileTex;
@@ -73,12 +61,17 @@ namespace game1 {
 		Block* m_currentBlock;
 		int m_msToActivateBlock;	// Time before moving onto the next block
 		int m_msActivating;			// Exectuting the current block
-		std::map<Block::BlockType, std::vector<Engine::Vector2i>> m_blocksActivated;
+		std::map<Block::BlockType, std::vector<Block*>> m_blocksActivated;
 
 		int m_currentPoints;
 		TextRendering* m_textRenderer;
 		std::vector<PointsText> m_pointsText;
-		int m_pointsTextDuration = 400;
+		int m_pointsTextDuration;
+
+		Block* m_selectedBlock;
+		Engine::Ref<Engine::Texture2D> m_outlineTex;
+
+		std::vector<Block*> m_unattachedBlocks;
 		
 		static inline int m_cellSize = 32;
 	};

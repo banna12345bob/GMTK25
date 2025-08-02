@@ -17,7 +17,7 @@ void GameLayer::OnAttach()
 {
 	Block::LoadBlockData();
 	Block::LoadBlockTextures();
-	m_grid = std::make_unique<Grid>(5);
+	m_grid = std::make_unique<Grid>(5, this);
 
 	Engine::Ref<Engine::Texture2D> startButton = Engine::Texture2D::Create("assets/textures/start_button.png");
 	m_TestButton = new Button(m_CameraController.GetCamera(), startButton, { 0, -400, 0.1 }, { 128, 128/2 });
@@ -80,8 +80,8 @@ void GameLayer::OnRender()
 	m_TestButton->Render();
 	//m_TextRenderer->RenderText("Main Menu", 1.f, { 0.f, -270.f, 0.5f }, {0, 0, 0, 1}, 1.f);
 
-	glm::vec2 pos = GameLayer::GetMouseWorldPosition();
-	//EG_TRACE("POS {0}, {1}", pos.x, pos.y);
+	/*glm::vec2 pos = GameLayer::GetMouseGamePosition();
+	EG_TRACE("POS {0}, {1}", pos.x, pos.y);*/
 
 	m_grid->Draw();
 
@@ -97,7 +97,7 @@ void GameLayer::OnImGuiRender()
 	ImGui::End();
 }
 
-glm::vec2 GameLayer::GetMouseWorldPosition() {
+glm::vec2 GameLayer::GetMouseGamePosition() {
 	glm::vec2 posVec = glm::unProject(
 		glm::vec3(Engine::Mouse::getPosition().x, float(Engine::Application::getApplication()->getWindow()->GetHeight()) - Engine::Mouse::getPosition().y, 1.0f),
 		glm::mat4(1.0f),

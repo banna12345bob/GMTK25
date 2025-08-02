@@ -20,7 +20,7 @@ public:
 	bool IsPressed(int buttoncode);
 	bool WasPressed(int buttoncode);
 private:
-	glm::vec2 GetMouseWorldPosition();
+	glm::vec2 GetMouseGamePosition();
 private:
 	std::unordered_map<int, int> m_TimesPressed;
 	Engine::Ref<Engine::Texture2D> m_Texture;

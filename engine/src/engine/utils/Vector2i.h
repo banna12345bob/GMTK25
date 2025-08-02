@@ -9,6 +9,7 @@ namespace Engine {
 	{
 	public:
 		constexpr Vector2i(int x = 0, int y = 0) : x(x), y(y) {}
+		constexpr Vector2i(glm::vec2 v) : x(v.x), y(v.y) {}
 
 		constexpr Vector2i operator*(int scalar) const {
 			return { x * scalar, y * scalar };
