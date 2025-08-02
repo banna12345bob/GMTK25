@@ -28,6 +28,7 @@ namespace game1 {
 		void Update();
 		void Activate(int* currentPoints, std::map<Block::BlockType, std::vector<Block*>>* blocksActivated, Grid* grid);
 		int GetOutDirection();
+		void Rotate();
 		bool Hovering(Engine::Vector2i mouseGamePos);
 		void Draw(bool activating);
 		void DrawOutline();
@@ -47,7 +48,7 @@ namespace game1 {
 		int m_value;
 		BlockType m_type;
 		BlockType m_typeBonus; // Receives points equal to value for each of this type that has been activated
-		std::array<int, 4> m_connections;
+		std::array<int, 4> m_connections; // Top, right, bottom, left
 
 		static inline int m_size = 32;
 

@@ -42,7 +42,7 @@ namespace game1 {
 		};
 
 		void ActivateBlock(Block* block);
-		Block* TrySelectBlock(Engine::Vector2i hoveredTile);
+		Block* GetHoveredBlock(Engine::Vector2i hoveredTile);
 		void SwapBlocks(Block* b1, Block* b2);
 		void MoveBlock(Block* block, Engine::Vector2i hoveredTile);
 		Engine::Vector2i GetHoveredTile();

@@ -4,6 +4,8 @@
 #include <format>
 #include <glm/glm.hpp>
 
+#include "glm/vec2.hpp"
+
 namespace Engine {
 
 	struct Vector2i

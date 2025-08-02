@@ -65,7 +65,7 @@ namespace game1 {
 			if (Engine::Mouse::wasButtonPressed(EG_MOUSECODE_LEFT)) {
 				
 				Engine::Vector2i hoveredTile = GetHoveredTile();
-				Block* selectedBlock = TrySelectBlock(hoveredTile);
+				Block* selectedBlock = GetHoveredBlock(hoveredTile);
 				
 				// Select the block
 				if (m_selectedBlock == nullptr) {
@@ -90,6 +90,13 @@ namespace game1 {
 				MoveBlock(m_selectedBlock, hoveredTile);
 				m_selectedBlock = nullptr;
 			}
+			else if (Engine::Mouse::wasButtonPressed(EG_MOUSECODE_RIGHT)) {
+				Engine::Vector2i hoveredTile = GetHoveredTile();
+				Block* hoveredBlock = GetHoveredBlock(hoveredTile);
+				if (hoveredBlock != nullptr) {
+					hoveredBlock->Rotate();
+				}
+			}
 		}
 		else {
 
@@ -102,13 +109,13 @@ namespace game1 {
 					m_currentPos.y += 1;
 					break;
 				case 1:
-					m_currentPos.x -= 1;
+					m_currentPos.x += 1;
 					break;
 				case 2:
 					m_currentPos.y -= 1;
 					break;
 				case 3:
-					m_currentPos.x += 1;
+					m_currentPos.x -= 1;
 					break;
 				}
 
@@ -153,7 +160,7 @@ namespace game1 {
 		}
 	}
 
-	Block* Grid::TrySelectBlock(Engine::Vector2i hoveredTile) {
+	Block* Grid::GetHoveredBlock(Engine::Vector2i hoveredTile) {
 		Block* block = nullptr;
 		if (hoveredTile != Engine::Vector2i::Invalid()) {
 			if (GetTile(hoveredTile)->GetBlock(block)) {

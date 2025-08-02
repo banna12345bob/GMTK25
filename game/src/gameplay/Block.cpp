@@ -45,6 +45,13 @@ namespace game1 {
 			}
 		}
 	}
+	void Block::Rotate() {
+		int last = m_connections[3];
+		for (int i = 3; i >= 1; i--) {
+			m_connections[i] = m_connections[i - 1];
+		}
+		m_connections[0] = last;
+	}
 
 	bool Block::Hovering(Engine::Vector2i mouseGamePos) { // Probably could store a rectangle or something, but I don't want to right now
 		return mouseGamePos.x >= m_pos.x - m_size / 2 && mouseGamePos.x < m_pos.x + m_size / 2 && mouseGamePos.y >= m_pos.y - m_size / 2 && mouseGamePos.y < m_pos.y + m_size / 2;
