@@ -33,15 +33,11 @@ private:
 	float m_CameraZoom = 1.f;
 	float m_CameraPos[2] = { 0.f, 360.f };
 
-	Engine::Ref<Engine::Texture2D> m_GameLogo;
+	Engine::Ref<Engine::Texture2D> m_GameLogo, m_TargetText;
 
-	TextRendering* m_TextRenderer;
-
-	Button* m_TestButton;
+	Button *m_StartButton, *m_QuitButton;
 
 	std::unique_ptr<Grid> m_grid;
 	InterpolationHelper m_AnimationHelper;
-
-	float m_duration = 1.f, m_end = 0.f;
 };
 

@@ -27,7 +27,7 @@ namespace game1 {
 
 		m_emptyTileTex = Engine::Texture2D::Create("assets/textures/grid/empty_tile.png");
 		m_outlineTex = Engine::Texture2D::Create("assets/textures/grid/outline.png");
-		Engine::Ref<Engine::Texture2D> font = Engine::Texture2D::Create("assets/textures/regular_font.png");
+		Engine::Ref<Engine::Texture2D> font = Engine::Texture2D::Create("assets/textures/fonts/regular_font.png");
 		m_textRenderer = new TextRendering(font, { 5, 7 });
 
 		Engine::Vector2i tilePos = { 2, 2 };
@@ -271,7 +271,6 @@ namespace game1 {
 	}
 
 	void Grid::Draw() {
-
 		// Tiles
 		for (int i = 0; i < m_size; i++) {
 			for (int j = 0; j < m_size; j++) {
@@ -301,5 +300,7 @@ namespace game1 {
 		for (auto it = m_pointsText.begin(); it != m_pointsText.end(); it++) {
 			m_textRenderer->RenderText(it->text, 1, it->pos);
 		}
+
+		m_textRenderer->RenderText(std::to_string(m_currentPoints), 1.5, {105.f, -100.f, 0.9f}, glm::vec4(1.f), 2.5f);
 	}
 }

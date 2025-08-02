@@ -19,13 +19,17 @@ void GameLayer::OnAttach()
 	Block::LoadBlockTextures();
 	m_grid = std::make_unique<Grid>(5, this);
 
-	Engine::Ref<Engine::Texture2D> startButton = Engine::Texture2D::Create("assets/textures/start_button.png");
-	m_TestButton = new Button(m_CameraController.GetCamera(), startButton, { 0, -400, 0.1 }, { 128, 128/2 });
+	Engine::Ref<Engine::Texture2D> startButton = Engine::Texture2D::Create("assets/textures/UI/start_button.png");
+	m_StartButton = new Button(m_CameraController.GetCamera(), startButton, { 0, -350, 0.1 }, { 128, 128 / 2 });
 
-	Engine::Ref<Engine::Texture2D> regularFont = Engine::Texture2D::Create("assets/textures/regular_font.png");
-	m_TextRenderer = new TextRendering(regularFont, { 5, 7 });
+	Engine::Ref<Engine::Texture2D> quitButton = Engine::Texture2D::Create("assets/textures/UI/quit_button.png");
+	m_QuitButton = new Button(m_CameraController.GetCamera(), quitButton, { 0, -375 - 64, 0.1 }, { 100, 100 / 2 });
 
-	m_GameLogo = Engine::Texture2D::Create("assets/textures/game_logo.png");
+	//Engine::Ref<Engine::Texture2D> regularFont = Engine::Texture2D::Create("assets/textures/fonts/regular_font.png");
+	//m_TextRenderer = new TextRendering(regularFont, { 5, 7 });
+
+	m_GameLogo = Engine::Texture2D::Create("assets/textures/UI/game_logo.png");
+	m_TargetText = Engine::Texture2D::Create("assets/textures/UI/target.png");
 
 	m_CameraZoom = 128;
 	m_CameraController.SetZoomLevel(m_CameraZoom);
@@ -44,12 +48,20 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 	m_CameraController.SetZoomLevel(m_CameraZoom);
 	m_CameraController.setPosition({ m_CameraPos[0], m_CameraPos[1], 0.f });
 
-	if (m_TestButton->IsHovering())
-		m_TestButton->SetScale(glm::vec2({ 128, 128 / 2 }) * 1.1f);
+	if (m_StartButton->IsHovering() && m_CameraPos[1] == 360.f)
+		m_StartButton->SetScale(glm::vec2({ 128, 128 / 2 }) * 1.1f);
 	else
-		m_TestButton->SetScale({ 128, 128 / 2 });
+		m_StartButton->SetScale({ 128, 128 / 2 });
 
-	if (m_TestButton->WasPressed(EG_MOUSECODE_LEFT) && m_CurrentScene == Scene::Menu)
+	if (m_QuitButton->IsHovering() && m_CameraPos[1] == 360.f)
+		m_QuitButton->SetScale(glm::vec2({ 100, 100 / 2 }) * 1.1f);
+	else
+		m_QuitButton->SetScale({ 100, 100 / 2 });
+
+	if (m_QuitButton->WasPressed(EG_MOUSECODE_LEFT) && m_CurrentScene == Scene::Menu)
+		Engine::Application::getApplication()->getWindow()->SetRunning(false);
+
+	if (m_StartButton->WasPressed(EG_MOUSECODE_LEFT) && m_CurrentScene == Scene::Menu)
 	{
 		m_CurrentScene = Scene::Game;
 		m_AnimationHelper.StartInterpolation(m_CameraPos[1], 0.f, 1.f);
@@ -68,22 +80,24 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 
 void GameLayer::OnRender()
 {
-	Engine::RenderCommand::SetClearColor({ 0, 0, 0, 0 });
+	Engine::RenderCommand::SetClearColor({ 0.1137254902, 0.0666666667, 0.1137254902, 0 });
 	Engine::RenderCommand::Clear();
 
 	// Run every frame
 	Engine::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-	Engine::Renderer2D::DrawQuad({ 0.f, -360.f, -.8f }, { 360, 360 }, { 0.1137254902, 0.0666666667, 0.1137254902, 1 });
+	if (m_CameraPos[1] != 0.f) 
+	{
+		Engine::Renderer2D::DrawQuad({ 0, -275, 0.1 }, { 128, 128/2 }, m_GameLogo, { 0.8039215686, 0.7686274510, 0.2117647059, 1 });
+		m_StartButton->Render();
+		m_QuitButton->Render();
+	}
 
-	Engine::Renderer2D::DrawQuad({ 0, -300, 0.1 }, { 128, 128/2 }, m_GameLogo, { 0.8039215686, 0.7686274510, 0.2117647059, 1 });
-	m_TestButton->Render();
-	//m_TextRenderer->RenderText("Main Menu", 1.f, { 0.f, -270.f, 0.5f }, {0, 0, 0, 1}, 1.f);
-
-	/*glm::vec2 pos = GameLayer::GetMouseGamePosition();
-	EG_TRACE("POS {0}, {1}", pos.x, pos.y);*/
-
-	m_grid->Draw();
+	if (m_CameraPos[1] != 360.f)
+	{
+		Engine::Renderer2D::DrawQuad({ 75.f, -100.f, 0.9f }, { 44.f, 11.f }, m_TargetText);
+		m_grid->Draw();
+	}
 
 	Engine::Renderer2D::EndScene();
 }
@@ -91,10 +105,6 @@ void GameLayer::OnRender()
 void GameLayer::OnImGuiRender()
 {
 	// Any ImGui rendering code goes here
-	ImGui::Begin("Camera Test");
-	ImGui::SliderFloat("EndPos", &m_end, 0.f, 360.f);
-
-	ImGui::End();
 }
 
 glm::vec2 GameLayer::GetMouseGamePosition() {

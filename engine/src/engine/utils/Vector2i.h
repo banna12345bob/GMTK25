@@ -2,6 +2,7 @@
 
 #include <string>
 #include <format>
+#include <glm/glm.hpp>
 
 namespace Engine {
 

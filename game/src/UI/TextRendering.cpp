@@ -14,7 +14,7 @@ TextRendering::TextRendering(Engine::Ref<Engine::Texture2D> fontTexture, glm::ve
 	m_Characters['+'] = Engine::SubTexture2D::CreateFromCoords(fontTexture, { 7, 0 }, m_CharacterBaseSize);
 	m_Characters['-'] = Engine::SubTexture2D::CreateFromCoords(fontTexture, { 8, 0 }, m_CharacterBaseSize);
 
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i <= 9; i++)
 		m_Characters[char(48 + i)] = Engine::SubTexture2D::CreateFromCoords(fontTexture, { i, 1 }, m_CharacterBaseSize);
 
 	for (int i = 0; i < 26; i++)
@@ -29,9 +29,11 @@ void TextRendering::RenderText(std::string text, float fontSize, glm::vec3 pos, 
 		character = std::toupper(character);
 		if (m_Characters.find(character) != m_Characters.end())
 			Engine::Renderer2D::DrawQuad({ pos.x + ((m_CharacterBaseSize.x + characterPadding) * i), pos.y, pos.z }, m_CharacterBaseSize * fontSize, m_Characters[character], tintColour);
-		else
+		else {
 			// Draw error texture if there is an unknown character
+			EG_ERROR("Unknown character: {0}", character);
 			Engine::Renderer2D::DrawQuad({ pos.x + ((m_CharacterBaseSize.x + characterPadding) * i), pos.y, pos.z }, m_CharacterBaseSize * fontSize, { 1, 0, 1, 1 });
+		}
 		i++;
 	}
 }
