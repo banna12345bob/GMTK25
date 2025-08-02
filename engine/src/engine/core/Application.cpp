@@ -4,6 +4,7 @@
 
 #include "engine/core/Keycodes.h"
 #include "engine/events/Key.h"
+#include "engine/events/Mouse.h"
 
 #include "engine/renderer/Renderer2D.h"
 #include "engine/renderer/RenderCommand.h"
@@ -81,6 +82,9 @@ namespace Engine {
 
 			m_Window->HandleEvents();
 
+			// Need to update mouse every frame
+			Engine::Mouse::UpdateMouseState();
+			
 			for (Layer* layer : m_layerStack) {
 				layer->OnUpdate(timestep);
 				layer->OnRender();

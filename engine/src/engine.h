@@ -15,4 +15,4 @@
 #include "engine/renderer/Texture.h"
 #include "engine/renderer/OrthographicCameraController.h"
 
-#include "engine/utils/Vector2.h"
+#include "engine/utils/Vector2i.h"
