@@ -46,8 +46,8 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 
 	m_grid->Update(ts.GetSeconds());
 
-	if (m_TestButton->IsPressed(EG_MOUSECODE_LEFT))
-		m_AnimationHelper.StartLerpFloat(m_start, m_end, 2.5f);
+	if (m_TestButton->WasPressed(EG_MOUSECODE_LEFT))
+		m_AnimationHelper.StartLerpFloat(m_TestButton->GetPos().x, m_end, m_duration);
 
 	m_TestButton->SetPos({ m_AnimationHelper.GetLerpFloat(), 0.f, 0.9f });
 }
@@ -75,8 +75,8 @@ void GameLayer::OnImGuiRender()
 {
 	// Any ImGui rendering code goes here
 	ImGui::Begin("Camera Test");
-	ImGui::SliderFloat("start", &m_start, -10.f, 10.f);
-	ImGui::SliderFloat("end", &m_end, 0.f, 100.f);
+	ImGui::SliderFloat("duration", &m_duration, 0.f, 10.f);
+	ImGui::SliderFloat("end", &m_end, -100.f, 100.f);
 	ImGui::SliderFloat("Zoom", &m_CameraZoom, .1f, 2000.f);
 	ImGui::SliderFloat2("Position", m_CameraPos, -5, 5, "%.3f", 1.0f);
 	ImGui::End();

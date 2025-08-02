@@ -11,8 +11,7 @@ public:
 
 	void StartLerpFloat(float startPoint, float endPoint, float durationSeconds) 
 	{
-		if (!m_StartTime)
-			m_StartTime = m_TimeMS;
+		m_StartTime = m_TimeMS;
 		m_Start = startPoint;
 		m_End = endPoint;
 		m_Duration = durationSeconds;
@@ -20,8 +19,15 @@ public:
 
 	float GetLerpFloat()
 	{
-		float lerp = P((m_TimeMS - m_StartTime) / (m_Duration * 1000.f), m_Start, m_End);
-		return lerp < m_End ? lerp : m_End;
+		float t = (m_TimeMS - m_StartTime) / (m_Duration * 1000.f);
+		float lerp = P(t, m_Start, m_End);
+		if (std::isnan(t))
+			return m_Start;
+		if (t < 0.f)
+			return m_Start;
+		if (t > 1.f)
+			return m_End;
+		return lerp;
 	}
 
 private:

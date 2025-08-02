@@ -35,6 +35,6 @@ private:
 	std::unique_ptr<Grid> m_grid;
 	AnimationHelper m_AnimationHelper;
 
-	float m_start = 0.f, m_end = 100.f;
+	float m_duration = 2.5f, m_end = 100.f;
 };
 
