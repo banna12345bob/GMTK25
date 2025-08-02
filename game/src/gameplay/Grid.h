@@ -23,7 +23,7 @@ namespace game1 {
 		Tile* GetTile(int x, int y);
 		bool HoveringGrid();
 
-		Engine::Vector2i TilePosToScreenPos(Engine::Vector2i tilePos);
+		Engine::Vector2i GridPosToScreenPos(Engine::Vector2i tilePos);
 
 		void Draw();
 
@@ -41,13 +41,40 @@ namespace game1 {
 				msLeft(duration) {}
 		};
 
+		struct Endpoint {
+
+			enum Type {
+				START = -1,
+				END = 1
+			};
+
+			enum Direction {
+				UP = 0,
+				RIGHT = 1,
+				DOWN = 2,
+				LEFT = 3
+			};
+
+			Engine::Vector2i gridPos;
+			glm::vec3 screenPos;
+			Type type;
+			Direction dir;
+
+			Endpoint() : Endpoint({ -1,-1 }, { -1,-1,-1 }, START, UP) {}
+			Endpoint(Engine::Vector2i gridPos, glm::vec3 screenPos, Type type, Direction dir)
+				: gridPos(gridPos),
+				screenPos(screenPos),
+				type(type),
+				dir(dir) {}
+		};
+
 		void ActivateBlock(Block* block);
 		Block* GetHoveredBlock(Engine::Vector2i hoveredTile);
 		void SwapBlocks(Block* b1, Block* b2);
 		void MoveBlock(Block* block, Engine::Vector2i hoveredTile);
 		Engine::Vector2i GetHoveredTile();
-
 		void RemoveFromUnattachedList(Block* block);
+		Endpoint CreateEndpoint(Engine::Vector2i gridPos, Endpoint::Type type, Endpoint::Direction side);
 
 		GameLayer* m_gameLayer;
 
@@ -72,6 +99,12 @@ namespace game1 {
 		Engine::Ref<Engine::Texture2D> m_outlineTex;
 
 		std::vector<Block*> m_unattachedBlocks;
+
+		Endpoint m_startPoint;
+		Endpoint m_endPoint;
+		std::vector<Engine::Ref<Engine::Texture2D>> m_endpointArrowTexs;
+
+		Engine::Ref<Engine::Texture2D> m_borderTex;
 		
 		static inline int m_cellSize = 32;
 	};

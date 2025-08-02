@@ -27,14 +27,24 @@ namespace game1 {
 
 		m_emptyTileTex = Engine::Texture2D::Create("assets/textures/grid/empty_tile.png");
 		m_outlineTex = Engine::Texture2D::Create("assets/textures/grid/outline.png");
+		m_borderTex = Engine::Texture2D::Create("assets/textures/grid/grid_border.png");
+		
 		Engine::Ref<Engine::Texture2D> font = Engine::Texture2D::Create("assets/textures/fonts/regular_font.png");
 		m_textRenderer = new TextRendering(font, { 5, 7 });
 
+		Engine::Ref<Engine::Texture2D> arrowTex = Engine::Texture2D::Create("assets/textures/grid/endpoint_arrows.png");
+		for (int i = 0; i < 4; i++) {
+			Engine::Ref<Engine::Texture2D> subtex = Engine::SubTexture2D::CreateFromCoords(arrowTex, { i, 0 }, { 16, 16 });
+			m_endpointArrowTexs.push_back(subtex);
+		}
+
+		// This part will be loaded from json files, one for each level
 		Engine::Vector2i tilePos = { 2, 2 };
-		GetTile(tilePos)->AttachBlock(new Block(TilePosToScreenPos(tilePos), GetTile(tilePos), 4, Block::HOSAKA, Block::NONE, { 0, -1, 1, 0}), this);
-		
+		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::HOSAKA, Block::NONE, { 0, -1, 1, 0}), this);
 		tilePos = { 2, 3 };
-		GetTile(tilePos)->AttachBlock(new Block(TilePosToScreenPos(tilePos), GetTile(tilePos), 4, Block::MAAS_BIOLABS, Block::NONE, { 0, -1, 1, 0}), this);
+		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::MAAS_BIOLABS, Block::NONE, { 0, -1, 1, 0}), this);
+		m_startPoint = CreateEndpoint({ 0, 0 }, Endpoint::START, Endpoint::RIGHT);
+		m_endPoint = CreateEndpoint({ 3, 0 }, Endpoint::END, Endpoint::DOWN);
 
 		Start();
 	}
@@ -266,7 +276,7 @@ namespace game1 {
 	Tile* Grid::GetTile(int x, int y) {
 		return &m_tiles[x][y];
 	}
-	Engine::Vector2i Grid::TilePosToScreenPos(Engine::Vector2i tilePos) {
+	Engine::Vector2i Grid::GridPosToScreenPos(Engine::Vector2i tilePos) {
 		return { tilePos.x * m_cellSize + m_gridOffset.x, tilePos.y * m_cellSize + m_gridOffset.y };
 	}
 
@@ -277,12 +287,38 @@ namespace game1 {
 		}
 	}
 
+	Grid::Endpoint Grid::CreateEndpoint(Engine::Vector2i gridPos, Endpoint::Type type, Endpoint::Direction dir) {
+		Engine::Vector2i tilePos = GridPosToScreenPos(gridPos);
+
+		int offset = (m_cellSize / 2 + 5) * (int)type;
+
+		switch (dir) {
+		case Endpoint::UP:
+			tilePos.y += offset;
+			break;
+		case Endpoint::RIGHT:
+			tilePos.x += offset;
+			break;
+		case Endpoint::DOWN:
+			tilePos.y -= offset;
+			break;
+		case Endpoint::LEFT:
+			tilePos.x -= offset;
+			break;
+		}
+
+		return Endpoint(gridPos, { tilePos.x, tilePos.y, 0.9}, type, dir);
+	}
+
 	void Grid::Draw() {
+		// Border
+		Engine::Renderer2D::DrawQuad({ 0, 40, 0.2 }, { 164, 164 }, m_borderTex);
+
 		// Tiles
 		for (int i = 0; i < m_size; i++) {
 			for (int j = 0; j < m_size; j++) {
-				Engine::Vector2i pos = TilePosToScreenPos({ i, j });
-				Engine::Renderer2D::DrawQuad(glm::vec3(pos.x, pos.y, 0.80), { m_cellSize, m_cellSize }, m_emptyTileTex);
+				Engine::Vector2i pos = GridPosToScreenPos({ i, j });
+				Engine::Renderer2D::DrawQuad( { pos.x, pos.y, 0.80 }, { m_cellSize, m_cellSize }, m_emptyTileTex);
 
 				Tile* tile = &m_tiles[i][j];
 				Block* block = nullptr;
@@ -307,6 +343,10 @@ namespace game1 {
 		for (auto it = m_pointsText.begin(); it != m_pointsText.end(); it++) {
 			m_textRenderer->RenderText(it->text, 1, it->pos);
 		}
+
+		// Endpoint arrows
+		Engine::Renderer2D::DrawQuad(m_startPoint.screenPos, { 16,16 }, m_endpointArrowTexs[m_startPoint.dir]);
+		Engine::Renderer2D::DrawQuad(m_endPoint.screenPos, { 16,16 }, m_endpointArrowTexs[m_endPoint.dir]);
 
 		m_textRenderer->RenderText(std::to_string(m_currentPoints), 1.5, {105.f, -100.f, 0.9f}, glm::vec4(1.f), 2.5f);
 	}

@@ -18,7 +18,7 @@ namespace game1
 	void Tile::AttachBlock(Block* block, Grid* grid) {
 		if (m_attachedBlock == nullptr) {
 			m_attachedBlock = block;
-			m_attachedBlock->setPos(grid->TilePosToScreenPos(m_gridPos));
+			m_attachedBlock->setPos(grid->GridPosToScreenPos(m_gridPos));
 			m_attachedBlock->setTile(this);
 		}
 	}
