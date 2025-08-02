@@ -4,6 +4,11 @@
 
 class InterpolationHelper {
 public:
+	InterpolationHelper(float start)
+		: m_Start(start)
+	{
+	}
+
 	static void Update(Engine::Timestep ts) 
 	{ 
 		m_TimeMS += ts;
@@ -53,6 +58,18 @@ public:
 		return QuadraticLerpOut(t, m_Start, m_End);
 	}
 
+	float CublicEaseIn()
+	{
+		float t = (m_TimeMS - m_StartTime) / (m_Duration * 1000.f);
+		if (std::isnan(t))
+			return m_Start;
+		if (t < 0.f)
+			return m_Start;
+		if (t > 1.f)
+			return m_End;
+		return CubicLerpIn(t, m_Start, m_End);
+	}
+
 private:
 	static float LinearLerp(float t, float start, float end) 
 	{ 
@@ -67,6 +84,11 @@ private:
 	static float QuadraticLerpOut(float t, float start, float end)
 	{
 		return ((1 - t) * start) + (glm::sqrt(t) * end);
+	}
+
+	static float CubicLerpIn(float t, float start, float end)
+	{
+		return ((1 - t) * start) + (glm::pow(t,3) * end);
 	}
 private:
 	float m_Duration, m_Start, m_End;

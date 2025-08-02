@@ -14,6 +14,7 @@ public:
 
 	void SetPos(glm::vec3 pos) { m_Position = pos; }
 	void SetScale(glm::vec2 scale) { m_Scale = scale; }
+	void SetButtonEnabled(bool enabled) { m_ButtonEnabled = enabled; }
 
 	bool IsHovering();
 	bool IsPressed(int buttoncode);
@@ -25,6 +26,8 @@ private:
 	Engine::Ref<Engine::Texture2D> m_Texture;
 	glm::vec3 m_Position;
 	glm::vec2 m_Scale;
+
+	bool m_ButtonEnabled = true;
 
 	Engine::OrthographicCamera& m_Camera;
 };

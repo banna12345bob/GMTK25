@@ -14,6 +14,7 @@ void Button::Render()
 
 bool Button::IsHovering()
 {
+	if (!m_ButtonEnabled) return false;
 	glm::vec2 mousePos = GetMouseWorldPosition();
 	return mousePos.x > m_Position.x - (m_Scale.x / 2) && mousePos.x < m_Position.x + (m_Scale.x / 2)
 		&& mousePos.y > m_Position.y - (m_Scale.y / 2) && mousePos.y < m_Position.y + (m_Scale.y / 2);

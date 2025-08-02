@@ -21,17 +21,17 @@ TextRendering::TextRendering(Engine::Ref<Engine::Texture2D> fontTexture, glm::ve
 		m_Characters[char(65 + i)] = Engine::SubTexture2D::CreateFromCoords(fontTexture, { i, 2 }, m_CharacterBaseSize);
 }
 
-void TextRendering::RenderText(std::string text, float fontSize, glm::vec3 pos, float characterPadding)
+void TextRendering::RenderText(std::string text, float fontSize, glm::vec3 pos, glm::vec4 tintColour, float characterPadding)
 {
 	int i = 0;
 	for (char character : text)
 	{
 		character = std::toupper(character);
 		if (m_Characters.find(character) != m_Characters.end())
-			Engine::Renderer2D::DrawQuad({ pos.x + (m_CharacterBaseSize.x * i) + characterPadding, pos.y, pos.z }, m_CharacterBaseSize * fontSize, m_Characters[character]);
+			Engine::Renderer2D::DrawQuad({ pos.x + ((m_CharacterBaseSize.x + characterPadding) * i), pos.y, pos.z }, m_CharacterBaseSize * fontSize, m_Characters[character], tintColour);
 		else
 			// Draw error texture if there is an unknown character
-			Engine::Renderer2D::DrawQuad({ pos.x + (m_CharacterBaseSize.x * i) + characterPadding, pos.y, pos.z }, m_CharacterBaseSize * fontSize, { 1, 0, 1, 1 });
+			Engine::Renderer2D::DrawQuad({ pos.x + ((m_CharacterBaseSize.x + characterPadding) * i), pos.y, pos.z }, m_CharacterBaseSize * fontSize, { 1, 0, 1, 1 });
 		i++;
 	}
 }

@@ -24,9 +24,9 @@ public:
 private:
 	Engine::OrthographicCameraController m_CameraController;
 	float m_CameraZoom = 1.f;
-	float m_CameraPos[2] = { 0.f, 0.f };
+	float m_CameraPos[2] = { 0.f, 360.f };
 
-	Engine::Ref<Engine::Texture2D> m_RegularFont;
+	Engine::Ref<Engine::Texture2D> m_GameLogo;
 
 	TextRendering* m_TextRenderer;
 
@@ -35,6 +35,6 @@ private:
 	std::unique_ptr<Grid> m_grid;
 	InterpolationHelper m_AnimationHelper;
 
-	float m_duration = 2.5f, m_end = 100.f;
+	float m_duration = 1.f, m_end = 0.f;
 };
 
