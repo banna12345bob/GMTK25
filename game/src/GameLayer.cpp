@@ -10,6 +10,7 @@ GameLayer::GameLayer()
 	: Layer("GameLayer"), m_CameraController(Engine::Application::getApplication()->getWindow()->GetWidth() / Engine::Application::getApplication()->getWindow()->GetHeight()),
 	m_AnimationHelper(m_CameraPos[1])
 {
+	m_CurrentScene = Scene::Menu;
 }
 
 void GameLayer::OnAttach()
@@ -26,9 +27,7 @@ void GameLayer::OnAttach()
 
 	m_GameLogo = Engine::Texture2D::Create("assets/textures/game_logo.png");
 
-	//m_CameraZoom = glm::sqrt(std::pow(Engine::Application::getApplication()->getWindow()->GetWidth(), 2) + std::pow(Engine::Application::getApplication()->getWindow()->GetWidth(), 2)) / 4;
 	m_CameraZoom = 128;
-
 	m_CameraController.SetZoomLevel(m_CameraZoom);
 	m_CameraController.setPosition({ m_CameraPos[0], m_CameraPos[1], 0.f });
 }
@@ -50,20 +49,21 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 	else
 		m_TestButton->SetScale({ 128, 128 / 2 });
 
-	if (m_TestButton->WasPressed(EG_MOUSECODE_LEFT))
+	if (m_TestButton->WasPressed(EG_MOUSECODE_LEFT) && m_CurrentScene == Scene::Menu)
 	{
-		m_TestButton->SetButtonEnabled(false);
+		m_CurrentScene = Scene::Game;
 		m_AnimationHelper.StartInterpolation(m_CameraPos[1], 0.f, 1.f);
 	}
-	if (Engine::Key::wasKeyPressed(EG_SCANCODE_ESCAPE))
+	if (Engine::Key::wasKeyPressed(EG_SCANCODE_ESCAPE) && m_CurrentScene == Scene::Game)
 	{
-		m_TestButton->SetButtonEnabled(true);
+		m_CurrentScene = Scene::Menu;
 		m_AnimationHelper.StartInterpolation(m_CameraPos[1], 360.f, 1.f);
 	}
 
 	m_CameraController.OnUpdate();
 
-	m_grid->Update(ts.GetMilliseconds());
+	if (m_CurrentScene == Scene::Game)
+		m_grid->Update(ts.GetMilliseconds());
 }
 
 void GameLayer::OnRender()

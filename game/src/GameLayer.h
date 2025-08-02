@@ -10,6 +10,11 @@ using namespace game1;
 
 class GameLayer : public Engine::Layer
 {
+	enum Scene {
+		Menu,
+		Game
+	};
+
 public:
 	GameLayer();
 	virtual ~GameLayer() = default;
@@ -22,6 +27,8 @@ public:
 
 	glm::vec2 GetMouseWorldPosition();
 private:
+	Scene m_CurrentScene;
+
 	Engine::OrthographicCameraController m_CameraController;
 	float m_CameraZoom = 1.f;
 	float m_CameraPos[2] = { 0.f, 360.f };
