@@ -3,6 +3,7 @@
 TextRendering::TextRendering(Engine::Ref<Engine::Texture2D> fontTexture, glm::vec2 characterBaseSize)
 	: m_CharacterBaseSize(characterBaseSize)
 {
+	m_Characters[' '] = Engine::SubTexture2D::CreateFromCoords(fontTexture, { 0, 3 }, m_CharacterBaseSize);
 	m_Characters['!'] = Engine::SubTexture2D::CreateFromCoords(fontTexture, { 0, 0 }, m_CharacterBaseSize);
 	m_Characters['\''] = Engine::SubTexture2D::CreateFromCoords(fontTexture, { 1, 0 }, m_CharacterBaseSize);
 	m_Characters[','] = Engine::SubTexture2D::CreateFromCoords(fontTexture, { 2, 0 }, m_CharacterBaseSize);
@@ -10,7 +11,8 @@ TextRendering::TextRendering(Engine::Ref<Engine::Texture2D> fontTexture, glm::ve
 	m_Characters['?'] = Engine::SubTexture2D::CreateFromCoords(fontTexture, { 4, 0 }, m_CharacterBaseSize);
 	m_Characters[':'] = Engine::SubTexture2D::CreateFromCoords(fontTexture, { 5, 0 }, m_CharacterBaseSize);
 	m_Characters['%'] = Engine::SubTexture2D::CreateFromCoords(fontTexture, { 6, 0 }, m_CharacterBaseSize);
-	m_Characters[' '] = Engine::SubTexture2D::CreateFromCoords(fontTexture, { 7, 0 }, m_CharacterBaseSize);
+	m_Characters['+'] = Engine::SubTexture2D::CreateFromCoords(fontTexture, { 7, 0 }, m_CharacterBaseSize);
+	m_Characters['-'] = Engine::SubTexture2D::CreateFromCoords(fontTexture, { 8, 0 }, m_CharacterBaseSize);
 
 	for (int i = 0; i < 9; i++)
 		m_Characters[char(48 + i)] = Engine::SubTexture2D::CreateFromCoords(fontTexture, { i, 1 }, m_CharacterBaseSize);
