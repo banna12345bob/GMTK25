@@ -31,6 +31,7 @@ namespace game1 {
 
 		void Draw();
 
+		bool m_executing;
 	private:
 
 		struct PointsText {
@@ -95,7 +96,6 @@ namespace game1 {
 
 		int m_currentLevel;
 
-		bool m_executing;
 		Engine::Vector2i m_currentPos;
 		Block* m_currentBlock;
 		int m_msToActivateBlock;	// Time before moving onto the next block

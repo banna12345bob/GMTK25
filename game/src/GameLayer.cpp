@@ -35,6 +35,9 @@ void GameLayer::OnAttach()
 	Engine::Ref<Engine::Texture2D> gridStartButton = Engine::Texture2D::Create("assets/textures/UI/grid_start_button.png");
 	m_GridStartButton = new Button(m_CameraController.GetCamera(), gridStartButton, { -128 + 34, -128 + 28, 0.3 }, { 38, 18 });
 
+	Engine::Ref<Engine::Texture2D> mainMenuButton = Engine::Texture2D::Create("assets/textures/UI/main_menu_button.png");
+	m_MainMenuButton = new Button(m_CameraController.GetCamera(), mainMenuButton, { -105, 110, 0.3 }, { 34, 14 });
+
 	m_GameLogo = Engine::Texture2D::Create("assets/textures/UI/game_logo.png");
 	m_InfoText = Engine::Texture2D::Create("assets/textures/UI/info_text.png");
 	m_CurrentText = Engine::Texture2D::Create("assets/textures/UI/current_text.png");
@@ -72,10 +75,16 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 	else
 		m_QuitButton->SetScale({ 100, 100 / 2 });
 
-	if (m_GridStartButton->IsHovering() && m_CameraPos[1] == 0.f && m_ValidCircuit)
+	if (m_GridStartButton->IsHovering() && m_CameraPos[1] == 0.f && m_ValidCircuit && !m_Grid->m_executing)
 		m_GridStartButton->SetScale(glm::vec2({ 38, 19 }) * 1.1f);
 	else {
 		m_GridStartButton->SetScale(glm::vec2({ 38, 19 }));
+	}
+
+	if (m_MainMenuButton->IsHovering() && m_CameraPos[1] == 0.f && !m_Grid->m_executing)
+		m_MainMenuButton->SetScale(glm::vec2({ 34, 14 }) * 1.1f);
+	else {
+		m_MainMenuButton->SetScale(glm::vec2({ 34, 14 }));
 	}
 
 	if (m_CurrentScene == EndRound) {
@@ -116,28 +125,20 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 		m_Grid->Start(nullptr);
 	}
 
+	if (m_MainMenuButton->WasPressed(EG_MOUSECODE_LEFT) && m_CurrentScene == Scene::Game) {
+		m_CurrentScene = Scene::Menu;
+		m_CameraYAnimation.StartInterpolation(m_CameraPos[1], 360.f, 1.f);
+	}
+
 	if (Engine::Key::wasKeyPressed(EG_SCANCODE_ESCAPE) && m_CurrentScene == Scene::Game)
 	{
 		m_CurrentScene = Scene::Menu;
 		m_CameraYAnimation.StartInterpolation(m_CameraPos[1], 360.f, 1.f);
 	}
 
-	// Change to EndRound Scene
-	// TODO: Decouple this from the button
-	if (Engine::Key::wasKeyPressed(EG_SCANCODE_F5) && m_CurrentScene == Scene::Game)
-	{
-		m_CurrentScene = Scene::EndRound;
-		m_CameraXAnimation.StartInterpolation(m_CameraPos[0], -360.f, 1.f);
-	}
-	if (Engine::Key::wasKeyPressed(EG_SCANCODE_F6) && m_CurrentScene == Scene::EndRound)
-	{
-		m_CurrentScene = Scene::Game;
-		m_CameraXAnimation.StartInterpolation(m_CameraPos[0], 0.f, 1.f);
-	}
-
 	m_CameraController.OnUpdate();
 
-	if (m_CurrentScene == Scene::Game) {
+	if (m_CurrentScene == Scene::Game && m_CameraPos[0] == 0.f && m_CameraPos[1] == 0.f) {
 		m_ValidCircuit = m_Grid->CheckValidCircuit();
 		m_Grid->Update(ts.GetMilliseconds());
 	}
@@ -198,7 +199,10 @@ void GameLayer::OnRender()
 		m_Grid->Draw();
 
 		if (m_ValidCircuit) m_GridStartButton->Render();
-		else m_GridStartButton->Render({0.6, 0.6, 0.6, 1 });
+		else m_GridStartButton->Render({ 0.6, 0.6, 0.6, 1 });
+
+		if (m_Grid->m_executing) m_MainMenuButton->Render({ 0.6, 0.6, 0.6, 1 });
+		else m_MainMenuButton->Render();
 	}
 
 	Engine::Renderer2D::EndScene();
