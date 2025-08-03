@@ -12,7 +12,8 @@ class GameLayer : public Engine::Layer
 {
 	enum Scene {
 		Menu,
-		Game
+		Game,
+		EndRound
 	};
 
 public:
@@ -38,6 +39,6 @@ private:
 	Button *m_StartButton, *m_QuitButton;
 
 	std::unique_ptr<Grid> m_grid;
-	InterpolationHelper m_AnimationHelper;
+	InterpolationHelper m_CameraYAnimation, m_CameraXAnimation;
 };
 
