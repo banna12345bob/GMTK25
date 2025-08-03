@@ -10,8 +10,6 @@ GameLayer::GameLayer()
 	: Layer("GameLayer"), m_CameraController(Engine::Application::getApplication()->getWindow()->GetWidth() / Engine::Application::getApplication()->getWindow()->GetHeight()),
 	m_CurrentScene(Scene::Menu)
 {
-	showRendererDebug = false;
-
 	m_CameraYAnimation.StartInterpolation(m_CameraPos[1], m_CameraPos[1], 0.f);
 	m_CameraXAnimation.StartInterpolation(m_CameraPos[0], m_CameraPos[0], 0.f);
 }
@@ -118,7 +116,7 @@ void GameLayer::OnRender()
 	Engine::RenderCommand::Clear();
 
 	// Run every frame
-	Engine::Renderer2D::BeginScene(m_CameraController.GetCamera());
+	Engine::Renderer2D::BeginScene(&m_CameraController.GetCamera());
 
 	// Main Menu
 	if (m_CameraPos[1] > 0.f || m_CurrentScene == Scene::Menu)

@@ -26,7 +26,7 @@ namespace Engine {
 		static const uint32_t maxQuads = 20000;
 		static const uint32_t maxVerticies = maxQuads * 4;
 		static const uint32_t maxIndices = maxQuads * 6;
-		static const uint32_t maxTextureSlots = 128;
+		static const uint32_t maxTextureSlots = 32;
 
 		Ref<VertexArray> QuadVertexArray;
 		Ref<VertexBuffer> QuadVertexBuffer;
@@ -44,6 +44,8 @@ namespace Engine {
 		glm::vec4 quadVertexPosition[4];
 
 		ShaderLibary shaderLibrary;
+
+		OrthographicCamera* orthoGraphicCamera = nullptr;
 
 		Renderer2D::Statistics Stats;
 	};
@@ -111,10 +113,11 @@ namespace Engine {
 		delete[] s_Data.squareVertexBufferBase;
 	}
 
-	void Renderer2D::BeginScene(const OrthographicCamera& camera)
+	void Renderer2D::BeginScene(OrthographicCamera* camera)
 	{
+		s_Data.orthoGraphicCamera = camera;
 		s_Data.TextureShader->Bind();
-		s_Data.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+		s_Data.TextureShader->SetMat4("u_ViewProjection", s_Data.orthoGraphicCamera->GetViewProjectionMatrix());
 
 		s_Data.squareIndexCount = 0;
 		s_Data.squareVertexBufferPtr = s_Data.squareVertexBufferBase;
@@ -150,6 +153,7 @@ namespace Engine {
 		s_Data.squareVertexBufferPtr = s_Data.squareVertexBufferPtr;
 
 		s_Data.textureSlotIndex = 1;
+		BeginScene(s_Data.orthoGraphicCamera);
 	}
 
 	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 scale, glm::vec4 colour)
@@ -199,6 +203,7 @@ namespace Engine {
 
 		constexpr size_t squareVertexCount = 4;
 
+
 		float textureIndex = 0.0f;
 		for (uint32_t i = 1; i < s_Data.textureSlotIndex; i++)
 		{
@@ -207,6 +212,11 @@ namespace Engine {
 				textureIndex = (float)i;
 				break;
 			}
+		}
+		if (s_Data.textureSlotIndex >= s_Data.maxTextureSlots) 
+		{
+			//EG_ASSERT(false, "HERE");
+			FlushAndReset();
 		}
 
 		if (textureIndex == 0.0f)
@@ -224,6 +234,7 @@ namespace Engine {
 				s_Data.textureSlots[s_Data.textureSlotIndex] = texture;
 			s_Data.textureSlotIndex++;
 		}
+
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
 			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
