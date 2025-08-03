@@ -70,6 +70,6 @@ namespace game1 {
 		static inline std::vector<std::map<int, Engine::Ref<Engine::Texture2D>>> m_arrowTextures = std::vector<std::map<int, Engine::Ref<Engine::Texture2D>>>(4);
 		static inline Engine::Ref<Engine::Texture2D> m_outlineTex;
 
-		InterpolationHelper m_ScoringRotation;
+		InterpolationHelper m_ScoringRotation, m_ScoringScale;
 	};
 }
