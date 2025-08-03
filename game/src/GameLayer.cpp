@@ -18,7 +18,7 @@ void GameLayer::OnAttach()
 {
 	Block::LoadBlockData();
 	Block::LoadBlockTextures();
-	m_grid = std::make_unique<Grid>(5, this);
+	m_Grid = std::make_unique<Grid>(5, this);
 
 	Engine::Ref<Engine::Texture2D> startButton = Engine::Texture2D::Create("assets/textures/UI/start_button.png");
 	m_StartButton = new Button(m_CameraController.GetCamera(), startButton, { 0, -325, 0.1 }, { 128, 128 / 2 });
@@ -38,6 +38,8 @@ void GameLayer::OnAttach()
 	m_GameLogo = Engine::Texture2D::Create("assets/textures/UI/game_logo.png");
 	m_InfoText = Engine::Texture2D::Create("assets/textures/UI/info_text.png");
 	m_TargetText = Engine::Texture2D::Create("assets/textures/UI/target.png");
+	m_SuccessText = Engine::Texture2D::Create("assets/textures/UI/success_text.png");
+	m_FailText = Engine::Texture2D::Create("assets/textures/UI/fail_text.png");
 
 	m_CameraZoom = 128;
 	m_CameraController.SetZoomLevel(m_CameraZoom);
@@ -73,6 +75,20 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 		m_GridStartButton->SetScale(glm::vec2({ 38, 19 }));
 	}
 
+	if (m_CurrentScene == EndRound) {
+		if (m_NextButton->IsHovering())
+			m_NextButton->SetScale(glm::vec2({ 25, 9 }) * 1.1f);
+		else {
+			m_NextButton->SetScale(glm::vec2({ 25, 9 }));
+		}
+
+		if (m_RetryButton->IsHovering())
+			m_RetryButton->SetScale(glm::vec2({ 31, 11 }) * 1.1f);
+		else {
+			m_RetryButton->SetScale(glm::vec2({ 31, 11 }));
+		}
+	}
+
 
 	if (m_QuitButton->WasPressed(EG_MOUSECODE_LEFT) && m_CurrentScene == Scene::Menu)
 		Engine::Application::getApplication()->getWindow()->SetRunning(false);
@@ -84,7 +100,7 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 	}
 
 	if (m_GridStartButton->WasPressed(EG_MOUSECODE_LEFT) && m_CurrentScene == Scene::Game) {
-		m_grid->Start(nullptr);
+		m_Grid->Start(nullptr);
 	}
 
 	if (Engine::Key::wasKeyPressed(EG_SCANCODE_ESCAPE) && m_CurrentScene == Scene::Game)
@@ -108,10 +124,26 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 
 	m_CameraController.OnUpdate();
 
-	if (m_CurrentScene == Scene::Game) 
-	{
-		m_validCircuit = m_grid->CheckValidCircuit();
-		m_grid->Update(ts.GetMilliseconds());
+	if (m_CurrentScene == Scene::Game) {
+		m_ValidCircuit = m_Grid->CheckValidCircuit();
+		m_Grid->Update(ts.GetMilliseconds());
+	}
+}
+
+void GameLayer::ChangeScene(Scene scene, bool roundSuccess) {
+	m_CurrentScene = scene;
+
+	switch (scene) {
+	case Menu:
+		m_CameraYAnimation.StartInterpolation(m_CameraPos[1], 360.f, 1.f);
+		break;
+	case Game:
+		m_CameraXAnimation.StartInterpolation(m_CameraPos[0], 0.f, 1.f);
+		break;
+	case EndRound:
+		m_WasRoundSuccess = roundSuccess;
+		m_CameraXAnimation.StartInterpolation(m_CameraPos[0], -360.f, 1.f);
+		break;
 	}
 }
 
@@ -135,18 +167,24 @@ void GameLayer::OnRender()
 	// End Round
 	if (m_CameraPos[0] != 0.f)
 	{
-		m_RetryButton->Render();
-		m_NextButton->Render();
+		if (m_WasRoundSuccess) {
+			Engine::Renderer2D::DrawQuad({ 360, 0, 0.1 }, { 45, 10 }, m_SuccessText, { 1, 1, 1, 1 });
+			m_NextButton->Render();
+		}
+		else {
+			Engine::Renderer2D::DrawQuad({ 360, 0, 0.1 }, { 47, 9 }, m_FailText, { 1, 1, 1, 1 });
+			m_RetryButton->Render();
+		}
 	}
 
 	// Game
 	if ((m_CameraPos[1] < 360.f && m_CameraPos[0] > -360.f) || m_CurrentScene == Scene::Game)
 	{
 		Engine::Renderer2D::DrawQuad({ 75.f, -100.f, 0.9f }, { 44.f, 11.f }, m_TargetText);
-		m_grid->Draw();
+		m_Grid->Draw();
 
 		if (m_validCircuit) m_GridStartButton->Render();
-		else m_GridStartButton->Render({1, 0, 0, 0.75 });
+		else m_GridStartButton->Render({0.6, 0.6, 0.6, 1 });
 	}
 
 	Engine::Renderer2D::EndScene();

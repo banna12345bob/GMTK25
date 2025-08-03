@@ -80,7 +80,7 @@ namespace game1 {
 		m_currentBlock->Activate(&m_currentPoints, &m_blocksActivated, this);
 		
 		m_executing = true;
-		m_msToActivateBlock = 1000;
+		m_msToActivateBlock = 100;
 
 		return true;
 	}
@@ -93,6 +93,8 @@ namespace game1 {
 		m_blocksActivated.clear();
 		m_lastPortalPos = Engine::Vector2i::Invalid();
 		EG_TRACE("Circuit complete");
+
+		m_gameLayer->ChangeScene(GameLayer::EndRound, m_currentPoints == m_targetPoints);
 	}
 
 	void Grid::Update(Engine::Timestep deltaTime) {

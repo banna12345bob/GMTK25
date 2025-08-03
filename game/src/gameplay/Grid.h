@@ -24,8 +24,10 @@ namespace game1 {
 		Tile* GetTile(Engine::Vector2i position);
 		Tile* GetTile(int x, int y);
 		bool HoveringGrid();
-
 		Engine::Vector2i GridPosToScreenPos(Engine::Vector2i tilePos);
+
+		void Retry();
+		void NextRound();
 
 		void Draw();
 
@@ -91,6 +93,8 @@ namespace game1 {
 		Engine::Ref<Engine::Texture2D> m_emptyTileTex;
 		std::vector<std::vector<Tile>> m_tiles;
 
+		int m_currentPuzzle;
+
 		bool m_executing;
 		Engine::Vector2i m_currentPos;
 		Block* m_currentBlock;
@@ -98,6 +102,7 @@ namespace game1 {
 		int m_msActivating;			// Exectuting the current block
 		std::map<Block::BlockType, std::vector<Block*>> m_blocksActivated;
 
+		int m_targetPoints;
 		int m_currentPoints;
 		TextRendering* m_textRenderer;
 		std::map<Block*, PointsText> m_pointsText;
