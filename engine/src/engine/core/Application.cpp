@@ -26,8 +26,9 @@ namespace Engine {
 		m_Window->SetVSync(false);
 
 		getImGuiRenderer()->registerImGuiLayer(m_AudioDebuggerLayer);
+		getImGuiRenderer()->registerImGuiLayer(m_RendererStatsLayer);
 
-		m_EventCallbackManager->registerKeyboardCallback(AudioDebuggerKeyboardEventCallback);
+		m_EventCallbackManager->registerKeyboardCallback(ApplicationKeyboardEventCallback);
 
 		RenderCommand::Init();
 		Renderer2D::Init();
@@ -44,10 +45,8 @@ namespace Engine {
 		return s_Instance;
 	}
 
-	void Application::AudioDebuggerKeyboardEventCallback(void* callback) {
+	void Application::ApplicationKeyboardEventCallback(void* callback) {
 		EG_PROFILE_FUNCTION();
-		if ((Key::isKeyPressed(EG_SCANCODE_LCTRL) || Key::isKeyPressed(EG_SCANCODE_RCTRL)) && Key::wasKeyPressed(EG_SCANCODE_P))
-			Application::getApplication()->m_AudioDebuggerLayer->m_ShowWindow = !Application::getApplication()->m_AudioDebuggerLayer->m_ShowWindow;
 
 		if (Key::wasKeyPressed(EG_SCANCODE_F1)) {
 			if (RenderCommand::GetRenderMode() == RenderAPI::RenderMode::Normal)
@@ -55,6 +54,11 @@ namespace Engine {
 			else
 				RenderCommand::SetRenderMode(RenderAPI::RenderMode::Normal);
 		}
+		if (Key::wasKeyPressed(EG_SCANCODE_F2))
+			Application::getApplication()->m_RendererStatsLayer->m_ShowWindow = !Application::getApplication()->m_RendererStatsLayer->m_ShowWindow;
+
+		if (Key::wasKeyPressed(EG_SCANCODE_F4))
+			Application::getApplication()->m_AudioDebuggerLayer->m_ShowWindow = !Application::getApplication()->m_AudioDebuggerLayer->m_ShowWindow;
 	}
 
 	void Application::PushLayer(Layer* layer)
@@ -94,6 +98,7 @@ namespace Engine {
 			for (Layer* layer : m_layerStack)
 				layer->OnImGuiRender();
 			m_AudioDebuggerLayer->renderImGUILayer();
+			m_RendererStatsLayer->renderImGUILayer();
 			m_ImGuiRenderer->EndFrame();
 
 			SDL_Window* window = static_cast<SDL_Window*>(Application::getApplication()->getWindow()->getNativeWindow());

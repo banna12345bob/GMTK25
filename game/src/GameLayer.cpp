@@ -10,6 +10,8 @@ GameLayer::GameLayer()
 	: Layer("GameLayer"), m_CameraController(Engine::Application::getApplication()->getWindow()->GetWidth() / Engine::Application::getApplication()->getWindow()->GetHeight()),
 	m_CurrentScene(Scene::Menu)
 {
+	showRendererDebug = false;
+
 	m_CameraYAnimation.StartInterpolation(m_CameraPos[1], m_CameraPos[1], 0.f);
 	m_CameraXAnimation.StartInterpolation(m_CameraPos[0], m_CameraPos[0], 0.f);
 }
@@ -149,12 +151,6 @@ void GameLayer::OnRender()
 void GameLayer::OnImGuiRender()
 {
 	// Any ImGui rendering code goes here
-	auto stats = Engine::Renderer2D::GetStats();
-	ImGui::Text("Renderer2D Stats:");
-	ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-	ImGui::Text("Quads: %d", stats.squareCount);
-	ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-	ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 }
 
 glm::vec2 GameLayer::GetMouseGamePosition() {

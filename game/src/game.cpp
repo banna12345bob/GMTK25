@@ -15,7 +15,7 @@ public:
 		getCallbackManager()->registerKeyboardCallback(keyboardEventCallback);
 		getCallbackManager()->registerMouseDownCallback(mouseDownEventCallback);
 
-		PushLayer(new ::GameLayer());
+		PushLayer(new GameLayer());
 
 		// miniz_cpp::zip_file file;
 		// file.load("assets/assets.zip");

@@ -8,6 +8,7 @@
 #include "engine/events/eventCallbackManager.h"
 
 #include "engine/audio/AudioDebugger.h"
+#include "engine/debug/ImGuiRendererStats.h"
 
 #include "engine/ImGui/ImGuiRenderer.h"
 
@@ -24,7 +25,7 @@ namespace Engine {
 
 		static Application* getApplication();
 
-		static void AudioDebuggerKeyboardEventCallback(void* callback);
+		static void ApplicationKeyboardEventCallback(void* callback);
 
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
@@ -42,6 +43,7 @@ namespace Engine {
 		ImGuiRenderer* m_ImGuiRenderer;
 
 		AudioDebugger* m_AudioDebuggerLayer = new AudioDebugger();
+		ImGuiRendererStats* m_RendererStatsLayer = new ImGuiRendererStats();
 
 		LayerStack m_layerStack;
 
