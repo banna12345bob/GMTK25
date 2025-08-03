@@ -77,7 +77,7 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 	if (Engine::Key::wasKeyPressed(EG_SCANCODE_F5) && m_CurrentScene == Scene::Game)
 	{
 		m_CurrentScene = Scene::EndRound;
-		m_CameraXAnimation.StartInterpolation(m_CameraPos[0], 360.f, 1.f);
+		m_CameraXAnimation.StartInterpolation(m_CameraPos[0], -360.f, 1.f);
 	}
 	if (Engine::Key::wasKeyPressed(EG_SCANCODE_F6) && m_CurrentScene == Scene::EndRound)
 	{
@@ -109,16 +109,16 @@ void GameLayer::OnRender()
 	}
 
 	// Game
-	if ((m_CameraPos[1] < 360.f && m_CameraPos[0] < 360.f) || m_CurrentScene == Scene::Game)
+	if ((m_CameraPos[1] < 360.f && m_CameraPos[0] > -360.f) || m_CurrentScene == Scene::Game)
 	{
 		Engine::Renderer2D::DrawQuad({ 75.f, -100.f, 0.9f }, { 44.f, 11.f }, m_TargetText);
 		m_grid->Draw();
 	}
 
 	// End Round
-	if (m_CameraPos[0] > 0.f || m_CurrentScene == Scene::EndRound)
+	if (m_CameraPos[0] < 0.f || m_CurrentScene == Scene::EndRound)
 	{
-		Engine::Renderer2D::DrawQuad({ -450.f, -100.f, 0.9f }, { 44.f, 11.f }, m_TargetText);
+		Engine::Renderer2D::DrawQuad({ 450.f, -100.f, 0.9f }, { 44.f, 11.f }, m_TargetText);
 	}
 
 	Engine::Renderer2D::EndScene();
