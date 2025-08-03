@@ -43,7 +43,7 @@ bool Button::WasPressed(int buttoncode)
 
 	bool wasPressed = m_TimesPressed[buttoncode] == 1;
 	if (wasPressed) {
-		Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/activate.wav", false, 0.5);
+		Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/activate.wav", false, 0.4);
 	}
 	return wasPressed;
 }

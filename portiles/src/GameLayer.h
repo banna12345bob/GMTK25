@@ -45,6 +45,9 @@ private:
 	bool m_ValidCircuit;
 	bool m_WasRoundSuccess;
 
+	unsigned int m_musicSoundId;
+	bool m_muted;
+
 	std::unique_ptr<Grid> m_Grid;
 	InterpolationHelper m_CameraYAnimation, m_CameraXAnimation;
 };

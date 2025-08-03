@@ -50,7 +50,7 @@ namespace game1 {
 
 		if (pointsScored > 0) {
 			float volume = m_typeBonus != NONE ? 0.8f : 0.5f;
-			Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/score.wav", false, 0.5);
+			Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/score.wav", false, 0.3);
 		}
 	}
 

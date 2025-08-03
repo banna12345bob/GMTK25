@@ -19,6 +19,10 @@ void GameLayer::OnAttach()
 	Block::LoadBlockTextures();
 	m_Grid = std::make_unique<Grid>(5, this);
 
+
+	Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/music.wav", true, 0.45f, &m_musicSoundId);
+	m_muted = false;
+
 	Engine::Ref<Engine::Texture2D> startButton = Engine::Texture2D::Create("assets/textures/UI/start_button.png");
 	m_StartButton = new Button(m_CameraController.GetCamera(), startButton, { 0, -325, 0.1 }, { 128, 128 / 2 });
 
@@ -61,6 +65,17 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 	InterpolationHelper::Update(ts);
 	m_CameraPos[0] = m_CameraXAnimation.CublicEaseIn();
 	m_CameraPos[1] = m_CameraYAnimation.CublicEaseIn();
+
+	if (Engine::Key::wasKeyPressed(EG_SCANCODE_M)) {
+		if (m_muted) {
+			Engine::Application::getApplication()->getAudioPlayer()->SetVolume(m_musicSoundId, 0.45f);
+			m_muted = false;
+		}
+		else {
+			Engine::Application::getApplication()->getAudioPlayer()->SetVolume(m_musicSoundId, 0.0f);
+			m_muted = true;
+		}
+	}
 
 	m_CameraController.SetZoomLevel(m_CameraZoom);
 	m_CameraController.setPosition({ m_CameraPos[0], m_CameraPos[1], 0.f });
@@ -186,7 +201,7 @@ void GameLayer::OnRender()
 		m_StartButton->Render();
 		m_QuitButton->Render();
 		Engine::Renderer2D::DrawQuad({ 0, -260, 0.1 }, { 128, 128 / 2 }, m_GameLogo);
-		Engine::Renderer2D::DrawQuad({ 0, -390, -0.1 }, { 192 / 2, 100 / 2 }, m_InfoText, { 1, 1, 1, 1 });
+		Engine::Renderer2D::DrawQuad({ 0, -390, -0.1 }, { 500 / 2, 100 / 2 }, m_InfoText, { 1, 1, 1, 1 });
 		Engine::Renderer2D::DrawQuad({ -90, -475, 0.1 }, { 192 / 3, 100 / 3 }, m_CreditsText);
 	}
 

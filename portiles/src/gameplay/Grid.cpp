@@ -107,6 +107,8 @@ namespace game1 {
 		if (!m_executing) {
 			// Check for player input
 			if (Engine::Mouse::wasButtonPressed(EG_MOUSECODE_LEFT)) {
+
+				Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/click.wav", false, 0.15);
 				
 				Engine::Vector2i hoveredTile = GetHoveredTile();
 				Block* selectedBlock = GetHoveredBlock(hoveredTile);
