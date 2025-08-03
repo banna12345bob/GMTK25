@@ -1,5 +1,5 @@
 workspace "GMTK25"
-	startproject "game"
+	startproject "portiles"
 
 	configurations
 	{
@@ -29,4 +29,4 @@ group "Dependencies"
 group ""
 	include "engine"
 	include "sandbox"
-	include "game"
+	include "portiles"

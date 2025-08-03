@@ -1,4 +1,4 @@
-project "game"
+project "portiles"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
@@ -21,7 +21,7 @@ project "game"
 		"%{IncludeDir.spdlog}",
 		"%{wks.location}/engine/src",
 		"%{wks.location}/engine/vendor",
-		"%{wks.location}/game/src",
+		"%{wks.location}/portiles/src",
 		"%{IncludeDir.SDL3}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.json}",
@@ -34,8 +34,7 @@ project "game"
 	}
 	
 	postbuildcommands {
-		"{COPY} %{IncludeDir.SDL3}/../lib/x64/SDL3.dll %{cfg.targetdir}",
-		"{COPY} imgui.ini %{cfg.targetdir}"
+		"{COPY} %{IncludeDir.SDL3}/../lib/x64/SDL3.dll %{cfg.targetdir}"
 	}
 
 	flags {
@@ -46,8 +45,7 @@ project "game"
 		systemversion "latest"
 		buildoptions { "/utf-8" }
 		postbuildcommands {
-			"{COPYDIR} %{wks.location}/%{prj.name}/assets/ %{cfg.targetdir}/assets",
-			"{COPYDIR} %{wks.location}/%{prj.name}/data/ %{cfg.targetdir}/data"
+			"{COPYDIR} %{wks.location}/%{prj.name}/assets/ %{cfg.targetdir}/assets"
 		}
 
 	filter "system:linux"

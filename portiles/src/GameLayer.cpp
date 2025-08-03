@@ -16,7 +16,6 @@ GameLayer::GameLayer()
 
 void GameLayer::OnAttach()
 {
-	Block::LoadBlockData();
 	Block::LoadBlockTextures();
 	m_Grid = std::make_unique<Grid>(5, this);
 
