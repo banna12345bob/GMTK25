@@ -33,10 +33,11 @@ void GameLayer::OnAttach()
 	m_NextButton = new Button(m_CameraController.GetCamera(), nextButton, { 450.f, -100.f, 0.1 }, { 25, 9 });
 
 	Engine::Ref<Engine::Texture2D> gridStartButton = Engine::Texture2D::Create("assets/textures/UI/grid_start_button.png");
-	m_GridStartButton = new Button(m_CameraController.GetCamera(), gridStartButton, { -128 + 34, -128 + 34, 0.3 }, { 38, 18 });
+	m_GridStartButton = new Button(m_CameraController.GetCamera(), gridStartButton, { -128 + 34, -128 + 28, 0.3 }, { 38, 18 });
 
 	m_GameLogo = Engine::Texture2D::Create("assets/textures/UI/game_logo.png");
 	m_InfoText = Engine::Texture2D::Create("assets/textures/UI/info_text.png");
+	m_CurrentText = Engine::Texture2D::Create("assets/textures/UI/current_text.png");
 	m_TargetText = Engine::Texture2D::Create("assets/textures/UI/target.png");
 	m_SuccessText = Engine::Texture2D::Create("assets/textures/UI/success_text.png");
 	m_FailText = Engine::Texture2D::Create("assets/textures/UI/fail_text.png");
@@ -192,7 +193,8 @@ void GameLayer::OnRender()
 	// Game
 	if ((m_CameraPos[1] < 360.f && m_CameraPos[0] > -360.f) || m_CurrentScene == Scene::Game)
 	{
-		Engine::Renderer2D::DrawQuad({ 75.f, -100.f, 0.9f }, { 44.f, 11.f }, m_TargetText);
+		Engine::Renderer2D::DrawQuad({ 75.f, -90.f, 0.9f }, { 46.f, 11.f }, m_CurrentText);
+		Engine::Renderer2D::DrawQuad({ 75.f, -106.f, 0.9f }, { 46.f, 11.f }, m_TargetText);
 		m_Grid->Draw();
 
 		if (m_ValidCircuit) m_GridStartButton->Render();

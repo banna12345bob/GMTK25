@@ -6,7 +6,7 @@
 namespace game1 {
 
 	void Grid::LoadLevel(int level) {
-
+		m_currentPoints = 0;
 		m_unattachedBlocks.clear();
 		m_tiles = std::vector<std::vector<Tile>>(m_size, std::vector<Tile>(m_size));
 		for (int i = 0; i < m_size; i++) {
@@ -91,13 +91,27 @@ namespace game1 {
 		PlaceBlocks(blocks);
 
 		m_startPoint = CreateEndpoint({ 0, 0 }, Endpoint::START, Endpoint::RIGHT);
-		m_endPoint = CreateEndpoint({ 4, 0 }, Endpoint::END, Endpoint::DOWN);
+		m_endPoint = CreateEndpoint({ 3, 0 }, Endpoint::END, Endpoint::DOWN);
 
 		m_targetPoints = 7;
 	}
 
 	void Grid::Level3() {
 
+		Engine::Vector2i vec = Engine::Vector2i::Invalid();
+		std::vector<Block*> blocks;
+
+		blocks.push_back(new Block(vec, nullptr, 1, Block::HOSAKA, Block::NONE, { 0, 1 , 0, -1 }));
+		blocks.push_back(new Block(vec, nullptr, 3, Block::HOSAKA, Block::NONE, { 0, 1 , 0, -1 }));
+		blocks.push_back(new Block(vec, nullptr, 2, Block::MAAS_BIOLABS, Block::NONE, { 0, 1 , 0, -1 }));
+		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, { 0, 1 , 0, -1 }));
+		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, { 0, 1 , 0, -1 }));
+		PlaceBlocks(blocks);
+
+		m_startPoint = CreateEndpoint({ 0, 2 }, Endpoint::START, Endpoint::RIGHT);
+		m_endPoint = CreateEndpoint({ 4, 2 }, Endpoint::END, Endpoint::RIGHT);
+
+		m_targetPoints = 9;
 	}
 
 	void Grid::Level4() {

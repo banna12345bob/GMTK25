@@ -40,7 +40,7 @@ namespace game1 {
 			m_endpointArrowTexs.push_back(subtex);
 		}
 
-		m_currentLevel = 1;
+		m_currentLevel = 3;
 		LoadLevel(m_currentLevel);
 	}
 
@@ -86,7 +86,7 @@ namespace game1 {
 		m_gameLayer->ChangeScene(GameLayer::Game, true);
 	}
 	void Grid::Retry() {
-		LoadLevel(m_currentLevel);
+		m_currentPoints = 0;
 		m_gameLayer->ChangeScene(GameLayer::Game, false);
 	}
 
@@ -478,6 +478,7 @@ namespace game1 {
 		Engine::Renderer2D::DrawQuad(m_startPoint.screenPos, { 16,16 }, m_endpointArrowTexs[m_startPoint.dir]);
 		Engine::Renderer2D::DrawQuad(m_endPoint.screenPos, { 16,16 }, m_endpointArrowTexs[m_endPoint.dir]);
 
-		m_textRenderer->RenderText(std::to_string(m_targetPoints), 1.5, {105.f, -100.f, 0.9f}, glm::vec4(1.f), 2.5f);
+		m_textRenderer->RenderText(std::to_string(m_currentPoints), 1.5, {105.f, -90.f, 0.9f}, glm::vec4(1.f), 2.5f);
+		m_textRenderer->RenderText(std::to_string(m_targetPoints), 1.5, {105.f, -106.f, 0.9f}, glm::vec4(1.f), 2.5f);
 	}
 }
