@@ -54,10 +54,10 @@ namespace game1 {
 		tilePos = { 4, 1 };
 		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::MAAS_BIOLABS, Block::NONE, { 0, 0, 1, -1 }), this);
 		tilePos = { 4, 0 };
-		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::MAAS_BIOLABS, Block::NONE, { -1, 0, 1, 0 }), this);
+		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 1, Block::MAAS_BIOLABS, Block::MAAS_BIOLABS, { -1, 0, 1, 0 }), this);
 
 		m_startPoint = CreateEndpoint({ 0, 0 }, Endpoint::START, Endpoint::RIGHT);
-		m_endPoint = CreateEndpoint({ 2, 0 }, Endpoint::END, Endpoint::DOWN);
+		m_endPoint = CreateEndpoint({ 4, 0 }, Endpoint::END, Endpoint::DOWN);
 	}
 
 	bool Grid::Start(std::string* errorMessage) {
@@ -90,6 +90,7 @@ namespace game1 {
 		m_currentPos = Engine::Vector2i::Invalid();
 		m_currentBlock = nullptr;
 		m_pointsText.clear();
+		m_blocksActivated.clear();
 		m_lastPortalPos = Engine::Vector2i::Invalid();
 		EG_TRACE("Circuit complete");
 	}
@@ -191,7 +192,7 @@ namespace game1 {
 			}
 
 			// Check if points text has run out
-			for (auto it = m_pointsText.begin(); it != m_pointsText.end();) {
+			/*for (auto it = m_pointsText.begin(); it != m_pointsText.end();) {
 				it->msLeft -= deltaTime;
 				if (it->msLeft < 0) {
 					it = m_pointsText.erase(it);
@@ -199,7 +200,7 @@ namespace game1 {
 				else {
 					it++;
 				}
-			}
+			}*/
 		}
 	}
 
@@ -274,16 +275,29 @@ namespace game1 {
 		return pos;
 	}
 
-	void Grid::AddPointsText(int value, Block* block, int count) {
-
-		Engine::Vector2i pos = block->getPos();
-		glm::vec3 glmpos = { pos.x * m_cellSize + m_gridOffset.x, pos.y * m_cellSize + m_gridOffset.y + 26, 0.93 };
-		m_pointsText.push_back(PointsText("+" + std::to_string(value), glmpos, m_pointsTextDuration));
+	void Grid::AddPointsText(int value, Block* block) {
+		if (m_pointsText.find(block) == m_pointsText.end()) {
+			Engine::Vector2i pos = block->getPos();
+			glm::vec3 glmpos = { pos.x, pos.y + 20, 0.93 };
+			m_pointsText[block] = PointsText(1, value, glmpos, m_pointsTextDuration);
+		}
+		else {
+			m_pointsText[block].count++;
+			m_pointsText[block].points += value;
+		}		
 	}
 	void Grid::AddPointsText(int value, std::vector<Block*>* blocks) {
 		for (auto block : *blocks) {
-			AddPointsText(value, block, 0);
+			AddPointsText(value, block);
 		}
+	}
+	int Grid::GetTimesActivated(Block* block) {
+		int count = 0;
+		for (auto b : m_blocksActivated[block->getType()]) {
+			if (b == block) count++;
+		}
+
+		return count;
 	}
 
 	Block* Grid::GetHoveredBlock(Engine::Vector2i hoveredTile) {
@@ -462,7 +476,7 @@ namespace game1 {
 
 		// PointsText
 		for (auto it = m_pointsText.begin(); it != m_pointsText.end(); it++) {
-			m_textRenderer->RenderText(it->text, 1, it->pos);
+			m_textRenderer->RenderText(it->second.GetString(), 1, it->second.pos);
 		}
 
 		// Endpoint arrows

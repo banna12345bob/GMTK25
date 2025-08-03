@@ -18,8 +18,9 @@ namespace game1 {
 		bool Start(std::string* errorMessage);
 		bool CheckValidCircuit();
 		void Update(Engine::Timestep deltaTime);
-		void AddPointsText(int value, Block* block, int count);
+		void AddPointsText(int value, Block* block);
 		void AddPointsText(int value, std::vector<Block*>* gridPositions);
+		int GetTimesActivated(Block* block);
 		Tile* GetTile(Engine::Vector2i position);
 		Tile* GetTile(int x, int y);
 		bool HoveringGrid();
@@ -32,14 +33,19 @@ namespace game1 {
 
 		struct PointsText {
 
-			std::string text;
+			int count; // times activated
+			int points;
 			glm::vec3 pos;
 			int msLeft;
 
-			PointsText(std::string text, glm::vec3 pos, int duration)
-				: text(text),
+			PointsText() : PointsText(0, 0, { 0,0,0 }, 0) {}
+			PointsText(int count, int points, glm::vec3 pos, int duration)
+				: count(count),
+				points(points),
 				pos(pos),
 				msLeft(duration) {}
+
+			std::string GetString() { return "+" + std::to_string(points); }
 		};
 
 		struct Endpoint {
@@ -94,7 +100,7 @@ namespace game1 {
 
 		int m_currentPoints;
 		TextRendering* m_textRenderer;
-		std::vector<PointsText> m_pointsText;
+		std::map<Block*, PointsText> m_pointsText;
 		int m_pointsTextDuration;
 
 		Block* m_selectedBlock;

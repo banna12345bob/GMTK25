@@ -27,7 +27,7 @@ namespace game1 {
 
 		if (m_typeBonus == NONE) {
 			*currentPoints += m_value;
-			grid->AddPointsText(m_value, this, 1);
+			grid->AddPointsText(m_value, this);
 		}
 		else {
 			if (blocksActivated->find(m_typeBonus) == blocksActivated->end()) {
@@ -63,7 +63,7 @@ namespace game1 {
 	void Block::Draw(bool highlight) {
 		glm::vec4 tint = { 1,1,1,1 };
 		if (highlight) {
-			tint = { 0.6f, 0.7f, 0.9f, 1 };
+			tint = { 0.6f, 0.6f, 0.6f, 1 };
 		}
 
 		Engine::Renderer2D::DrawQuad({ m_pos.x, m_pos.y, 0.81  }, { m_size, m_size }, m_typeTextures[m_type], tint);

@@ -67,8 +67,12 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 	else
 		m_QuitButton->SetScale({ 100, 100 / 2 });
 
-	if (m_GridStartButton->IsHovering() && m_CameraPos[0] == 360.f)
+	if (m_GridStartButton->IsHovering() && m_CameraPos[1] == 360.f && m_validCircuit)
 		m_GridStartButton->SetScale(glm::vec2({ 38, 19 }) * 1.1f);
+	else {
+		m_GridStartButton->SetScale(glm::vec2({ 38, 19 }));
+	}
+
 
 	if (m_QuitButton->WasPressed(EG_MOUSECODE_LEFT) && m_CurrentScene == Scene::Menu)
 		Engine::Application::getApplication()->getWindow()->SetRunning(false);
@@ -139,7 +143,7 @@ void GameLayer::OnRender()
 		m_grid->Draw();
 
 		if (m_validCircuit) m_GridStartButton->Render();
-		else m_GridStartButton->Render({0.6, 0.7, 0.7, 1 });
+		else m_GridStartButton->Render({0.6, 0.6, 0.6, 1 });
 	}
 
 	Engine::Renderer2D::EndScene();
