@@ -156,6 +156,12 @@ void GameLayer::ChangeScene(Scene scene, bool roundSuccess) {
 		break;
 	case EndRound:
 		m_WasRoundSuccess = roundSuccess;
+		if (m_WasRoundSuccess) {
+			Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/success.wav", false, 0.5);
+		}
+		else {
+			Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/fail.wav", false, 0.5);
+		}
 		m_CameraXAnimation.StartInterpolation(m_CameraPos[0], -360.f, 1.f);
 		break;
 	}

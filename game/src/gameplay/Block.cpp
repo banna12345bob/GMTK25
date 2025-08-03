@@ -98,7 +98,8 @@ namespace game1 {
 		m_ScoringScale.StartInterpolation(1.f, 1.f, 1.f);
 		m_FontScallingScoring.StartInterpolation(1.f, 1.f, 1.f);
 
-		Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/score.wav", false, 0.5);
+		if (m_type != PORTAL)
+			Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/score.wav", false, 0.5);
 	}
 
 	void Block::LoadBlockData() {

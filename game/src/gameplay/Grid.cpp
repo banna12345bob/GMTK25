@@ -67,6 +67,8 @@ namespace game1 {
 		m_executing = true;
 		m_msToActivateBlock = 1000;
 
+		Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/activate.wav", false, 0.3);
+
 		return true;
 	}
 
@@ -141,6 +143,8 @@ namespace game1 {
 					return;
 				}
 
+				Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/activate.wav", false, 0.3);
+
 				if (m_teleportNextTurn) {
 					Engine::Vector2i temp = m_currentPos;
 					m_currentPos = m_lastPortalPos;
@@ -149,6 +153,9 @@ namespace game1 {
 
 					m_teleportNextTurn = false;
 					m_msActivating = 0;
+
+					Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/portal.wav", false, 0.5);
+
 					return;
 				}
 
