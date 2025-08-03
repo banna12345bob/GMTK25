@@ -30,7 +30,7 @@ namespace game1 {
 		int GetOutDirection();
 		void Rotate();
 		bool Hovering(Engine::Vector2i mouseGamePos);
-		virtual void Draw(bool activating);
+		virtual void Draw(bool highlight);
 		void DrawOutline();
 
 		Engine::Vector2i getPos() const { return m_pos; }
@@ -38,6 +38,7 @@ namespace game1 {
 		Tile* getTile() const { return m_tile; }
 		void setTile(Tile* tile) { m_tile = tile; }
 		BlockType getType() { return m_type; }
+		int getConnection(int index) { return m_connections[index]; }
 		bool getActivated() { return m_activated; }
 		void setActivated(bool value) { m_activated = value; }
 

@@ -60,9 +60,9 @@ namespace game1 {
 		return mouseGamePos.x >= m_pos.x - m_size / 2 && mouseGamePos.x < m_pos.x + m_size / 2 && mouseGamePos.y >= m_pos.y - m_size / 2 && mouseGamePos.y < m_pos.y + m_size / 2;
 	}
 
-	void Block::Draw(bool activating) {
+	void Block::Draw(bool highlight) {
 		glm::vec4 tint = { 1,1,1,1 };
-		if (activating) {
+		if (highlight) {
 			tint = { 0.6f, 0.7f, 0.9f, 1 };
 		}
 

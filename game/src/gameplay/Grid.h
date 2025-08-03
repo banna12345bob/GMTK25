@@ -68,6 +68,7 @@ namespace game1 {
 				dir(dir) {}
 		};
 
+		bool CheckValidCircuit();
 		Engine::Vector2i GetNextBlockPos(Block* current);
 		void ActivateBlock(Block* block);
 		Block* GetHoveredBlock(Engine::Vector2i hoveredTile);

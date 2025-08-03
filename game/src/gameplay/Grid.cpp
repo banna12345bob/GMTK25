@@ -57,15 +57,13 @@ namespace game1 {
 		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::MAAS_BIOLABS, Block::NONE, { -1, 0, 1, 0 }), this);
 
 		m_startPoint = CreateEndpoint({ 0, 0 }, Endpoint::START, Endpoint::RIGHT);
-		m_endPoint = CreateEndpoint({ 4, 0 }, Endpoint::END, Endpoint::DOWN);
-
-		Start();
+		m_endPoint = CreateEndpoint({ 2, 0 }, Endpoint::END, Endpoint::DOWN);
 	}
 
 	void Grid::Start() {
 		// TODO: Check that the "circuit" is valid before going through it
 
-		if (m_executing) return;
+		if (m_executing || !CheckValidCircuit()) return;
 
 		m_currentPoints = 0;
 		m_msActivating = 0;
@@ -181,7 +179,6 @@ namespace game1 {
 				}
 
 				m_msActivating = 0;
-				EG_TRACE("NEW BLOCK {0}", m_currentPos.ToString());
 			}
 
 			// Check if points text has run out
@@ -195,6 +192,55 @@ namespace game1 {
 				}
 			}
 		}
+	}
+
+	bool Grid::CheckValidCircuit() {
+		Engine::Vector2i currentPos = m_startPoint.gridPos;
+		Block* currentBlock = nullptr;
+		if (!GetTile(currentPos)->TryGetBlock(currentBlock)) {
+			return false;
+		}
+
+		// Check if block has 'in' connection where the start point has 'out'
+		int side = ((int)m_startPoint.dir + 2) % 4;
+		if (currentBlock->getConnection(side) != -1) {
+			return false;
+		}
+
+		int count = 0;
+		while (count < m_size * m_size + 10) { // +10 for good measure. while(true) should work fine, but just in case
+			Engine::Vector2i nextPos = GetNextBlockPos(currentBlock);
+
+			if (nextPos.x < 0 || nextPos.x >= m_size || nextPos.y < 0 || nextPos.y >= m_size) {
+				return false;
+			}
+
+			Block* nextBlock = nullptr;
+			if (!GetTile(nextPos)->TryGetBlock(nextBlock)) {
+				return false;
+			}
+			
+			if (nextPos == m_endPoint.gridPos) {
+				currentPos = nextPos;
+				currentBlock = nextBlock;
+				break;
+			}
+
+			int side = (currentBlock->GetOutDirection() + 2) % 4;
+			if (nextBlock->getConnection(side) != -1) {
+				return false;
+			}
+
+			currentPos = nextPos;
+			currentBlock = nextBlock;
+		}
+
+		// Endpoint found. Not flipping the direction because only start has it reversed
+		if (currentBlock->getConnection((int)m_endPoint.dir) != 1) {
+			return false;
+		}
+
+		return true;
 	}
 
 	Engine::Vector2i Grid::GetNextBlockPos(Block* current) {
@@ -391,10 +437,10 @@ namespace game1 {
 				Block* block = nullptr;
 				if (tile->TryGetBlock(block)) {
 					Engine::Vector2i vec = Engine::Vector2i(i, j);
-					bool activating = m_currentPos == vec;
-					block->Draw(activating);
 
-					if (vec == m_lastPortalPos) {
+					block->Draw(vec == m_lastPortalPos);
+
+					if (m_currentPos == vec) {
 						block->DrawOutline();
 					}
 				}
