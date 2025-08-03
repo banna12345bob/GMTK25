@@ -40,7 +40,7 @@ void SandboxLayer::OnRender()
 	Engine::RenderCommand::SetClearColor({ 0, 0, 0, 0 });
 	Engine::RenderCommand::Clear();
 
-	Engine::Renderer2D::BeginScene(m_CameraController.GetCamera());
+	Engine::Renderer2D::BeginScene(&m_CameraController.GetCamera());
 
 	// Little test grid
 	for (float x = -2.0f; x < 2.f; x += 0.15f)

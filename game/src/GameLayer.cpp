@@ -50,7 +50,6 @@ void GameLayer::OnDetach()
 
 void GameLayer::OnUpdate(Engine::Timestep ts)
 {
-	Engine::Renderer2D::ResetStats();
 	InterpolationHelper::Update(ts);
 	m_CameraPos[0] = m_CameraXAnimation.CublicEaseIn();
 	m_CameraPos[1] = m_CameraYAnimation.CublicEaseIn();

@@ -88,7 +88,8 @@ namespace Engine {
 
 			// Need to update mouse every frame
 			Engine::Mouse::UpdateMouseState();
-			
+
+			Engine::Renderer2D::ResetStats();
 			for (Layer* layer : m_layerStack) {
 				layer->OnUpdate(timestep);
 				layer->OnRender();
