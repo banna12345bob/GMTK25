@@ -26,5 +26,5 @@ public:
 
 Engine::Application* Engine::CreateApplication()
 {
-	return new game(Engine::WindowProps("Game", 900, 900, "assets/textures/Oak_Log.png"));
+	return new game(Engine::WindowProps("Game", 900, 900, "assets/textures/logo.png"));
 }

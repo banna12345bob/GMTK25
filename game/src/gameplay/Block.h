@@ -50,6 +50,7 @@ namespace game1 {
 		static void LoadBlockData();
 		static void LoadBlockTextures();
 
+		InterpolationHelper m_FontScallingScoring;
 	private:
 		Engine::Vector2i m_pos;
 		Tile* m_tile;

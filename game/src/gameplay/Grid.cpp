@@ -42,6 +42,7 @@ namespace game1 {
 
 		m_currentLevel = 1;
 		LoadLevel(m_currentLevel);
+		m_FontScallingScoring.StartInterpolation(1.f, 1.f, 0.f);
 	}
 
 	bool Grid::Start(std::string* errorMessage) {
@@ -471,7 +472,7 @@ namespace game1 {
 
 		// PointsText
 		for (auto it = m_pointsText.begin(); it != m_pointsText.end(); it++) {
-			m_textRenderer->RenderText(it->second.GetString(), 1, it->second.pos);
+			m_textRenderer->RenderText(it->second.GetString(), it->first->m_FontScallingScoring.QuadraticEaseOut(), it->second.pos, glm::vec4(1.f), 0.f);
 		}
 
 		// Endpoint arrows

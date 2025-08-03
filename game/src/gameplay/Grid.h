@@ -122,6 +122,8 @@ namespace game1 {
 		Engine::Vector2i m_lastPortalPos;
 		bool m_teleportNextTurn;
 		
+		InterpolationHelper m_FontScallingScoring;
+
 		static inline int m_cellSize = 32;
 
 		void LoadLevel(int level);
