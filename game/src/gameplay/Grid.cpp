@@ -60,24 +60,29 @@ namespace game1 {
 		m_endPoint = CreateEndpoint({ 2, 0 }, Endpoint::END, Endpoint::DOWN);
 	}
 
-	void Grid::Start() {
+	bool Grid::Start(std::string* errorMessage) {
 		// TODO: Check that the "circuit" is valid before going through it
 
-		if (m_executing || !CheckValidCircuit()) return;
+		if (m_executing) {
+			if (errorMessage != nullptr) *errorMessage = "Already running!";
+			return false;
+		}
+		else if (!CheckValidCircuit()) {
+			if (errorMessage != nullptr) *errorMessage = "Circuit is not valid!";
+			return false;
+		}
 
 		m_currentPoints = 0;
 		m_msActivating = 0;
 
-		m_currentPos = Engine::Vector2i(0, 0); // Change this later. Either middle left or top left.
-		Block* block = nullptr;
-		if (!GetTile(m_currentPos)->TryGetBlock(block)) {
-			return;
-		}
-
-		ActivateBlock(block);
+		m_currentPos = m_startPoint.gridPos;
+		m_currentBlock = GetTile(m_currentPos)->GetBlock();
+		m_currentBlock->Activate(&m_currentPoints, &m_blocksActivated, this);
 		
 		m_executing = true;
 		m_msToActivateBlock = 1000;
+
+		return true;
 	}
 
 	void Grid::Complete() {
@@ -134,13 +139,10 @@ namespace game1 {
 			m_msActivating += deltaTime;
 			if (m_msActivating > m_msToActivateBlock) {
 
-				if (m_currentPos == m_endPoint.gridPos) {
+				if (m_currentPos == m_endPoint.gridPos && !m_teleportNextTurn) {
 					Complete();
 					return;
 				}
-
-				Engine::Vector2i nextPos = GetNextBlockPos(m_currentBlock);
-				Block* nextBlock = GetTile(nextPos)->GetBlock();
 
 				if (m_teleportNextTurn) {
 					Engine::Vector2i temp = m_currentPos;
@@ -149,8 +151,14 @@ namespace game1 {
 					m_lastPortalPos = temp;
 
 					m_teleportNextTurn = false;
+					m_msActivating = 0;
+					return;
 				}
-				else if (nextBlock->getType() == Block::PORTAL) {
+
+				Engine::Vector2i nextPos = GetNextBlockPos(m_currentBlock);
+				Block* nextBlock = GetTile(nextPos)->GetBlock();
+
+				if (nextBlock->getType() == Block::PORTAL) {
 					
 					// If we teleported from this portal:
 					if (nextPos == m_lastPortalPos) {
@@ -175,7 +183,8 @@ namespace game1 {
 				}
 				else {
 					m_currentPos = nextPos;
-					ActivateBlock(nextBlock);
+					m_currentBlock = nextBlock;
+					m_currentBlock->Activate(&m_currentPoints, &m_blocksActivated, this);
 				}
 
 				m_msActivating = 0;
@@ -263,13 +272,6 @@ namespace game1 {
 		}
 
 		return pos;
-	}
-
-	void Grid::ActivateBlock(Block* block) {
-		m_currentBlock = block;
-		m_currentBlock->Activate(&m_currentPoints, &m_blocksActivated, this);
-
-		m_msActivating = 0;
 	}
 
 	void Grid::AddPointsText(int value, Block* block) {
@@ -438,7 +440,7 @@ namespace game1 {
 				if (tile->TryGetBlock(block)) {
 					Engine::Vector2i vec = Engine::Vector2i(i, j);
 
-					block->Draw(vec == m_lastPortalPos);
+					block->Draw(block->getType() == Block::PORTAL && vec != m_lastPortalPos);
 
 					if (m_currentPos == vec) {
 						block->DrawOutline();

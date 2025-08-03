@@ -26,6 +26,9 @@ void GameLayer::OnAttach()
 	Engine::Ref<Engine::Texture2D> quitButton = Engine::Texture2D::Create("assets/textures/UI/quit_button.png");
 	m_QuitButton = new Button(m_CameraController.GetCamera(), quitButton, { 0, -450, 0.1 }, { 100, 100 / 2 });
 
+	Engine::Ref<Engine::Texture2D> gridStartButton = Engine::Texture2D::Create("assets/textures/UI/grid_start_button.png");
+	m_GridStartButton = new Button(m_CameraController.GetCamera(), gridStartButton, { -128 + 34, -128 + 34, 0.3 }, { 38, 18 });
+
 	m_GameLogo = Engine::Texture2D::Create("assets/textures/UI/game_logo.png");
 	m_InfoText = Engine::Texture2D::Create("assets/textures/UI/info_text.png");
 	m_TargetText = Engine::Texture2D::Create("assets/textures/UI/target.png");
@@ -58,6 +61,9 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 	else
 		m_QuitButton->SetScale({ 100, 100 / 2 });
 
+	if (m_GridStartButton->IsHovering() && m_CameraPos[0] == 360.f)
+		m_GridStartButton->SetScale(glm::vec2({ 38, 19 }) * 1.1f);
+
 	if (m_QuitButton->WasPressed(EG_MOUSECODE_LEFT) && m_CurrentScene == Scene::Menu)
 		Engine::Application::getApplication()->getWindow()->SetRunning(false);
 
@@ -66,6 +72,11 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 		m_CurrentScene = Scene::Game;
 		m_CameraYAnimation.StartInterpolation(m_CameraPos[1], 0.f, 1.f);
 	}
+
+	if (m_GridStartButton->WasPressed(EG_MOUSECODE_LEFT) && m_CurrentScene == Scene::Game) {
+		m_grid->Start(nullptr);
+	}
+
 	if (Engine::Key::wasKeyPressed(EG_SCANCODE_ESCAPE) && m_CurrentScene == Scene::Game)
 	{
 		m_CurrentScene = Scene::Menu;
@@ -88,6 +99,7 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 	m_CameraController.OnUpdate();
 
 	if (m_CurrentScene == Scene::Game)
+		m_validCircuit = m_grid->CheckValidCircuit();
 		m_grid->Update(ts.GetMilliseconds());
 }
 
@@ -113,6 +125,9 @@ void GameLayer::OnRender()
 	{
 		Engine::Renderer2D::DrawQuad({ 75.f, -100.f, 0.9f }, { 44.f, 11.f }, m_TargetText);
 		m_grid->Draw();
+
+		if (m_validCircuit) m_GridStartButton->Render();
+		else m_GridStartButton->Render({0.6, 0.7, 0.7, 1 });
 	}
 
 	// End Round

@@ -15,7 +15,8 @@ namespace game1 {
 	{
 	public:
 		Grid(int size, GameLayer* gameLayer);
-		void Start();
+		bool Start(std::string* errorMessage);
+		bool CheckValidCircuit();
 		void Update(Engine::Timestep deltaTime);
 		void AddPointsText(int value, Block* block);
 		void AddPointsText(int value, std::vector<Block*>* gridPositions);
@@ -68,9 +69,7 @@ namespace game1 {
 				dir(dir) {}
 		};
 
-		bool CheckValidCircuit();
 		Engine::Vector2i GetNextBlockPos(Block* current);
-		void ActivateBlock(Block* block);
 		Block* GetHoveredBlock(Engine::Vector2i hoveredTile);
 		void SwapBlocks(Block* b1, Block* b2);
 		void MoveBlock(Block* block, Engine::Vector2i hoveredTile);

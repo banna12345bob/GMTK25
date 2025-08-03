@@ -11,6 +11,10 @@ void Button::Render()
 {
 	Engine::Renderer2D::DrawQuad(m_Position, m_Scale, m_Texture);
 }
+void Button::Render(glm::vec4 tint)
+{
+	Engine::Renderer2D::DrawQuad(m_Position, m_Scale, m_Texture, tint);
+}
 
 bool Button::IsHovering()
 {

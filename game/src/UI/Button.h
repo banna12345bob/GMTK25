@@ -8,6 +8,7 @@ public:
 	Button(Engine::OrthographicCamera& camera, Engine::Ref<Engine::Texture2D>& texture, glm::vec3 pos, glm::vec2 scale);
 
 	void Render();
+	void Render(glm::vec4 tint);
 
 	glm::vec3 GetPos() { return m_Position; }
 	glm::vec2 GetScale() { return m_Scale; }
