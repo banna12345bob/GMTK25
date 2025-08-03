@@ -20,12 +20,13 @@ void GameLayer::OnAttach()
 	m_grid = std::make_unique<Grid>(5, this);
 
 	Engine::Ref<Engine::Texture2D> startButton = Engine::Texture2D::Create("assets/textures/UI/start_button.png");
-	m_StartButton = new Button(m_CameraController.GetCamera(), startButton, { 0, -350, 0.1 }, { 128, 128 / 2 });
+	m_StartButton = new Button(m_CameraController.GetCamera(), startButton, { 0, -325, 0.1 }, { 128, 128 / 2 });
 
 	Engine::Ref<Engine::Texture2D> quitButton = Engine::Texture2D::Create("assets/textures/UI/quit_button.png");
-	m_QuitButton = new Button(m_CameraController.GetCamera(), quitButton, { 0, -375 - 64, 0.1 }, { 100, 100 / 2 });
+	m_QuitButton = new Button(m_CameraController.GetCamera(), quitButton, { 0, -450, 0.1 }, { 100, 100 / 2 });
 
 	m_GameLogo = Engine::Texture2D::Create("assets/textures/UI/game_logo.png");
+	m_InfoText = Engine::Texture2D::Create("assets/textures/UI/info_text.png");
 	m_TargetText = Engine::Texture2D::Create("assets/textures/UI/target.png");
 
 	m_CameraZoom = 128;
@@ -85,9 +86,10 @@ void GameLayer::OnRender()
 
 	if (m_CameraPos[1] != 0.f) 
 	{
-		Engine::Renderer2D::DrawQuad({ 0, -275, 0.1 }, { 128, 128/2 }, m_GameLogo, { 0.8039215686, 0.7686274510, 0.2117647059, 1 });
 		m_StartButton->Render();
 		m_QuitButton->Render();
+		Engine::Renderer2D::DrawQuad({ 0, -260, 0.1 }, { 128, 128/2 }, m_GameLogo, { 0.8039215686, 0.7686274510, 0.2117647059, 1 });
+		Engine::Renderer2D::DrawQuad({ 0, -390, -0.1 }, { 192/2, 100/2 }, m_InfoText, {1, 1, 1, 1});
 	}
 
 	if (m_CameraPos[1] != 360.f)

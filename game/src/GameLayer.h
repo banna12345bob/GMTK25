@@ -33,7 +33,7 @@ private:
 	float m_CameraZoom = 1.f;
 	float m_CameraPos[2] = { 0.f, 360.f };
 
-	Engine::Ref<Engine::Texture2D> m_GameLogo, m_TargetText;
+	Engine::Ref<Engine::Texture2D> m_GameLogo, m_InfoText, m_TargetText;
 
 	Button *m_StartButton, *m_QuitButton;
 
