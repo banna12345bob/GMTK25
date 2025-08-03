@@ -50,6 +50,7 @@ void GameLayer::OnDetach()
 
 void GameLayer::OnUpdate(Engine::Timestep ts)
 {
+	Engine::Renderer2D::ResetStats();
 	InterpolationHelper::Update(ts);
 	m_CameraPos[0] = m_CameraXAnimation.CublicEaseIn();
 	m_CameraPos[1] = m_CameraYAnimation.CublicEaseIn();
@@ -126,6 +127,12 @@ void GameLayer::OnRender()
 		Engine::Renderer2D::DrawQuad({ 0, -390, -0.1 }, { 192 / 2, 100 / 2 }, m_InfoText, {1, 1, 1, 1});
 	}
 
+	// End Round
+	if (m_CameraPos[0] != 0.f)
+	{
+		m_NextButton->Render();
+	}
+
 	// Game
 	if ((m_CameraPos[1] < 360.f && m_CameraPos[0] > -360.f) || m_CurrentScene == Scene::Game)
 	{
@@ -136,18 +143,18 @@ void GameLayer::OnRender()
 		else m_GridStartButton->Render({0.6, 0.7, 0.7, 1 });
 	}
 
-	// End Round
-	if (m_CameraPos[0] != 0.f)
-	{
-		m_NextButton->Render();
-	}
-
 	Engine::Renderer2D::EndScene();
 }
 
 void GameLayer::OnImGuiRender()
 {
 	// Any ImGui rendering code goes here
+	auto stats = Engine::Renderer2D::GetStats();
+	ImGui::Text("Renderer2D Stats:");
+	ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+	ImGui::Text("Quads: %d", stats.squareCount);
+	ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+	ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 }
 
 glm::vec2 GameLayer::GetMouseGamePosition() {

@@ -26,7 +26,7 @@ namespace Engine {
 		static const uint32_t maxQuads = 20000;
 		static const uint32_t maxVerticies = maxQuads * 4;
 		static const uint32_t maxIndices = maxQuads * 6;
-		static const uint32_t maxTextureSlots = 256;
+		static const uint32_t maxTextureSlots = 128;
 
 		Ref<VertexArray> QuadVertexArray;
 		Ref<VertexBuffer> QuadVertexBuffer;
@@ -44,6 +44,8 @@ namespace Engine {
 		glm::vec4 quadVertexPosition[4];
 
 		ShaderLibary shaderLibrary;
+
+		Renderer2D::Statistics Stats;
 	};
 
 	static Renderer2DData s_Data;
@@ -137,6 +139,7 @@ namespace Engine {
 			s_Data.textureSlots[i]->Bind(i);
 
 		RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.squareIndexCount);
+		s_Data.Stats.DrawCalls++;
 	}
 
 	void Renderer2D::FlushAndReset()
@@ -181,6 +184,7 @@ namespace Engine {
 		}
 
 		s_Data.squareIndexCount += 6;
+		s_Data.Stats.squareCount++;
 	}
 
 	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 scale, Ref<Texture2D>& texture, glm::vec4 tintColour, float tilingFactor)
@@ -236,5 +240,16 @@ namespace Engine {
 		}
 
 		s_Data.squareIndexCount += 6;
+		s_Data.Stats.squareCount++;
+	}
+
+	void Renderer2D::ResetStats()
+	{
+		memset(&s_Data.Stats, 0, sizeof(Statistics));
+	}
+
+	Renderer2D::Statistics Renderer2D::GetStats()
+	{
+		return s_Data.Stats;
 	}
 }

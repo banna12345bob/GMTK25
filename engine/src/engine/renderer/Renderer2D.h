@@ -45,6 +45,16 @@ namespace Engine {
 		static void DrawQuad(glm::vec3 position, glm::vec2 scale, Ref<Texture2D>& texture, glm::vec4 tintColour = glm::vec4(1.0f), float tilingFactor = 1.0f);
 		static void DrawQuad(glm::vec3 position, glm::vec2 scale, float rotation, Ref<Texture2D>& texture, glm::vec4 tintColour = glm::vec4(1.0f), float tilingFactor = 1.0f);
 
+		struct Statistics
+		{
+			uint32_t DrawCalls = 0;
+			uint32_t squareCount = 0;
+
+			uint32_t GetTotalVertexCount() { return squareCount * 4; }
+			uint32_t GetTotalIndexCount() { return squareCount * 6; }
+		};
+		static void ResetStats();
+		static Statistics GetStats();
 	private:
 		static void FlushAndReset();
 	};
