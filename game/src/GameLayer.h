@@ -36,7 +36,7 @@ private:
 
 	Engine::Ref<Engine::Texture2D> m_GameLogo, m_InfoText, m_TargetText;
 
-	Button *m_StartButton, *m_QuitButton;
+	Button *m_StartButton, *m_QuitButton, *m_RetryButton, *m_NextButton;
 	Button* m_GridStartButton;
 
 	bool m_validCircuit;

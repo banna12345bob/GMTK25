@@ -26,6 +26,12 @@ void GameLayer::OnAttach()
 	Engine::Ref<Engine::Texture2D> quitButton = Engine::Texture2D::Create("assets/textures/UI/quit_button.png");
 	m_QuitButton = new Button(m_CameraController.GetCamera(), quitButton, { 0, -450, 0.1 }, { 100, 100 / 2 });
 
+	Engine::Ref<Engine::Texture2D> retryButton = Engine::Texture2D::Create("assets/textures/UI/retry_button.png");
+	m_RetryButton = new Button(m_CameraController.GetCamera(), retryButton, { 450.f, -100.f, 0.1 }, { 31, 11 });
+
+	Engine::Ref<Engine::Texture2D> nextButton = Engine::Texture2D::Create("assets/textures/UI/next_button.png");
+	m_NextButton = new Button(m_CameraController.GetCamera(), nextButton, { 450.f, -100.f, 0.1 }, { 25, 9 });
+
 	Engine::Ref<Engine::Texture2D> gridStartButton = Engine::Texture2D::Create("assets/textures/UI/grid_start_button.png");
 	m_GridStartButton = new Button(m_CameraController.GetCamera(), gridStartButton, { -128 + 34, -128 + 34, 0.3 }, { 38, 18 });
 
@@ -131,9 +137,9 @@ void GameLayer::OnRender()
 	}
 
 	// End Round
-	if (m_CameraPos[0] < 0.f || m_CurrentScene == Scene::EndRound)
+	if (m_CameraPos[0] != 0.f)
 	{
-		Engine::Renderer2D::DrawQuad({ 450.f, -100.f, 0.9f }, { 44.f, 11.f }, m_TargetText);
+		m_NextButton->Render();
 	}
 
 	Engine::Renderer2D::EndScene();
