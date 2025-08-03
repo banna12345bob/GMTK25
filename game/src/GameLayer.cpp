@@ -67,7 +67,7 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 	else
 		m_QuitButton->SetScale({ 100, 100 / 2 });
 
-	if (m_GridStartButton->IsHovering() && m_CameraPos[1] == 360.f && m_validCircuit)
+	if (m_GridStartButton->IsHovering() && m_CameraPos[1] == 0.f && m_validCircuit)
 		m_GridStartButton->SetScale(glm::vec2({ 38, 19 }) * 1.1f);
 	else {
 		m_GridStartButton->SetScale(glm::vec2({ 38, 19 }));
@@ -108,9 +108,11 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 
 	m_CameraController.OnUpdate();
 
-	if (m_CurrentScene == Scene::Game)
+	if (m_CurrentScene == Scene::Game) 
+	{
 		m_validCircuit = m_grid->CheckValidCircuit();
 		m_grid->Update(ts.GetMilliseconds());
+	}
 }
 
 void GameLayer::OnRender()
@@ -133,6 +135,7 @@ void GameLayer::OnRender()
 	// End Round
 	if (m_CameraPos[0] != 0.f)
 	{
+		m_RetryButton->Render();
 		m_NextButton->Render();
 	}
 
@@ -143,7 +146,7 @@ void GameLayer::OnRender()
 		m_grid->Draw();
 
 		if (m_validCircuit) m_GridStartButton->Render();
-		else m_GridStartButton->Render({0.6, 0.6, 0.6, 1 });
+		else m_GridStartButton->Render({1, 0, 0, 0.75 });
 	}
 
 	Engine::Renderer2D::EndScene();
