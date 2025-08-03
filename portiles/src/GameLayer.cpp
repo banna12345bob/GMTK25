@@ -70,7 +70,7 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 	else
 		m_StartButton->SetScale({ 128, 128 / 2 });
 
-	if (m_QuitButton->IsHovering() && m_CameraPos[1] == 360.f)
+	if (m_QuitButton->IsHovering() && (m_CurrentScene == Scene::Menu || m_CurrentScene == Scene::Win))
 		m_QuitButton->SetScale(glm::vec2({ 100, 100 / 2 }) * 1.1f);
 	else
 		m_QuitButton->SetScale({ 100, 100 / 2 });
@@ -112,7 +112,7 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 	}
 
 
-	if (m_QuitButton->WasPressed(EG_MOUSECODE_LEFT) && m_CurrentScene == Scene::Menu)
+	if (m_QuitButton->WasPressed(EG_MOUSECODE_LEFT) && (m_CurrentScene == Scene::Menu || m_CurrentScene == Scene::Win))
 		Engine::Application::getApplication()->getWindow()->SetRunning(false);
 
 	if (m_StartButton->WasPressed(EG_MOUSECODE_LEFT) && m_CurrentScene == Scene::Menu)
@@ -164,6 +164,11 @@ void GameLayer::ChangeScene(Scene scene, bool roundSuccess) {
 		m_CameraXAnimation.StartInterpolation(m_CameraPos[0], -360.f, 1.f);
 		m_CameraYAnimation.StartInterpolation(m_CameraPos[1], 0.f, 1.f);
 		break;
+	case Win:
+		m_CameraXAnimation.StartInterpolation(m_CameraPos[0], 0.f, 1.f);
+		m_CameraYAnimation.StartInterpolation(m_CameraPos[1], -360.f, 1.f);
+		m_QuitButton->SetPos({ 0.f, 300.f, 0.f });
+		break;
 	}
 }
 
@@ -210,6 +215,14 @@ void GameLayer::OnRender()
 
 		if (m_Grid->m_executing) m_MainMenuButton->Render({ 0.6, 0.6, 0.6, 1 });
 		else m_MainMenuButton->Render();
+	}
+
+	// Win screen
+	if (m_CameraPos[1] > -360.f || m_CurrentScene == Scene::Win)
+	{
+		m_Grid->m_textRenderer->RenderText("You win!", 2, { -50.f, 450.f, 0.f }, glm::vec4(1.f), 10);
+		Engine::Renderer2D::DrawQuad({ 0.f, 400.f, 0.1f }, { 192, 100 }, m_CreditsText);
+		m_QuitButton->Render();
 	}
 
 	Engine::Renderer2D::EndScene();

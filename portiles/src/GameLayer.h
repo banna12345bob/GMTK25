@@ -15,7 +15,8 @@ public:
 	enum Scene {
 		Menu,
 		Game,
-		EndRound
+		EndRound,
+		Win
 	};
 
 	GameLayer();

@@ -32,6 +32,7 @@ namespace game1 {
 		void Draw();
 
 		bool m_executing;
+		TextRendering* m_textRenderer;
 	private:
 
 		struct PointsText {
@@ -104,7 +105,6 @@ namespace game1 {
 
 		int m_targetPoints = 24;
 		int m_currentPoints;
-		TextRendering* m_textRenderer;
 		std::map<Block*, PointsText> m_pointsText;
 		int m_pointsTextDuration;
 
