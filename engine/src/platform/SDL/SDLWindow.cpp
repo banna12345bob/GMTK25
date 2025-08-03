@@ -49,9 +49,6 @@ namespace Engine {
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
 			// Need to update mouse every frame, so is done elsewhere.
 			/*Mouse::setButtonPressed(event->button.button, true);*/
-			if (Application::getApplication()->getCallbackManager()->getMouseDownCallbacks()->size() == 0)
-				EG_CORE_WARN("No mouse down callbacks registered");
-
 			for (int i = 0; i < Application::getApplication()->getCallbackManager()->getMouseDownCallbacks()->size(); i++)
 				Application::getApplication()->getCallbackManager()->getMouseDownCallbacks()->at(i)(nullptr);
 			break;

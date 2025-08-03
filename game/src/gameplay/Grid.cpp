@@ -80,7 +80,7 @@ namespace game1 {
 		m_currentBlock->Activate(&m_currentPoints, &m_blocksActivated, this);
 		
 		m_executing = true;
-		m_msToActivateBlock = 100;
+		m_msToActivateBlock = 1000;
 
 		return true;
 	}
@@ -460,7 +460,7 @@ namespace game1 {
 					block->Draw(block->getType() == Block::PORTAL && vec != m_lastPortalPos);
 
 					if (m_currentPos == vec) {
-						block->DrawOutline();
+						block->PlayScoreAnimation();
 					}
 				}
 			}
@@ -485,6 +485,6 @@ namespace game1 {
 		Engine::Renderer2D::DrawQuad(m_startPoint.screenPos, { 16,16 }, m_endpointArrowTexs[m_startPoint.dir]);
 		Engine::Renderer2D::DrawQuad(m_endPoint.screenPos, { 16,16 }, m_endpointArrowTexs[m_endPoint.dir]);
 
-		m_textRenderer->RenderText(std::to_string(m_currentPoints), 1.5, {105.f, -100.f, 0.9f}, glm::vec4(1.f), 2.5f);
+		m_textRenderer->RenderText(std::to_string(m_targetPoints), 1.5, {105.f, -100.f, 0.9f}, glm::vec4(1.f), 2.5f);
 	}
 }

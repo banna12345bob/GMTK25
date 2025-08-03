@@ -20,51 +20,81 @@ public:
 	float GetLinear()
 	{
 		float t = (m_TimeMS - m_StartTime) / (m_Duration * 1000.f);
-		if (std::isnan(t))
+		if (std::isnan(t)) {
+			isAnimationRunning = false;
 			return m_Start;
-		if (t < 0.f)
+		}
+		if (t < 0.f) {
+			isAnimationRunning = false;
 			return m_Start;
-		if (t > 1.f)
+		}
+		if (t > 1.f) {
+			isAnimationRunning = false;
 			return m_End;
+		}
+		isAnimationRunning = true;
 		return LinearLerp(t, m_Start, m_End);
 	}
 
 	float QuadraticEaseIn()
 	{
 		float t = (m_TimeMS - m_StartTime) / (m_Duration * 1000.f);
-		if (std::isnan(t))
+		if (std::isnan(t)) {
+			isAnimationRunning = false;
 			return m_Start;
-		if (t < 0.f)
+		}
+		if (t < 0.f) {
+			isAnimationRunning = false;
 			return m_Start;
-		if (t > 1.f)
+		}
+		if (t > 1.f) {
+			isAnimationRunning = false;
 			return m_End;
+		}
+		isAnimationRunning = true;
 		return QuadraticLerpIn(t, m_Start, m_End);
 	}
 
 	float QuadraticEaseOut()
 	{
 		float t = (m_TimeMS - m_StartTime) / (m_Duration * 1000.f);
-		if (std::isnan(t))
+		if (std::isnan(t)) {
+			isAnimationRunning = false;
 			return m_Start;
-		if (t < 0.f)
+		}
+		if (t < 0.f) {
+			isAnimationRunning = false;
 			return m_Start;
-		if (t > 1.f)
+		}
+		if (t > 1.f) {
+			isAnimationRunning = false;
 			return m_End;
+		}
+		isAnimationRunning = true;
 		return QuadraticLerpOut(t, m_Start, m_End);
 	}
 
 	float CublicEaseIn()
 	{
 		float t = (m_TimeMS - m_StartTime) / (m_Duration * 1000.f);
-		if (std::isnan(t))
+		if (std::isnan(t)) {
+			isAnimationRunning = false;
 			return m_Start;
-		if (t < 0.f)
+		}
+		if (t < 0.f) {
+			isAnimationRunning = false;
 			return m_Start;
-		if (t > 1.f)
+		}
+		if (t > 1.f) {
+			isAnimationRunning = false;
 			return m_End;
+		}
+
+		isAnimationRunning = true;
 		return CubicLerpIn(t, m_Start, m_End);
 	}
 
+	bool isAnimationRunning = false;
 private:
 	static float LinearLerp(float t, float start, float end) 
 	{ 
@@ -90,4 +120,5 @@ private:
 
 	float m_StartTime;
 	inline static float m_TimeMS;
+
 };

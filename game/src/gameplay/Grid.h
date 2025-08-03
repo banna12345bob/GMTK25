@@ -102,7 +102,7 @@ namespace game1 {
 		int m_msActivating;			// Exectuting the current block
 		std::map<Block::BlockType, std::vector<Block*>> m_blocksActivated;
 
-		int m_targetPoints;
+		int m_targetPoints = 24;
 		int m_currentPoints;
 		TextRendering* m_textRenderer;
 		std::map<Block*, PointsText> m_pointsText;

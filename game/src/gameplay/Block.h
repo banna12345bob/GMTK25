@@ -4,7 +4,9 @@
 #include <vector>
 #include <map>
 
-#include "engine.h"
+#include <engine.h>
+
+#include "UI/InterpolationHelper.h"
 
 namespace game1 {
 	
@@ -32,6 +34,8 @@ namespace game1 {
 		bool Hovering(Engine::Vector2i mouseGamePos);
 		virtual void Draw(bool highlight);
 		void DrawOutline();
+
+		void PlayScoreAnimation();
 
 		Engine::Vector2i getPos() const { return m_pos; }
 		void setPos(Engine::Vector2i pos) { m_pos = pos; }
@@ -65,5 +69,7 @@ namespace game1 {
 		static inline std::map<int, std::map<BlockType, Engine::Ref<Engine::Texture2D>>> m_numberTextures;
 		static inline std::vector<std::map<int, Engine::Ref<Engine::Texture2D>>> m_arrowTextures = std::vector<std::map<int, Engine::Ref<Engine::Texture2D>>>(4);
 		static inline Engine::Ref<Engine::Texture2D> m_outlineTex;
+
+		InterpolationHelper m_ScoringRotation;
 	};
 }

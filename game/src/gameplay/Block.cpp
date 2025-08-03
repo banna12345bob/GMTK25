@@ -16,7 +16,10 @@ namespace game1 {
 		m_type(type),
 		m_typeBonus(typeBonus),
 		m_connections(connections),
-		m_activated(false) {}
+		m_activated(false) 
+	{
+		m_ScoringRotation.StartInterpolation(180.f, 180.f, 0.f);
+	}
 
 	void Block::Update() {
 
@@ -66,9 +69,9 @@ namespace game1 {
 			tint = { 0.6f, 0.6f, 0.6f, 1 };
 		}
 
-		Engine::Renderer2D::DrawQuad({ m_pos.x, m_pos.y, 0.81  }, { m_size, m_size }, m_typeTextures[m_type], tint);
+		Engine::Renderer2D::DrawQuad({ m_pos.x, m_pos.y, 0.81  }, { m_size, m_size }, m_ScoringRotation.QuadraticEaseIn(), m_typeTextures[m_type], tint);
 		if (m_type != PORTAL) {
-			Engine::Renderer2D::DrawQuad({ m_pos.x, m_pos.y, 0.82 }, { m_size, m_size }, m_numberTextures[m_value][m_typeBonus], tint);
+			Engine::Renderer2D::DrawQuad({ m_pos.x, m_pos.y, 0.82 }, { m_size, m_size }, m_ScoringRotation.QuadraticEaseIn(), m_numberTextures[m_value][m_typeBonus], tint);
 		}
 
 		for (int i = 0; i < m_connections.size(); i++) {
@@ -79,6 +82,16 @@ namespace game1 {
 	}
 	void Block::DrawOutline() {
 		Engine::Renderer2D::DrawQuad({ m_pos.x, m_pos.y, 0.88 }, { m_size, m_size }, m_outlineTex);
+	}
+
+	void Block::PlayScoreAnimation()
+	{
+		if (m_ScoringRotation.isAnimationRunning)
+			return;
+
+		// It's a feature not a bug
+		// When interpolating between two of the same non zero points, non-linear interpolation's output approchs 0 before bouncing back to the input
+		m_ScoringRotation.StartInterpolation(180.f, 180.f, 1.f);
 	}
 
 	void Block::LoadBlockData() {
