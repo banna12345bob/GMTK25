@@ -15,13 +15,16 @@ namespace game1 {
 		m_value(value),
 		m_type(type),
 		m_typeBonus(typeBonus),
-		m_connections(connections) {}
+		m_connections(connections),
+		m_activated(false) {}
 
 	void Block::Update() {
 
 	}
 
 	void Block::Activate(int* currentPoints, std::map<Block::BlockType, std::vector<Block*>>* blocksActivated, Grid* grid) {
+		m_activated = true;
+
 		if (m_typeBonus == NONE) {
 			*currentPoints += m_value;
 			grid->AddPointsText(m_value, this);
@@ -62,8 +65,11 @@ namespace game1 {
 		if (activating) {
 			tint = { 0.6f, 0.7f, 0.9f, 1 };
 		}
-		Engine::Renderer2D::DrawQuad({ m_pos.x, m_pos.y, 0.81 }, { m_size, m_size }, m_typeTextures[m_type], tint);
-		Engine::Renderer2D::DrawQuad({ m_pos.x, m_pos.y, 0.82 }, { m_size, m_size }, m_numberTextures[m_value][m_typeBonus], tint);
+
+		Engine::Renderer2D::DrawQuad({ m_pos.x, m_pos.y, 0.81  }, { m_size, m_size }, m_typeTextures[m_type], tint);
+		if (m_type != PORTAL) {
+			Engine::Renderer2D::DrawQuad({ m_pos.x, m_pos.y, 0.82 }, { m_size, m_size }, m_numberTextures[m_value][m_typeBonus], tint);
+		}
 
 		for (int i = 0; i < m_connections.size(); i++) {
 			if (m_connections[i] != 0) {

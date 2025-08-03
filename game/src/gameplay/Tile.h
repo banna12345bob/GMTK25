@@ -14,9 +14,12 @@ namespace game1
 		Tile();
 		Tile(int x, int y);
 
-		bool GetBlock(Block*& block);
+		Block* GetBlock();
+		bool TryGetBlock(Block*& block);
 		void AttachBlock(Block* block, Grid* grid);
 		void DeattachBlock();
+
+		Engine::Vector2i getPos() { return m_gridPos; }
 
 	private:
 		Engine::Vector2i m_gridPos;

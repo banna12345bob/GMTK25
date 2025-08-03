@@ -68,6 +68,7 @@ namespace game1 {
 				dir(dir) {}
 		};
 
+		Engine::Vector2i GetNextBlockPos(Block* current);
 		void ActivateBlock(Block* block);
 		Block* GetHoveredBlock(Engine::Vector2i hoveredTile);
 		void SwapBlocks(Block* b1, Block* b2);
@@ -75,6 +76,7 @@ namespace game1 {
 		Engine::Vector2i GetHoveredTile();
 		void RemoveFromUnattachedList(Block* block);
 		Endpoint CreateEndpoint(Engine::Vector2i gridPos, Endpoint::Type type, Endpoint::Direction side);
+		void Complete();
 
 		GameLayer* m_gameLayer;
 
@@ -105,6 +107,9 @@ namespace game1 {
 		std::vector<Engine::Ref<Engine::Texture2D>> m_endpointArrowTexs;
 
 		Engine::Ref<Engine::Texture2D> m_borderTex;
+
+		Engine::Vector2i m_lastPortalPos;
+		bool m_teleportNextTurn;
 		
 		static inline int m_cellSize = 32;
 	};

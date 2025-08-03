@@ -30,13 +30,16 @@ namespace game1 {
 		int GetOutDirection();
 		void Rotate();
 		bool Hovering(Engine::Vector2i mouseGamePos);
-		void Draw(bool activating);
+		virtual void Draw(bool activating);
 		void DrawOutline();
 
 		Engine::Vector2i getPos() const { return m_pos; }
 		void setPos(Engine::Vector2i pos) { m_pos = pos; }
 		Tile* getTile() const { return m_tile; }
 		void setTile(Tile* tile) { m_tile = tile; }
+		BlockType getType() { return m_type; }
+		bool getActivated() { return m_activated; }
+		void setActivated(bool value) { m_activated = value; }
 
 
 		static void LoadBlockData();
@@ -49,6 +52,7 @@ namespace game1 {
 		BlockType m_type;
 		BlockType m_typeBonus; // Receives points equal to value for each of this type that has been activated
 		std::array<int, 4> m_connections; // Top, right, bottom, left
+		bool m_activated;
 
 		static inline int m_size = 32;
 

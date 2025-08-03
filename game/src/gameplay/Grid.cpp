@@ -10,12 +10,14 @@ namespace game1 {
 		m_gameLayer(gameLayer),
 		m_tiles(size, std::vector<Tile>(size)),
 		m_currentBlock(nullptr),
-		m_currentPos(Engine::Vector2i(-1, -1)),
+		m_currentPos(Engine::Vector2i::Invalid()),
 		m_executing(false),
 		m_currentPoints(0),
-		m_msToActivateBlock(1000),
+		m_msToActivateBlock(3000),
 		m_pointsTextDuration(800),
-		m_selectedBlock(nullptr)
+		m_selectedBlock(nullptr),
+		m_lastPortalPos(Engine::Vector2i::Invalid()),
+		m_teleportNextTurn(false)
 	{
 		for (int i = 0; i < m_size; i++) {
 			for (int j = 0; j < m_size; j++) {
@@ -39,12 +41,23 @@ namespace game1 {
 		}
 
 		// This part will be loaded from json files, one for each level
-		Engine::Vector2i tilePos = { 2, 2 };
-		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::HOSAKA, Block::NONE, { 0, -1, 1, 0}), this);
-		tilePos = { 2, 3 };
-		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::MAAS_BIOLABS, Block::NONE, { 0, -1, 1, 0}), this);
+		Engine::Vector2i tilePos = { 0, 0 };
+		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::HOSAKA, Block::NONE, { 0, 1, 0, -1 }), this);
+		tilePos = { 1, 0 };
+		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::PORTAL, Block::NONE, { 1, 0, 0, -1 }), this);
+		tilePos = { 1, 1 };
+		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::MAAS_BIOLABS, Block::NONE, { 0, 1, -1, 0 }), this);
+		tilePos = { 2, 1 };
+		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::PORTAL, Block::NONE, { 0, 1, 0, -1 }), this);
+		tilePos = { 3, 1 };
+		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::MAAS_BIOLABS, Block::NONE, { 0, 1, 0, -1 }), this);
+		tilePos = { 4, 1 };
+		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::MAAS_BIOLABS, Block::NONE, { 0, 0, 1, -1 }), this);
+		tilePos = { 4, 0 };
+		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::MAAS_BIOLABS, Block::NONE, { -1, 0, 1, 0 }), this);
+
 		m_startPoint = CreateEndpoint({ 0, 0 }, Endpoint::START, Endpoint::RIGHT);
-		m_endPoint = CreateEndpoint({ 3, 0 }, Endpoint::END, Endpoint::DOWN);
+		m_endPoint = CreateEndpoint({ 4, 0 }, Endpoint::END, Endpoint::DOWN);
 
 		Start();
 	}
@@ -59,7 +72,7 @@ namespace game1 {
 
 		m_currentPos = Engine::Vector2i(0, 0); // Change this later. Either middle left or top left.
 		Block* block = nullptr;
-		if (!GetTile(m_currentPos)->GetBlock(block)) {
+		if (!GetTile(m_currentPos)->TryGetBlock(block)) {
 			return;
 		}
 
@@ -67,6 +80,15 @@ namespace game1 {
 		
 		m_executing = true;
 		m_msToActivateBlock = 1000;
+	}
+
+	void Grid::Complete() {
+		m_executing = false;
+		m_currentPos = Engine::Vector2i::Invalid();
+		m_currentBlock = nullptr;
+		m_pointsText.clear();
+		m_lastPortalPos = Engine::Vector2i::Invalid();
+		EG_TRACE("Circuit complete");
 	}
 
 	void Grid::Update(Engine::Timestep deltaTime) {
@@ -113,28 +135,53 @@ namespace game1 {
 			// Run execution logic
 			m_msActivating += deltaTime;
 			if (m_msActivating > m_msToActivateBlock) {
-				int outDir = m_currentBlock->GetOutDirection();
-				switch (outDir) {
-				case 0:
-					m_currentPos.y += 1;
-					break;
-				case 1:
-					m_currentPos.x += 1;
-					break;
-				case 2:
-					m_currentPos.y -= 1;
-					break;
-				case 3:
-					m_currentPos.x -= 1;
-					break;
+
+				if (m_currentPos == m_endPoint.gridPos) {
+					Complete();
+					return;
 				}
 
-				if (m_currentPos.x >= 5) return; // TEMPORARY
+				Engine::Vector2i nextPos = GetNextBlockPos(m_currentBlock);
+				Block* nextBlock = GetTile(nextPos)->GetBlock();
 
-				Block* newBlock = nullptr;
-				if (GetTile(m_currentPos)->GetBlock(newBlock)) {
-					ActivateBlock(newBlock);
+				if (m_teleportNextTurn) {
+					Engine::Vector2i temp = m_currentPos;
+					m_currentPos = m_lastPortalPos;
+					m_currentBlock = GetTile(m_currentPos)->GetBlock();
+					m_lastPortalPos = temp;
+
+					m_teleportNextTurn = false;
 				}
+				else if (nextBlock->getType() == Block::PORTAL) {
+					
+					// If we teleported from this portal:
+					if (nextPos == m_lastPortalPos) {
+						m_currentPos = nextPos;
+						m_currentBlock = nextBlock;
+					}
+					// It is a new portal:
+					else {
+						// We have nowhere to teleport to (this is the first portal)
+						if (m_lastPortalPos == Engine::Vector2i::Invalid()) {
+							m_currentPos = nextPos;
+							m_currentBlock = nextBlock;
+							m_lastPortalPos = m_currentPos;
+						}
+						// Teleport to the last portal we were at
+						else {
+							m_teleportNextTurn = true;
+							m_currentPos = nextPos;
+							m_currentBlock = nextBlock;
+						}
+					}
+				}
+				else {
+					m_currentPos = nextPos;
+					ActivateBlock(nextBlock);
+				}
+
+				m_msActivating = 0;
+				EG_TRACE("NEW BLOCK {0}", m_currentPos.ToString());
 			}
 
 			// Check if points text has run out
@@ -150,13 +197,33 @@ namespace game1 {
 		}
 	}
 
+	Engine::Vector2i Grid::GetNextBlockPos(Block* current) {
+		Engine::Vector2i pos = current->getTile()->getPos();
+
+		int outDir = current->GetOutDirection();
+		switch (outDir) {
+		case 0:
+			pos.y += 1;
+			break;
+		case 1:
+			pos.x += 1;
+			break;
+		case 2:
+			pos.y -= 1;
+			break;
+		case 3:
+			pos.x -= 1;
+			break;
+		}
+
+		return pos;
+	}
+
 	void Grid::ActivateBlock(Block* block) {
 		m_currentBlock = block;
 		m_currentBlock->Activate(&m_currentPoints, &m_blocksActivated, this);
 
 		m_msActivating = 0;
-
-		EG_TRACE("TOTAL POINTS: {0}", m_currentPoints);
 	}
 
 	void Grid::AddPointsText(int value, Block* block) {
@@ -173,7 +240,7 @@ namespace game1 {
 	Block* Grid::GetHoveredBlock(Engine::Vector2i hoveredTile) {
 		Block* block = nullptr;
 		if (hoveredTile != Engine::Vector2i::Invalid()) {
-			if (GetTile(hoveredTile)->GetBlock(block)) {
+			if (GetTile(hoveredTile)->TryGetBlock(block)) {
 				return block;
 			}
 		}
@@ -322,9 +389,14 @@ namespace game1 {
 
 				Tile* tile = &m_tiles[i][j];
 				Block* block = nullptr;
-				if (tile->GetBlock(block)) {
-					bool activating = m_currentPos == Engine::Vector2i(i, j);
+				if (tile->TryGetBlock(block)) {
+					Engine::Vector2i vec = Engine::Vector2i(i, j);
+					bool activating = m_currentPos == vec;
 					block->Draw(activating);
+
+					if (vec == m_lastPortalPos) {
+						block->DrawOutline();
+					}
 				}
 			}
 		}

@@ -9,7 +9,10 @@ namespace game1
 		m_attachedBlock = nullptr;
 	}
 
-	bool Tile::GetBlock(Block*& block) {
+	Block* Tile::GetBlock() {
+		return m_attachedBlock;
+	}
+	bool Tile::TryGetBlock(Block*& block) {
 		if (m_attachedBlock == nullptr) return false;
 		block = m_attachedBlock;
 
