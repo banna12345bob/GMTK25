@@ -31,20 +31,27 @@ namespace game1 {
 	void Block::Activate(int* currentPoints, std::map<Block::BlockType, std::vector<Block*>>* blocksActivated, Grid* grid) {
 		m_activated = true;
 
+		int pointsScored = 0;
 		if (m_typeBonus == NONE) {
-			*currentPoints += m_value;
+			pointsScored = m_value;
 			grid->AddPointsText(m_value, this);
 		}
 		else {
 			if (blocksActivated->find(m_typeBonus) == blocksActivated->end()) {
 				blocksActivated[m_typeBonus];
 			}
-			*currentPoints += m_value * (*blocksActivated)[m_typeBonus].size();
+			pointsScored = m_value * (*blocksActivated)[m_typeBonus].size();
 
 			grid->AddPointsText(m_value, &(*blocksActivated)[m_typeBonus]);
 		}
 
+		*currentPoints += pointsScored;
 		(*blocksActivated)[m_type].push_back(this);
+
+		if (pointsScored > 0) {
+			float volume = m_typeBonus != NONE ? 0.8f : 0.5f;
+			Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/score.wav", false, 0.5);
+		}
 	}
 
 	int Block::GetOutDirection() {
@@ -97,13 +104,10 @@ namespace game1 {
 		m_ScoringRotation.StartInterpolation(180.f, 180.f, 1.f);
 		m_ScoringScale.StartInterpolation(1.f, 1.f, 1.f);
 		m_FontScallingScoring.StartInterpolation(1.f, 1.f, 1.f);
-
-		if (m_type != PORTAL)
-			Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/score.wav", false, 0.5);
 	}
 
 	void Block::LoadBlockData() {
-
+		return;
 		// Load JSON data
 		std::ifstream infile{ "data/blocks.json" };
 		std::string contents{ std::istreambuf_iterator<char>(infile), std::istreambuf_iterator<char>() };

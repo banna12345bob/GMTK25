@@ -40,7 +40,7 @@ namespace game1 {
 			m_endpointArrowTexs.push_back(subtex);
 		}
 
-		m_currentLevel = 1;
+		m_currentLevel = 8;
 		LoadLevel(m_currentLevel);
 		m_FontScallingScoring.StartInterpolation(1.f, 1.f, 0.f);
 	}
@@ -62,7 +62,13 @@ namespace game1 {
 
 		m_currentPos = m_startPoint.gridPos;
 		m_currentBlock = GetTile(m_currentPos)->GetBlock();
-		m_currentBlock->Activate(&m_currentPoints, &m_blocksActivated, this);
+
+		if (m_currentBlock->getType() == Block::PORTAL) {
+			m_lastPortalPos = m_currentPos;
+		}
+		else {
+			m_currentBlock->Activate(&m_currentPoints, &m_blocksActivated, this);
+		}
 		
 		m_executing = true;
 		m_msToActivateBlock = 1000;

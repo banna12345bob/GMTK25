@@ -41,7 +41,11 @@ bool Button::WasPressed(int buttoncode)
 	else
 		m_TimesPressed[buttoncode] = 0;
 
-	return m_TimesPressed[buttoncode] == 1;
+	bool wasPressed = m_TimesPressed[buttoncode] == 1;
+	if (wasPressed) {
+		Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/activate.wav", false, 0.5);
+	}
+	return wasPressed;
 }
 
 glm::vec2 Button::GetMouseGamePosition() {
