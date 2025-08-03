@@ -62,12 +62,14 @@ namespace Engine {
             }
             else
             {
+				compiled = false;
                 EG_CORE_ERROR("Could not read from file '{0}'", filepath);
             }
         }
         else
         {
-            EG_CORE_ERROR("Could not open file '{0}'", filepath);
+			compiled = false;
+			EG_CORE_ERROR("Could not open file '{0}'", filepath);
         }
 
         return result;
@@ -127,6 +129,7 @@ namespace Engine {
 
 				EG_CORE_ERROR("{0}", infoLog.data());
 				EG_CORE_ASSERT(false, "Failed to compile shader!");
+				compiled = false;
 				break;
 			}
 			glAttachShader(program, shader);
@@ -156,6 +159,7 @@ namespace Engine {
 
 			EG_CORE_ERROR("{0}", infoLog.data());
 			EG_CORE_ASSERT(false, "Failed to link shaders!");
+			compiled = false;
 			return;
 		}
 
@@ -166,6 +170,7 @@ namespace Engine {
 		}
 
 		m_RendererID = program;
+		compiled = true;
 	}
 
 	void OpenGLShader::Bind() const

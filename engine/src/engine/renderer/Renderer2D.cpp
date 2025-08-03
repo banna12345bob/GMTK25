@@ -42,6 +42,8 @@ namespace Engine {
 		uint32_t textureSlotIndex = 1;
 
 		glm::vec4 quadVertexPosition[4];
+
+		ShaderLibary shaderLibrary;
 	};
 
 	static Renderer2DData s_Data;
@@ -90,7 +92,7 @@ namespace Engine {
 		for (uint32_t i = 0; i < s_Data.maxTextureSlots; i++)
 			samplers[i] = i;
 
-		s_Data.TextureShader = Shader::Create("assets/shaders/texture.glsl");
+		s_Data.TextureShader = s_Data.shaderLibrary.Load("assets/shaders/texture.glsl");
 		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->SetIntArray("u_Texture", samplers, s_Data.maxTextureSlots);
 

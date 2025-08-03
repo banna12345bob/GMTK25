@@ -115,10 +115,10 @@ void GameLayer::OnRender()
 		m_grid->Draw();
 	}
 
-	// 
+	// End Round
 	if (m_CameraPos[0] > 0.f || m_CurrentScene == Scene::EndRound)
 	{
-		Engine::Renderer2D::DrawQuad({ -275.f, -100.f, 0.9f }, { 44.f, 11.f }, m_TargetText);
+		Engine::Renderer2D::DrawQuad({ -450.f, -100.f, 0.9f }, { 44.f, 11.f }, m_TargetText);
 	}
 
 	Engine::Renderer2D::EndScene();

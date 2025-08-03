@@ -41,6 +41,7 @@
 	#error "What kind of platform are you using? What ever it is it's not supported"
 #endif
 
+#define EG_ENABLE_ASSERTS
 #ifdef EG_DEBUG
     #if defined(EG_PLATFORM_WINDOWS)
         #define EG_DEBUGBREAK() __debugbreak()
@@ -54,9 +55,8 @@
     #else
         #error "Platform doesn't support debugbreak yet!"
     #endif
-        #define EG_ENABLE_ASSERTS
-    #else
-    #define EG_DEBUGBREAK()
+#else
+	#define EG_DEBUGBREAK()
 #endif
 
 #ifdef EG_ENABLE_ASSERTS
