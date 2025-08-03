@@ -92,6 +92,8 @@ namespace game1 {
 		// It's a feature not a bug
 		// When interpolating between two of the same non zero points, non-linear interpolation's output approchs 0 before bouncing back to the input
 		m_ScoringRotation.StartInterpolation(180.f, 180.f, 1.f);
+
+		Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/score.wav", false, 0.5);
 	}
 
 	void Block::LoadBlockData() {
