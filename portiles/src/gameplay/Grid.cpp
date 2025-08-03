@@ -40,7 +40,7 @@ namespace game1 {
 			m_endpointArrowTexs.push_back(subtex);
 		}
 
-		m_currentLevel = 8;
+		m_currentLevel = 1;
 		LoadLevel(m_currentLevel);
 		m_FontScallingScoring.StartInterpolation(1.f, 1.f, 0.f);
 	}
