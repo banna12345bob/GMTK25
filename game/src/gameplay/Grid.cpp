@@ -40,24 +40,8 @@ namespace game1 {
 			m_endpointArrowTexs.push_back(subtex);
 		}
 
-		// This part will be loaded from json files, one for each level
-		Engine::Vector2i tilePos = { 0, 0 };
-		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::HOSAKA, Block::NONE, { 0, 1, 0, -1 }), this);
-		tilePos = { 1, 0 };
-		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::PORTAL, Block::NONE, { 1, 0, 0, -1 }), this);
-		tilePos = { 1, 1 };
-		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::MAAS_BIOLABS, Block::NONE, { 0, 1, -1, 0 }), this);
-		tilePos = { 2, 1 };
-		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::PORTAL, Block::NONE, { 0, 1, 0, -1 }), this);
-		tilePos = { 3, 1 };
-		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::MAAS_BIOLABS, Block::NONE, { 0, 1, 0, -1 }), this);
-		tilePos = { 4, 1 };
-		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 4, Block::MAAS_BIOLABS, Block::NONE, { 0, 0, 1, -1 }), this);
-		tilePos = { 4, 0 };
-		GetTile(tilePos)->AttachBlock(new Block(GridPosToScreenPos(tilePos), GetTile(tilePos), 1, Block::MAAS_BIOLABS, Block::MAAS_BIOLABS, { -1, 0, 1, 0 }), this);
-
-		m_startPoint = CreateEndpoint({ 0, 0 }, Endpoint::START, Endpoint::RIGHT);
-		m_endPoint = CreateEndpoint({ 4, 0 }, Endpoint::END, Endpoint::DOWN);
+		m_currentLevel = 1;
+		LoadLevel(m_currentLevel);
 	}
 
 	bool Grid::Start(std::string* errorMessage) {
@@ -95,6 +79,15 @@ namespace game1 {
 		EG_TRACE("Circuit complete");
 
 		m_gameLayer->ChangeScene(GameLayer::EndRound, m_currentPoints == m_targetPoints);
+	}
+	void Grid::NextRound() {
+		m_currentLevel++;
+		LoadLevel(m_currentLevel);
+		m_gameLayer->ChangeScene(GameLayer::Game, true);
+	}
+	void Grid::Retry() {
+		LoadLevel(m_currentLevel);
+		m_gameLayer->ChangeScene(GameLayer::Game, false);
 	}
 
 	void Grid::Update(Engine::Timestep deltaTime) {

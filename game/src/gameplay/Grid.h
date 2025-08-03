@@ -93,7 +93,7 @@ namespace game1 {
 		Engine::Ref<Engine::Texture2D> m_emptyTileTex;
 		std::vector<std::vector<Tile>> m_tiles;
 
-		int m_currentPuzzle;
+		int m_currentLevel;
 
 		bool m_executing;
 		Engine::Vector2i m_currentPos;
@@ -123,5 +123,12 @@ namespace game1 {
 		bool m_teleportNextTurn;
 		
 		static inline int m_cellSize = 32;
+
+		void LoadLevel(int level);
+		void PlaceBlocks(std::vector<Block*> blocks);
+		void Level1();
+		void Level2();
+		void Level3();
+		void Level4();
 	};
 }

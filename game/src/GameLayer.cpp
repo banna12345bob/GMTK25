@@ -52,6 +52,8 @@ void GameLayer::OnDetach()
 
 void GameLayer::OnUpdate(Engine::Timestep ts)
 {
+	//EG_TRACE("{0}, {1}", GetMouseGamePosition().x, GetMouseGamePosition().y);
+
 	InterpolationHelper::Update(ts);
 	m_CameraPos[0] = m_CameraXAnimation.CublicEaseIn();
 	m_CameraPos[1] = m_CameraYAnimation.CublicEaseIn();
@@ -76,16 +78,26 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 	}
 
 	if (m_CurrentScene == EndRound) {
-		if (m_NextButton->IsHovering())
-			m_NextButton->SetScale(glm::vec2({ 25, 9 }) * 1.1f);
-		else {
-			m_NextButton->SetScale(glm::vec2({ 25, 9 }));
-		}
 
-		if (m_RetryButton->IsHovering())
-			m_RetryButton->SetScale(glm::vec2({ 31, 11 }) * 1.1f);
+		if (m_WasRoundSuccess) {
+			if (m_NextButton->IsHovering())
+				m_NextButton->SetScale(glm::vec2({ 25, 9 }) * 1.1f);
+			else {
+				m_NextButton->SetScale(glm::vec2({ 25, 9 }));
+			}
+
+			if (m_NextButton->WasPressed(EG_MOUSECODE_LEFT))
+				m_Grid->NextRound();
+		}
 		else {
-			m_RetryButton->SetScale(glm::vec2({ 31, 11 }));
+			if (m_RetryButton->IsHovering())
+				m_RetryButton->SetScale(glm::vec2({ 31, 11 }) * 1.1f);
+			else {
+				m_RetryButton->SetScale(glm::vec2({ 31, 11 }));
+			}
+
+			if (m_RetryButton->WasPressed(EG_MOUSECODE_LEFT))
+				m_Grid->Retry();
 		}
 	}
 

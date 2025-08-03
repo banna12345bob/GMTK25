@@ -19,6 +19,8 @@ namespace game1
 		void AttachBlock(Block* block, Grid* grid);
 		void DeattachBlock();
 
+		~Tile() { delete m_attachedBlock; }
+
 		Engine::Vector2i getPos() { return m_gridPos; }
 
 	private:
