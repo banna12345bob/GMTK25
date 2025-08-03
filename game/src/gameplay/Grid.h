@@ -18,7 +18,7 @@ namespace game1 {
 		bool Start(std::string* errorMessage);
 		bool CheckValidCircuit();
 		void Update(Engine::Timestep deltaTime);
-		void AddPointsText(int value, Block* block);
+		void AddPointsText(int value, Block* block, int count);
 		void AddPointsText(int value, std::vector<Block*>* gridPositions);
 		Tile* GetTile(Engine::Vector2i position);
 		Tile* GetTile(int x, int y);

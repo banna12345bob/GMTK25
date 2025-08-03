@@ -274,14 +274,15 @@ namespace game1 {
 		return pos;
 	}
 
-	void Grid::AddPointsText(int value, Block* block) {
+	void Grid::AddPointsText(int value, Block* block, int count) {
+
 		Engine::Vector2i pos = block->getPos();
-		glm::vec3 glmpos = { pos.x * m_cellSize + m_gridOffset.x, pos.y * m_cellSize + m_gridOffset.y + 26, 0.85 };
+		glm::vec3 glmpos = { pos.x * m_cellSize + m_gridOffset.x, pos.y * m_cellSize + m_gridOffset.y + 26, 0.93 };
 		m_pointsText.push_back(PointsText("+" + std::to_string(value), glmpos, m_pointsTextDuration));
 	}
 	void Grid::AddPointsText(int value, std::vector<Block*>* blocks) {
 		for (auto block : *blocks) {
-			AddPointsText(value, block);
+			AddPointsText(value, block, 0);
 		}
 	}
 
@@ -433,7 +434,7 @@ namespace game1 {
 		for (int i = 0; i < m_size; i++) {
 			for (int j = 0; j < m_size; j++) {
 				Engine::Vector2i pos = GridPosToScreenPos({ i, j });
-				Engine::Renderer2D::DrawQuad( { pos.x, pos.y, 0.80 }, { m_cellSize, m_cellSize }, m_emptyTileTex);
+				//Engine::Renderer2D::DrawQuad( { pos.x, pos.y, 0.80 }, { m_cellSize, m_cellSize }, m_emptyTileTex);
 
 				Tile* tile = &m_tiles[i][j];
 				Block* block = nullptr;

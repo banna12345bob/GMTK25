@@ -27,7 +27,7 @@ namespace game1 {
 
 		if (m_typeBonus == NONE) {
 			*currentPoints += m_value;
-			grid->AddPointsText(m_value, this);
+			grid->AddPointsText(m_value, this, 1);
 		}
 		else {
 			if (blocksActivated->find(m_typeBonus) == blocksActivated->end()) {
