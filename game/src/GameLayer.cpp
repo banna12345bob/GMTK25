@@ -27,10 +27,10 @@ void GameLayer::OnAttach()
 	m_QuitButton = new Button(m_CameraController.GetCamera(), quitButton, { 0, -450, 0.1 }, { 100, 100 / 2 });
 
 	Engine::Ref<Engine::Texture2D> retryButton = Engine::Texture2D::Create("assets/textures/UI/retry_button.png");
-	m_RetryButton = new Button(m_CameraController.GetCamera(), retryButton, { 450.f, -100.f, 0.1 }, { 31, 11 });
+	m_RetryButton = new Button(m_CameraController.GetCamera(), retryButton, { 365.f, -50.f, 0.1 }, { 38 * 2, 18 * 2 });
 
 	Engine::Ref<Engine::Texture2D> nextButton = Engine::Texture2D::Create("assets/textures/UI/next_button.png");
-	m_NextButton = new Button(m_CameraController.GetCamera(), nextButton, { 450.f, -100.f, 0.1 }, { 25, 9 });
+	m_NextButton = new Button(m_CameraController.GetCamera(), nextButton, { 365.f, -50.f, 0.1 }, { 38*2, 18*2 });
 
 	Engine::Ref<Engine::Texture2D> gridStartButton = Engine::Texture2D::Create("assets/textures/UI/grid_start_button.png");
 	m_GridStartButton = new Button(m_CameraController.GetCamera(), gridStartButton, { -128 + 34, -128 + 28, 0.3 }, { 38, 18 });
@@ -44,6 +44,7 @@ void GameLayer::OnAttach()
 	m_TargetText = Engine::Texture2D::Create("assets/textures/UI/target.png");
 	m_SuccessText = Engine::Texture2D::Create("assets/textures/UI/success_text.png");
 	m_FailText = Engine::Texture2D::Create("assets/textures/UI/fail_text.png");
+	m_CreditsText = Engine::Texture2D::Create("assets/textures/UI/credits_text.png");
 
 	m_CameraZoom = 128;
 	m_CameraController.SetZoomLevel(m_CameraZoom);
@@ -91,9 +92,9 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 
 		if (m_WasRoundSuccess) {
 			if (m_NextButton->IsHovering())
-				m_NextButton->SetScale(glm::vec2({ 25, 9 }) * 1.1f);
+				m_NextButton->SetScale(glm::vec2({ 38 * 2, 18 * 2 }) * 1.1f);
 			else {
-				m_NextButton->SetScale(glm::vec2({ 25, 9 }));
+				m_NextButton->SetScale(glm::vec2({ 38 * 2, 18 * 2 }));
 			}
 
 			if (m_NextButton->WasPressed(EG_MOUSECODE_LEFT))
@@ -101,9 +102,9 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 		}
 		else {
 			if (m_RetryButton->IsHovering())
-				m_RetryButton->SetScale(glm::vec2({ 31, 11 }) * 1.1f);
+				m_RetryButton->SetScale(glm::vec2({ 38 * 2, 18 * 2 }) * 1.1f);
 			else {
-				m_RetryButton->SetScale(glm::vec2({ 31, 11 }));
+				m_RetryButton->SetScale(glm::vec2({ 38 * 2, 18 * 2 }));
 			}
 
 			if (m_RetryButton->WasPressed(EG_MOUSECODE_LEFT))
@@ -117,23 +118,20 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 
 	if (m_StartButton->WasPressed(EG_MOUSECODE_LEFT) && m_CurrentScene == Scene::Menu)
 	{
-		m_CurrentScene = Scene::Game;
-		m_CameraYAnimation.StartInterpolation(m_CameraPos[1], 0.f, 1.f);
+		ChangeScene(Scene::Game, false);
 	}
 
 	if (m_GridStartButton->WasPressed(EG_MOUSECODE_LEFT) && m_CurrentScene == Scene::Game) {
 		m_Grid->Start(nullptr);
 	}
 
-	if (m_MainMenuButton->WasPressed(EG_MOUSECODE_LEFT) && m_CurrentScene == Scene::Game) {
-		m_CurrentScene = Scene::Menu;
-		m_CameraYAnimation.StartInterpolation(m_CameraPos[1], 360.f, 1.f);
+	if (m_MainMenuButton->WasPressed(EG_MOUSECODE_LEFT) && m_CurrentScene == Scene::Game && !m_Grid->m_executing) {
+		ChangeScene(Scene::Menu, false);
 	}
 
-	if (Engine::Key::wasKeyPressed(EG_SCANCODE_ESCAPE) && m_CurrentScene == Scene::Game)
+	if (Engine::Key::wasKeyPressed(EG_SCANCODE_ESCAPE) && m_CurrentScene == Scene::Game && !m_Grid->m_executing)
 	{
-		m_CurrentScene = Scene::Menu;
-		m_CameraYAnimation.StartInterpolation(m_CameraPos[1], 360.f, 1.f);
+		ChangeScene(Scene::Menu, false);
 	}
 
 	m_CameraController.OnUpdate();
@@ -149,14 +147,17 @@ void GameLayer::ChangeScene(Scene scene, bool roundSuccess) {
 
 	switch (scene) {
 	case Menu:
+		m_CameraXAnimation.StartInterpolation(m_CameraPos[0], 0.f, 1.f);
 		m_CameraYAnimation.StartInterpolation(m_CameraPos[1], 360.f, 1.f);
 		break;
 	case Game:
 		m_CameraXAnimation.StartInterpolation(m_CameraPos[0], 0.f, 1.f);
+		m_CameraYAnimation.StartInterpolation(m_CameraPos[1], 0.f, 1.f);
 		break;
 	case EndRound:
 		m_WasRoundSuccess = roundSuccess;
 		m_CameraXAnimation.StartInterpolation(m_CameraPos[0], -360.f, 1.f);
+		m_CameraYAnimation.StartInterpolation(m_CameraPos[1], 0.f, 1.f);
 		break;
 	}
 }
@@ -174,8 +175,9 @@ void GameLayer::OnRender()
 	{
 		m_StartButton->Render();
 		m_QuitButton->Render();
-		Engine::Renderer2D::DrawQuad({ 0, -260, 0.1 }, { 128, 128 / 2 }, m_GameLogo, { 0.8039215686, 0.7686274510, 0.2117647059, 1 });
-		Engine::Renderer2D::DrawQuad({ 0, -390, -0.1 }, { 192 / 2, 100 / 2 }, m_InfoText, {1, 1, 1, 1});
+		Engine::Renderer2D::DrawQuad({ 0, -260, 0.1 }, { 128, 128 / 2 }, m_GameLogo);
+		Engine::Renderer2D::DrawQuad({ 0, -390, -0.1 }, { 192 / 2, 100 / 2 }, m_InfoText, { 1, 1, 1, 1 });
+		Engine::Renderer2D::DrawQuad({ -90, -475, 0.1 }, { 192 / 3, 100 / 3 }, m_CreditsText);
 	}
 
 	// End Round
