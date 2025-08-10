@@ -49,7 +49,7 @@ void GameLayer::OnAttach()
 	m_FailText = Engine::Texture2D::Create("assets/textures/UI/fail_text.png");
 	m_CreditsText = Engine::Texture2D::Create("assets/textures/UI/credits_text.png");
 
-	m_CameraZoom = 128;
+	m_CameraZoom = 136;
 	m_CameraController.SetZoomLevel(m_CameraZoom);
 	m_CameraController.setPosition({ m_CameraPos[0], m_CameraPos[1], 0.f });
 }
@@ -66,6 +66,7 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 	m_CameraPos[0] = m_CameraXAnimation.CublicEaseIn();
 	m_CameraPos[1] = m_CameraYAnimation.CublicEaseIn();
 
+	// TODO: Doesn't work properly, I believe because this update loop is called multiple times for every time the keyboard is updated, or something like that.
 	if (Engine::Key::wasKeyPressed(EG_SCANCODE_M)) {
 		if (m_muted) {
 			Engine::Application::getApplication()->getAudioPlayer()->SetVolume(m_musicSoundId, 0.45f);
@@ -75,6 +76,11 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 			Engine::Application::getApplication()->getAudioPlayer()->SetVolume(m_musicSoundId, 0.0f);
 			m_muted = true;
 		}
+	}
+
+	if (Engine::Key::wasKeyPressed(EG_SCANCODE_F)) {
+		//m_CameraZoom = m_CameraZoom == 136 ? 186 : 136;
+		m_CameraZoom = 186;
 	}
 
 	m_CameraController.SetZoomLevel(m_CameraZoom);
@@ -180,6 +186,7 @@ void GameLayer::ChangeScene(Scene scene, bool roundSuccess) {
 		m_CameraYAnimation.StartInterpolation(m_CameraPos[1], 0.f, 1.f);
 		break;
 	case Win:
+		Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/success.wav", false, 0.5);
 		m_CameraXAnimation.StartInterpolation(m_CameraPos[0], 0.f, 1.f);
 		m_CameraYAnimation.StartInterpolation(m_CameraPos[1], -360.f, 1.f);
 		m_QuitButton->SetPos({ 0.f, 300.f, 0.f });
