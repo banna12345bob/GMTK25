@@ -25,7 +25,15 @@ namespace game1 {
 			PORTAL = 3
 		};
 
+		enum Side {
+			TOP = 0,
+			RIGHT = 1,
+			BOTTOM = 2,
+			LEFT = 3
+		};
+
 		Block(Engine::Vector2i pos, Tile* tile, int value, BlockType type, BlockType typeBonus, std::array<int, 4> connections);
+		Block(Engine::Vector2i pos, Tile* tile, int value, BlockType type, BlockType typeBonus, Side in, Side out);
 		
 		void Update();
 		void Activate(int* currentPoints, std::map<Block::BlockType, std::vector<Block*>>* blocksActivated, Grid* grid);

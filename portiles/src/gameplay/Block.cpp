@@ -24,6 +24,12 @@ namespace game1 {
 		m_FontScallingScoring.StartInterpolation(1.f, 1.f, 0.f);
 	}
 
+	Block::Block(Engine::Vector2i pos, Tile* tile, int value, BlockType type, BlockType typeBonus, Side in, Side out) : Block(pos, tile, value, type, typeBonus, {0,0,0,0})
+	{
+		m_connections[(int)in] = -1;
+		m_connections[(int)out] = 1;
+	}
+
 	void Block::Update() {
 
 	}
@@ -34,7 +40,7 @@ namespace game1 {
 		int pointsScored = 0;
 		if (m_typeBonus == NONE) {
 			pointsScored = m_value;
-			grid->AddPointsText(m_value, this);
+			//grid->AddPointsText(m_value, this);
 		}
 		else {
 			if (blocksActivated->find(m_typeBonus) == blocksActivated->end()) {
@@ -42,15 +48,16 @@ namespace game1 {
 			}
 			pointsScored = m_value * (*blocksActivated)[m_typeBonus].size();
 
-			grid->AddPointsText(m_value, &(*blocksActivated)[m_typeBonus]);
+			//grid->AddPointsText(m_value, &(*blocksActivated)[m_typeBonus]);
+			
 		}
 
+		grid->AddPointsText(pointsScored, this);
 		*currentPoints += pointsScored;
 		(*blocksActivated)[m_type].push_back(this);
 
 		if (pointsScored > 0) {
-			float volume = m_typeBonus != NONE ? 0.8f : 0.5f;
-			Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/score.wav", false, 0.3);
+			Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/score.wav", false, 0.2f);
 		}
 	}
 
