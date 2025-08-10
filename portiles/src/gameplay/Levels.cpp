@@ -40,6 +40,12 @@ namespace game1 {
 		case 8:
 			Level8();
 			break;
+		case 9:
+			Level9();
+			break;
+		case 10:
+			Level10();
+			break;
 
 		default:
 			break;
@@ -88,9 +94,6 @@ namespace game1 {
 		blocks.push_back(new Block(vec, nullptr, 1, Block::HOSAKA, Block::NONE, { 0, 0 , 1, -1 }));
 		blocks.push_back(new Block(vec, nullptr, 1, Block::HOSAKA, Block::NONE, { 0, 1 , 0, -1 }));
 		blocks.push_back(new Block(vec, nullptr, 1, Block::HOSAKA, Block::NONE, { 0, 1 , 0, -1 }));
-
-		blocks.push_back(new Block(vec, nullptr, 1, Block::HOSAKA, Block::NONE, { 0, 1 , 0, -1 }));
-		blocks.push_back(new Block(vec, nullptr, 2, Block::HOSAKA, Block::NONE, { 0, 1 , -1, 0 }));
 		PlaceBlocks(blocks);
 
 		m_startPoint = CreateEndpoint({ 0, 2 }, Endpoint::START, Endpoint::RIGHT);
@@ -105,26 +108,8 @@ namespace game1 {
 		std::vector<Block*> blocks;
 
 		blocks.push_back(new Block(vec, nullptr, 1, Block::HOSAKA, Block::NONE, { 0, 1 , 0, -1 }));
-		blocks.push_back(new Block(vec, nullptr, 1, Block::HOSAKA, Block::NONE, { 0, 1 , 0, -1 }));
-		blocks.push_back(new Block(vec, nullptr, 2, Block::ZAIBATSU, Block::HOSAKA, { -1, 0 , 1, 0 }));
-		blocks.push_back(new Block(vec, nullptr, 1, Block::MAAS_BIOLABS, Block::NONE, { 0, 1 , 0, -1 }));
-		blocks.push_back(new Block(vec, nullptr, 1, Block::MAAS_BIOLABS, Block::NONE, { 0, 0 , 1, -1 }));
-		PlaceBlocks(blocks);
-
-		m_startPoint = CreateEndpoint({ 0, 0 }, Endpoint::START, Endpoint::RIGHT);
-		m_endPoint = CreateEndpoint({ 3, 0 }, Endpoint::END, Endpoint::DOWN);
-
-		m_targetPoints = 7;
-	}
-
-	void Grid::Level3() {
-
-		Engine::Vector2i vec = Engine::Vector2i::Invalid();
-		std::vector<Block*> blocks;
-
-		blocks.push_back(new Block(vec, nullptr, 1, Block::HOSAKA, Block::NONE, { 0, 1 , 0, -1 }));
 		blocks.push_back(new Block(vec, nullptr, 3, Block::HOSAKA, Block::NONE, { 0, 1 , 0, -1 }));
-		blocks.push_back(new Block(vec, nullptr, 2, Block::MAAS_BIOLABS, Block::NONE, { 0, 1 , 0, -1 }));
+		blocks.push_back(new Block(vec, nullptr, 2, Block::HOSAKA, Block::NONE, { 0, 1 , 0, -1 }));
 		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, { 0, 1 , 0, -1 }));
 		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, { 0, 1 , 0, -1 }));
 		PlaceBlocks(blocks);
@@ -135,6 +120,25 @@ namespace game1 {
 		m_targetPoints = 9;
 	}
 
+	void Grid::Level3() {
+
+		Engine::Vector2i vec = Engine::Vector2i::Invalid();
+		std::vector<Block*> blocks;
+
+		blocks.push_back(new Block(vec, nullptr, 1, Block::HOSAKA, Block::NONE, Block::LEFT, Block::RIGHT));
+		blocks.push_back(new Block(vec, nullptr, 2, Block::HOSAKA, Block::NONE, Block::LEFT, Block::RIGHT));
+		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, Block::LEFT, Block::BOTTOM));
+		blocks.push_back(new Block(vec, nullptr, 1, Block::HOSAKA, Block::NONE, Block::LEFT, Block::RIGHT));
+		blocks.push_back(new Block(vec, nullptr, 3, Block::HOSAKA, Block::NONE, Block::LEFT, Block::RIGHT));
+		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, Block::TOP, Block::BOTTOM));
+		PlaceBlocks(blocks);
+
+		m_startPoint = CreateEndpoint({ 0, 3 }, Endpoint::START, Endpoint::RIGHT);
+		m_endPoint = CreateEndpoint({ 2, 0 }, Endpoint::END, Endpoint::DOWN);
+
+		m_targetPoints = 11;
+	}
+
 	void Grid::Level4() {
 
 		Engine::Vector2i vec = Engine::Vector2i::Invalid();
@@ -142,21 +146,36 @@ namespace game1 {
 
 		blocks.push_back(new Block(vec, nullptr, 3, Block::HOSAKA, Block::NONE, { 0, 1 , 0, -1 }));
 		blocks.push_back(new Block(vec, nullptr, 1, Block::HOSAKA, Block::NONE, { 0, 1 , 0, -1 }));
-		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, { 1, 0 , 0, -1 }));
-		blocks.push_back(new Block(vec, nullptr, 2, Block::MAAS_BIOLABS, Block::NONE, { 0, 1 , -1, 0 }));
-		blocks.push_back(new Block(vec, nullptr, 2, Block::MAAS_BIOLABS, Block::NONE, { 0, 1 , 0, -1 }));
-		blocks.push_back(new Block(vec, nullptr, 1, Block::ZAIBATSU, Block::MAAS_BIOLABS, { 0, 1 , 0, -1 }));
-		blocks.push_back(new Block(vec, nullptr, 2, Block::ZAIBATSU, Block::MAAS_BIOLABS, { 0, 1 , 0, -1 }));
-		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, { 0, 1 , 0, -1 }));
+		blocks.push_back(new Block(vec, nullptr, 1, Block::ZAIBATSU, Block::HOSAKA, { 0, 1 , 0, -1 }));
+		blocks.push_back(new Block(vec, nullptr, 1, Block::HOSAKA, Block::NONE, { 0, 1 , 0, -1 }));
+		blocks.push_back(new Block(vec, nullptr, 1, Block::HOSAKA, Block::NONE, { 0, 1 , 0, -1 }));		
 		PlaceBlocks(blocks);
 
-		m_startPoint = CreateEndpoint({ 0, 1 }, Endpoint::START, Endpoint::RIGHT);
-		m_endPoint = CreateEndpoint({ 4, 3 }, Endpoint::END, Endpoint::RIGHT);
+		m_startPoint = CreateEndpoint({ 0, 0 }, Endpoint::START, Endpoint::RIGHT);
+		m_endPoint = CreateEndpoint({ 4, 0 }, Endpoint::END, Endpoint::RIGHT);
 
-		m_targetPoints = 16;
+		m_targetPoints = 8;
 	}
 
 	void Grid::Level5() {
+
+		Engine::Vector2i vec = Engine::Vector2i::Invalid();
+		std::vector<Block*> blocks;
+
+		blocks.push_back(new Block(vec, nullptr, 1, Block::MAAS_BIOLABS, Block::NONE, Block::LEFT, Block::BOTTOM));
+		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, Block::TOP, Block::BOTTOM));
+		blocks.push_back(new Block(vec, nullptr, 1, Block::ZAIBATSU, Block::MAAS_BIOLABS, Block::TOP, Block::BOTTOM));
+		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, Block::TOP, Block::BOTTOM));
+		
+		PlaceBlocks(blocks);
+
+		m_startPoint = CreateEndpoint({ 0, 3 }, Endpoint::START, Endpoint::RIGHT);
+		m_endPoint = CreateEndpoint({ 0, 0 }, Endpoint::END, Endpoint::DOWN);
+
+		m_targetPoints = 3;
+	}
+
+	void Grid::Level6() {
 
 		Engine::Vector2i vec = Engine::Vector2i::Invalid();
 		std::vector<Block*> blocks;
@@ -173,16 +192,14 @@ namespace game1 {
 		m_targetPoints = 4;
 	}
 
-	void Grid::Level6() {
+	void Grid::Level7() {
 
 		Engine::Vector2i vec = Engine::Vector2i::Invalid();
 		std::vector<Block*> blocks;
 
 		blocks.push_back(new Block(vec, nullptr, 5, Block::HOSAKA, Block::NONE, { 0, 1 , -1, 0 }));
-		blocks.push_back(new Block(vec, nullptr, 4, Block::HOSAKA, Block::NONE, { 0, 1 , -1, 0 }));
 		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, { 1, 0 , 0, -1 }));
 		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, { 1, 0 , 0, -1 }));
-		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, { 0, 1 , -1, 0 }));
 		blocks.push_back(new Block(vec, nullptr, 5, Block::ZAIBATSU, Block::HOSAKA, { 1, 0 , -1, 0 }));
 		PlaceBlocks(blocks);
 
@@ -192,46 +209,65 @@ namespace game1 {
 		m_targetPoints = 15;
 	}
 
-	void Grid::Level7() {
-
-		Engine::Vector2i vec = Engine::Vector2i::Invalid();
-		std::vector<Block*> blocks;
-
-		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, { 0, 1 , 0, -1 }));
-		blocks.push_back(new Block(vec, nullptr, 1, Block::HOSAKA, Block::NONE, { 1, 0 , 0, -1 }));
-		blocks.push_back(new Block(vec, nullptr, 2, Block::MAAS_BIOLABS, Block::NONE, { 1, 0 , -1, 0 }));
-		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, { 0, 1 , -1, 0 }));
-		blocks.push_back(new Block(vec, nullptr, 1, Block::ZAIBATSU, Block::MAAS_BIOLABS, { 0, 0 , 1, -1 }));
-		blocks.push_back(new Block(vec, nullptr, 2, Block::ZAIBATSU, Block::HOSAKA, { -1, 1 , 0, 0 }));
-		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, { 0, 1 , 0, -1 }));
-		blocks.push_back(new Block(vec, nullptr, 5, Block::ZAIBATSU, Block::ZAIBATSU, { 0, 1 , 0, -1 }));
-		PlaceBlocks(blocks);
-
-		m_startPoint = CreateEndpoint({ 0, 1 }, Endpoint::START, Endpoint::RIGHT);
-		m_endPoint = CreateEndpoint({ 4, 2 }, Endpoint::END, Endpoint::RIGHT);
-
-		m_targetPoints = 38;
-	}
-
 	void Grid::Level8() {
 
 		Engine::Vector2i vec = Engine::Vector2i::Invalid();
 		std::vector<Block*> blocks;
 
-		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, { 0, -1 , 1, 0 }));
-		blocks.push_back(new Block(vec, nullptr, 5, Block::ZAIBATSU, Block::NONE, { -1, 0 , 0, 1 }));
-		blocks.push_back(new Block(vec, nullptr, 5, Block::ZAIBATSU, Block::NONE, { 0, -1 , 0, 1 }));
-		blocks.push_back(new Block(vec, nullptr, 5, Block::ZAIBATSU, Block::NONE, { 0, -1 , 1, 0 }));
-		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, { -1, 0 , 1, 0 }));
-		blocks.push_back(new Block(vec, nullptr, 5, Block::ZAIBATSU, Block::ZAIBATSU, { -1, 0 , 0, 1 }));
-		blocks.push_back(new Block(vec, nullptr, 5, Block::ZAIBATSU, Block::ZAIBATSU, { 0, -1, 0, 1 }));
-		blocks.push_back(new Block(vec, nullptr, 5, Block::ZAIBATSU, Block::ZAIBATSU, { 0, -1, 1, 0 }));
-		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, { -1, 0 , 0, 1 }));
+		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, Block::LEFT, Block::RIGHT));
+		blocks.push_back(new Block(vec, nullptr, 1, Block::MAAS_BIOLABS, Block::NONE, Block::LEFT, Block::RIGHT));
+		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, Block::LEFT, Block::RIGHT));
+		blocks.push_back(new Block(vec, nullptr, 5, Block::ZAIBATSU, Block::MAAS_BIOLABS, Block::LEFT, Block::RIGHT));
+		blocks.push_back(new Block(vec, nullptr, 1, Block::ZAIBATSU, Block::MAAS_BIOLABS, Block::LEFT, Block::RIGHT));
+		
 		PlaceBlocks(blocks);
 
-		m_startPoint = CreateEndpoint({ 4, 4 }, Endpoint::START, Endpoint::LEFT);
-		m_endPoint = CreateEndpoint({ 0, 0 }, Endpoint::END, Endpoint::LEFT);
+		m_startPoint = CreateEndpoint({ 4, 1 }, Endpoint::START, Endpoint::LEFT);
+		m_endPoint = CreateEndpoint({ 0, 1 }, Endpoint::END, Endpoint::LEFT);
 
-		m_targetPoints = 285;
+		m_targetPoints = 14;
+	}
+
+	void Grid::Level9() {
+
+		Engine::Vector2i vec = Engine::Vector2i::Invalid();
+		std::vector<Block*> blocks;
+
+		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, Block::LEFT, Block::RIGHT));
+		blocks.push_back(new Block(vec, nullptr, 1, Block::HOSAKA, Block::NONE, Block::LEFT, Block::RIGHT));
+		blocks.push_back(new Block(vec, nullptr, 1, Block::ZAIBATSU, Block::HOSAKA, Block::LEFT, Block::TOP));
+		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, Block::BOTTOM, Block::RIGHT));
+		blocks.push_back(new Block(vec, nullptr, 2, Block::MAAS_BIOLABS, Block::NONE, Block::LEFT, Block::RIGHT));
+		blocks.push_back(new Block(vec, nullptr, 5, Block::ZAIBATSU, Block::MAAS_BIOLABS, Block::LEFT, Block::RIGHT));
+		
+
+		PlaceBlocks(blocks);
+
+		m_startPoint = CreateEndpoint({ 0, 2 }, Endpoint::START, Endpoint::RIGHT);
+		m_endPoint = CreateEndpoint({ 4, 3 }, Endpoint::END, Endpoint::RIGHT);
+
+		m_targetPoints = 12;
+	}
+
+	void Grid::Level10() {
+
+		Engine::Vector2i vec = Engine::Vector2i::Invalid();
+		std::vector<Block*> blocks;
+
+		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, Block::BOTTOM, Block::TOP));
+		blocks.push_back(new Block(vec, nullptr, 4, Block::ZAIBATSU, Block::HOSAKA, Block::BOTTOM, Block::TOP));
+		blocks.push_back(new Block(vec, nullptr, 2, Block::MAAS_BIOLABS, Block::NONE, Block::BOTTOM, Block::RIGHT));
+		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, Block::BOTTOM, Block::TOP));
+		blocks.push_back(new Block(vec, nullptr, 4, Block::HOSAKA, Block::NONE, Block::LEFT, Block::BOTTOM));
+		blocks.push_back(new Block(vec, nullptr, 1, Block::ZAIBATSU, Block::MAAS_BIOLABS, Block::TOP, Block::BOTTOM));
+		blocks.push_back(new Block(vec, nullptr, 0, Block::PORTAL, Block::NONE, Block::BOTTOM, Block::TOP));
+		
+
+		PlaceBlocks(blocks);
+
+		m_startPoint = CreateEndpoint({ 1, 0 }, Endpoint::START, Endpoint::UP);
+		m_endPoint = CreateEndpoint({ 3, 0 }, Endpoint::END, Endpoint::DOWN);
+
+		m_targetPoints = 16;
 	}
 }

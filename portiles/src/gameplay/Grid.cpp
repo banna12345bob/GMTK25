@@ -40,7 +40,7 @@ namespace game1 {
 			m_endpointArrowTexs.push_back(subtex);
 		}
 
-		m_currentLevel = 1;
+		m_currentLevel = 7;
 		LoadLevel(m_currentLevel);
 		m_FontScallingScoring.StartInterpolation(1.f, 1.f, 0.f);
 	}
@@ -87,7 +87,7 @@ namespace game1 {
 		m_lastPortalPos = Engine::Vector2i::Invalid();
 		EG_TRACE("Circuit complete");
 
-		if (m_currentLevel == 8 && m_currentPoints == m_targetPoints) {
+		if (m_currentLevel == 10 && m_currentPoints == m_targetPoints) {
 			m_gameLayer->ChangeScene(GameLayer::Scene::Win, false);
 			return;
 		}

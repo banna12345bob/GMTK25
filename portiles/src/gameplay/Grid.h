@@ -136,5 +136,7 @@ namespace game1 {
 		void Level6();
 		void Level7();
 		void Level8();
+		void Level9();
+		void Level10();
 	};
 }
