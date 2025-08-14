@@ -67,7 +67,7 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 	m_CameraPos[1] = m_CameraYAnimation.CublicEaseIn();
 
 	// TODO: Doesn't work properly, I believe because this update loop is called multiple times for every time the keyboard is updated, or something like that.
-	if (Engine::Key::wasKeyPressed(EG_SCANCODE_M)) {
+	if (Engine::Key::wasKeyPressed(EG_KEY_M)) {
 		if (m_muted) {
 			Engine::Application::getApplication()->getAudioPlayer()->SetVolume(m_musicSoundId, 0.45f);
 			m_muted = false;
@@ -78,7 +78,7 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 		}
 	}
 
-	if (Engine::Key::wasKeyPressed(EG_SCANCODE_F)) {
+	if (Engine::Key::wasKeyPressed(EG_KEY_F)) {
 		//m_CameraZoom = m_CameraZoom == 136 ? 186 : 136;
 		m_CameraZoom = 186;
 	}
@@ -149,7 +149,7 @@ void GameLayer::OnUpdate(Engine::Timestep ts)
 		ChangeScene(Scene::Menu, false);
 	}
 
-	if (Engine::Key::wasKeyPressed(EG_SCANCODE_ESCAPE) && m_CurrentScene == Scene::Game && !m_Grid->m_executing)
+	if (Engine::Key::wasKeyPressed(EG_KEY_ESCAPE) && m_CurrentScene == Scene::Game && !m_Grid->m_executing)
 	{
 		ChangeScene(Scene::Menu, false);
 	}

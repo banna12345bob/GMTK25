@@ -13,3 +13,6 @@
 [submodule "engine/vendor/zipFile"]
 	path = engine/vendor/zipFile
 	url = https://github.com/tfussell/miniz-cpp
+[submodule "engine/vendor/GLFW"]
+	path = engine/vendor/GLFW
+	url = https://github.com/banna12345bob/glfw/

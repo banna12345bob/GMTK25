@@ -2,9 +2,14 @@
 
 #include <imgui.h>
 
+#ifdef EG_GLFW_WINDOW
+#include <GLFW/glfw3.h>
+#include <backends/imgui_impl_glfw.h>
+#else
 #include <backends/imgui_impl_sdl3.h>
-#include <backends/imgui_impl_opengl3.h>
+#endif
 
+#include <backends/imgui_impl_opengl3.h>
 
 #include "engine/core/Application.h"
 
@@ -22,16 +27,25 @@ namespace Engine {
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
 		ImGui::StyleColorsDark();
 
+#ifdef EG_GLFW_WINDOW
+		GLFWwindow* window = static_cast<GLFWwindow*>(Application::getApplication()->getWindow()->getNativeWindow());
+		ImGui_ImplGlfw_InitForOpenGL(window, SDL_GL_GetCurrentContext());
+#else
 		SDL_Window* window = static_cast<SDL_Window*>(Application::getApplication()->getWindow()->getNativeWindow());
-
 		ImGui_ImplSDL3_InitForOpenGL(window, SDL_GL_GetCurrentContext());
+#endif
+
 		ImGui_ImplOpenGL3_Init("#version 450");
 	}
 
 	ImGuiRenderer::~ImGuiRenderer()
 	{
 		ImGui_ImplOpenGL3_Shutdown();
+#ifdef EG_GLFW_WINDOW
+		ImGui_ImplGlfw_Shutdown();
+#else
 		ImGui_ImplSDL3_Shutdown();
+#endif
 		ImGui::DestroyContext();
 	}
 
@@ -40,7 +54,11 @@ namespace Engine {
 		EG_PROFILE_FUNCTION();
 
 		ImGui_ImplOpenGL3_NewFrame();
+#ifdef EG_GLFW_WINDOW
+		ImGui_ImplGlfw_NewFrame();
+#else
 		ImGui_ImplSDL3_NewFrame();
+#endif
 		ImGui::NewFrame();
 	}
 
@@ -65,7 +83,10 @@ namespace Engine {
 
 	void ImGuiRenderer::handleImGUIEvents(const SDL_Event* event)
 	{
+#ifdef EG_GLFW_WINDOW
+#else
 		ImGui_ImplSDL3_ProcessEvent(event);
+#endif
 	}
 
 }

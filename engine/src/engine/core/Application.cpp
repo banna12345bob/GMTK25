@@ -48,16 +48,16 @@ namespace Engine {
 	void Application::ApplicationKeyboardEventCallback(void* callback) {
 		EG_PROFILE_FUNCTION();
 
-		if (Key::wasKeyPressed(EG_SCANCODE_F1)) {
+		if (Key::wasKeyPressed(EG_KEY_F1)) {
 			if (RenderCommand::GetRenderMode() == RenderAPI::RenderMode::Normal)
 				RenderCommand::SetRenderMode(RenderAPI::RenderMode::Wireframe);
 			else
 				RenderCommand::SetRenderMode(RenderAPI::RenderMode::Normal);
 		}
-		if (Key::wasKeyPressed(EG_SCANCODE_F2))
+		if (Key::wasKeyPressed(EG_KEY_F2))
 			Application::getApplication()->m_RendererStatsLayer->m_ShowWindow = !Application::getApplication()->m_RendererStatsLayer->m_ShowWindow;
 
-		if (Key::wasKeyPressed(EG_SCANCODE_F4))
+		if (Key::wasKeyPressed(EG_KEY_F4))
 			Application::getApplication()->m_AudioDebuggerLayer->m_ShowWindow = !Application::getApplication()->m_AudioDebuggerLayer->m_ShowWindow;
 	}
 

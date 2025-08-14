@@ -79,6 +79,7 @@ namespace Engine {
 		//WindowFlags |= SDL_WINDOW_RESIZABLE;
 
 		EG_CORE_ASSERT(m_data.width > 0 && m_data.height > 0, "Invalid Window size");
+		EG_CORE_INFO("Creating SDL3 window {0} ({1}, {2})", m_data.title, m_data.width, m_data.height);
 
 		//Initialize SDL
 		if (!SDL_Init(SDL_INIT_VIDEO))

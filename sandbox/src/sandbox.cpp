@@ -25,10 +25,10 @@ public:
 	// A little example of how to do keyboard inputs
 	static void keyboardEventCallback(void* callback) {
 		EG_PROFILE_FUNCTION();
-		if (Engine::Key::wasKeyPressed(EG_SCANCODE_I))
+		if (Engine::Key::wasKeyPressed(EG_KEY_I))
 			Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/music/music1_short.wav", false, 0.4f);
 
-		if (Engine::Key::wasKeyPressed(EG_SCANCODE_O))
+		if (Engine::Key::wasKeyPressed(EG_KEY_O))
 			Engine::Application::getApplication()->getAudioPlayer()->PlaySound("assets/audio/music/John Coltrane - Naima.wav", true, 0.8f);
 	}
 

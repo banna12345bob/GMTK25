@@ -7,6 +7,11 @@ project "engine"
 	targetdir ("%{wks.location}/compile/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/compile/bin-int/" .. outputdir .. "/%{prj.name}")
 
+	defines {
+		-- "EG_GLFW_WINDOW",
+		"GLFW_INCLUDE_NONE"
+	}
+
 	files
 	{
 		"src/**.h",
@@ -20,6 +25,7 @@ project "engine"
 		"src",
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.SDL3}",
+		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.glad}",
@@ -31,6 +37,7 @@ project "engine"
 	links 
 	{
 		"SDL3",
+		"GLFW",
 		"glad",
 		"ImGui"
 	}
