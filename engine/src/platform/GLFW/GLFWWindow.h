@@ -28,9 +28,11 @@ namespace Engine {
 
 		virtual void* getNativeWindow() override { return m_window; }
 
+		virtual void SwapWindow() override { glfwSwapBuffers(m_window); }
 	private:
-		GLFWwindow* m_window;
 		void CreateGLContext();
+
+		GLFWwindow* m_window;
 
 		WindowProps m_data;
 	};

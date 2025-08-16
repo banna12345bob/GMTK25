@@ -29,7 +29,7 @@ namespace Engine {
 
 #ifdef EG_GLFW_WINDOW
 		GLFWwindow* window = static_cast<GLFWwindow*>(Application::getApplication()->getWindow()->getNativeWindow());
-		ImGui_ImplGlfw_InitForOpenGL(window, SDL_GL_GetCurrentContext());
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
 #else
 		SDL_Window* window = static_cast<SDL_Window*>(Application::getApplication()->getWindow()->getNativeWindow());
 		ImGui_ImplSDL3_InitForOpenGL(window, SDL_GL_GetCurrentContext());
@@ -73,11 +73,18 @@ namespace Engine {
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
+#ifdef EG_GLFW_WINDOW
+			GLFWwindow* backup_current_context = glfwGetCurrentContext();
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+			glfwMakeContextCurrent(backup_current_context);
+#else
 			SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
 			SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
 			SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
+#endif
 		}
 	}
 

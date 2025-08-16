@@ -1,7 +1,13 @@
 #include "OpenGLRenderAPI.h"
 
 #include <glad/glad.h>
+
+#ifdef EG_GLFW_WINDOW
+#include <GLFW/glfw3.h>
+#else
 #include <SDL3/SDL.h>
+#endif
+
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "engine/core/Application.h"
@@ -30,10 +36,15 @@ namespace Engine {
 
 	void OpenGLRenderAPI::Init()
 	{
+#ifdef EG_GLFW_WINDOW
+		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		EG_CORE_ASSERT(status, "Failed to initalise glad");
+#else
 		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
 			EG_CORE_FATAL("GLAD couldn't load OpenGL");
 			EG_CORE_ASSERT(false, "GLAD ERROR");
 		}
+#endif
 
 #ifdef EG_DEBUG
 

@@ -28,6 +28,7 @@ namespace Engine {
 
 		virtual void* getNativeWindow() override { return m_window; }
 
+		virtual void SwapWindow() override { SDL_GL_SwapWindow(m_window); }
 	private:
 		void CreateGLContext();
 

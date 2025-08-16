@@ -102,8 +102,7 @@ namespace Engine {
 			m_RendererStatsLayer->renderImGUILayer();
 			m_ImGuiRenderer->EndFrame();
 
-			SDL_Window* window = static_cast<SDL_Window*>(Application::getApplication()->getWindow()->getNativeWindow());
-			SDL_GL_SwapWindow(window);
+			m_Window->SwapWindow();
 		}
 	}
 }
