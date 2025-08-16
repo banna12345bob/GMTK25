@@ -1,18 +1,1 @@
-[submodule "engine/vendor/spdlog"]
-	path = engine/vendor/spdlog
-	url = https://github.com/gabime/spdlog.git
-[submodule "engine/vendor/imgui"]
-	path = engine/vendor/imgui
-	url = https://github.com/banna12345bob/imgui
-[submodule "engine/vendor/glm"]
-	path = engine/vendor/glm
-	url = https://github.com/g-truc/glm
-[submodule "engine/vendor/json"]
-	path = engine/vendor/json
-	url = https://github.com/nlohmann/json/
-[submodule "engine/vendor/zipFile"]
-	path = engine/vendor/zipFile
-	url = https://github.com/tfussell/miniz-cpp
-[submodule "engine/vendor/GLFW"]
-	path = engine/vendor/GLFW
-	url = https://github.com/banna12345bob/glfw/
+
