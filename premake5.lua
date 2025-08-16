@@ -1,5 +1,5 @@
 workspace "GMTK25"
-	startproject "sandbox"
+	startproject "portiles"
 
 	configurations
 	{
@@ -30,4 +30,5 @@ group "Dependencies"
 
 group ""
 	include "engine"
+	include "portiles"
 	include "sandbox"
