@@ -1,3 +1,10 @@
+<img src="https://github.com/banna12345bob/Portiles/blob/main/portiles/assets/textures/UI/game_logo.png" width="200">
+
+Place the tiles to complete the puzzle. Tiles can loop back on themselves through portals.  Featuring 8 unique puzzles.
+This game was written in C++ using OpenGL and is part of the GMTK Game Jam 2025.
+## Screenshots
+<img src="https://github.com/banna12345bob/Portiles/blob/main/portiles/itch/screenshot1.png" width="300"><img src="https://github.com/banna12345bob/Portiles/blob/main/portiles/itch/screenshot2.png" width="300"><img src="https://github.com/banna12345bob/Portiles/blob/main/portiles/itch/screenshot3.png" width="300"><img src="https://github.com/banna12345bob/Portiles/blob/main/portiles/itch/screenshot4.png" width="300"><img src="https://github.com/banna12345bob/Portiles/blob/main/portiles/itch/screenshot5.png" width="300">
+
 # How to build project files
 
 1. Clone the repo
